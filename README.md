@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 # ♟️ Chess Analyzer — *Stockfish + Gemini API*
 
@@ -133,3 +134,6 @@ Good luck, and may your code always find the best move! ♜♞♝
 
 
 
+=======
+# Chess-Coach-Trainer
+>>>>>>> origin/improved-base-app
