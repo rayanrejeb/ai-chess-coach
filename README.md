@@ -30,7 +30,7 @@ Desktop app that reviews your Chess.com and Lichess games with Stockfish and exp
 4. Run:
 
    ```bash
-   python chess_analyzer.py
+   python main.py
    ```
 
    Enter a Chess.com or Lichess username, click **Fetch Games**, pick a game, then click **Analyze Selected Game**.
