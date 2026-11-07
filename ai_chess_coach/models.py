@@ -68,6 +68,8 @@ class GeminiCommentary:
     move_commentary: str = "No AI comment available for this move."
     missed_opportunities: List[str] = field(default_factory=list)
     best_replies: List[str] = field(default_factory=list)
+    illegal_moves: List[str] = field(default_factory=list)      # set by the grounding check
+    unverified_moves: List[str] = field(default_factory=list)   # set by the grounding check
 
     @classmethod
     def from_dict(cls, data: dict):

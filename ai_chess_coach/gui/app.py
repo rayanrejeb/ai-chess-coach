@@ -22,7 +22,6 @@ from dataclasses import asdict
 from tkinter import filedialog, messagebox
 from typing import Dict, List, Optional
 from PIL import Image
-from chessdotcom import Client
 
 from ai_chess_coach.config import Constants, resource_path
 from ai_chess_coach.legacy import ChessAnalyzer
@@ -63,7 +62,6 @@ class ChessGUI(ctk.CTk):
 
         if not os.path.exists(Constants.ANALYSIS_DIR): os.makedirs(Constants.ANALYSIS_DIR)
         if not os.path.exists(Constants.GAMES_DIR): os.makedirs(Constants.GAMES_DIR)
-        Client.request_config["headers"]["User-Agent"] = Constants.CHESSDOTCOM_USER_AGENT
 
         self.setup_ui()
         self.load_config_and_initialize()
@@ -211,7 +209,7 @@ class ChessGUI(ctk.CTk):
         }
         log.debug("Chat context: %s", json.dumps(game_context, indent=2))
         chat_history = self.chat_history.get("1.0", "end").strip()
-        future = self._ui_executor.submit(self._get_and_display_chat_response, question, game_context, chat_history)
+        future = self._ui_executor.submit(self._get_and_display_chat_response, question, game_context, chat_history, analysis)
         def chat_done_callback(fut: Future):
             try: fut.result()
             except Exception as e:
@@ -220,8 +218,11 @@ class ChessGUI(ctk.CTk):
                 self.after(0, self.send_chat_btn.configure, {"state": "normal", "text": "Send"})
         future.add_done_callback(chat_done_callback)
 
-    def _get_and_display_chat_response(self, question, game_context, chat_history):
-        response = self.analyzer.get_chat_response(question, game_context, chat_history)
+    def _get_and_display_chat_response(self, question, game_context, chat_history, analysis):
+        if not self.analyzer.coach:
+            response = "The AI chat model is not configured. Please check your Gemini API key in the settings."
+        else:
+            response = self.analyzer.coach.answer(question, game_context, chat_history, analysis, self.moves)
         self.after(0, self._display_chat_message, "Coach", response)
         self.after(0, self.send_chat_btn.configure, {"state": "normal", "text": "Send"})
 
@@ -334,11 +335,11 @@ class ChessGUI(ctk.CTk):
                 
             gemini_comments, game_summary = {}, None
 
-            if self.analyzer and self.analyzer.commentary_model:
+            if self.analyzer and self.analyzer.coach:
                 self.after(0, lambda: self._set_navigation_enabled(False))
                 status_callback = lambda text: self.after(0, lambda: self.analyze_btn.configure(text=text))
-                
-                gemini_comments, game_summary = self.analyzer.get_gemini_analysis(full_analysis, self.gemini_language, username, player_color, game, status_callback)
+
+                gemini_comments, game_summary = self.analyzer.coach.comment_game(full_analysis, self.gemini_language, username, player_color, local_moves, status_callback)
                 
                 # --- FIX 3: Display a popup if the AI completely fails ---
                 if not gemini_comments:

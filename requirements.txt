@@ -1,8 +1,7 @@
 # Stockfish is not a pip package: install it separately and set STOCKFISH_PATH in .env
 chess==1.11.2
-google-generativeai==0.8.6
+google-genai==3.0.0
 customtkinter==5.2.2
-chess.com==3.13.0
 CairoSVG==2.9.0
 pillow==11.1.0
 requests==2.33.1
