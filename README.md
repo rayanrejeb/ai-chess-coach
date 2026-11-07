@@ -1,92 +1,46 @@
-# ♟️ AI Chess Coach — *Stockfish + Gemini*
+# AI Chess Coach
 
-> **A chess analysis tool using Stockfish and Google's Gemini API.**
-> Built to analyze chess games, identify tactical motifs, and generate insights.
+Desktop app that reviews your Chess.com and Lichess games with Stockfish and explains them in plain language using Gemini.
 
----
+## Setup
 
-## ⚙️ Setup Instructions
+1. Install Python 3.10+ and the dependencies:
 
-### 1️⃣ Install Python and Dependencies
-Make sure you have **Python 3.10 or higher** installed, then install the requirements:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-```bash
-pip install -r requirements.txt
-```
+2. Install Stockfish. It is not included in this repository: [download it](https://stockfishchess.org/download/), or run `apt install stockfish` / `brew install stockfish`.
 
-### 2️⃣ Install Stockfish
-Stockfish is not included in this repository. [Download it from the official website](https://stockfishchess.org/download/) (or `apt install stockfish` / `brew install stockfish`) and note the path to the binary.
+3. Create your `.env`:
 
-### 3️⃣ Configure `.env`
+   ```bash
+   cp .env.example .env
+   ```
 
-```bash
-cp .env.example .env
-```
+   | Variable | Required | Purpose |
+   | --- | --- | --- |
+   | `GEMINI_API_KEY` | yes | [Google AI Studio key](https://aistudio.google.com/app/apikey) |
+   | `STOCKFISH_PATH` | yes | Full path to the Stockfish binary |
+   | `LICHESS_TOKEN` | for Lichess sync | [Personal token](https://lichess.org/account/oauth/token) |
+   | `GEMINI_MODEL`, `DEFAULT_USERNAME`, `LOG_LEVEL` | no | Optional settings |
 
-Then edit `.env`:
+   Values in `.env` override the ones saved from the in-app Settings window (stored in the git-ignored `config.json`).
 
-* `GEMINI_API_KEY` — [generate one here](https://aistudio.google.com/app/apikey).
-* `STOCKFISH_PATH` — full path to the Stockfish binary.
-* `LICHESS_TOKEN` — only needed to sync Lichess games. [Create one here](https://lichess.org/account/oauth/token).
-* `GEMINI_MODEL`, `DEFAULT_USERNAME`, `LOG_LEVEL` — optional.
+4. Run:
 
-Values in `.env` override the ones saved from the in-app **Settings** window (stored in the git-ignored `config.json`).
+   ```bash
+   python chess_analyzer.py
+   ```
 
-### 4️⃣ Run
-
-```bash
-python chess_analyzer.py
-```
-
-Enter your Chess.com or Lichess username → **Fetch Games** → pick a game → **Analyze Selected Game**.
+   Enter a Chess.com or Lichess username, click **Fetch Games**, pick a game, then click **Analyze Selected Game**.
 
 Sample games (public-domain 19th-century classics) are in [`sample_data/`](sample_data/).
 
----
+## License
 
-## 🚀 What You Can Improve or Add
+[GPL-3.0](LICENSE). Third-party code and its license are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-* 🎨 **Enhanced GUI** — redesign for a smoother and more modern experience.
-* 📱 **Cross-Platform Apps** — build Android, iOS, or Windows installer versions.
-* 🧩 **"Difficult Moves" Mode** — practice tricky positions interactively.
-* 🧠 **Deeper Analysis Logic** — refine tactical/positional understanding and Gemini prompts.
-* ⚡ **Stockfish** — parallel analysis, because analysis is slow.
-* 📘 **Learning Mode** — auto-extract puzzles or lessons from books.
-* 📊 **More Statistics** — performance graphs, accuracy over time, motif frequency, etc.
-* 🤖 **Automatic Game Analyzer** — run batch analysis based on available Gemini API calls.
-* 📚 **Opening Book Integration** — recognize and suggest openings dynamically.
+## Credits
 
----
-
-## 🐞 Known Issues
-
-|  #  | Issue                     | Description                                                          |
-| :-: | ------------------------- | -------------------------------------------------------------------- |
-|  1  | Repeated motifs           | Same tactical idea appears across multiple moves.                    |
-|  2  | Pin detection (self)      | Potential pins by the player sometimes not detected.                 |
-|  3  | Missing break logic       | No logic for identifying when motifs (like skewers/pins) are broken. |
-|  4  | Redundant motifs          | Same pin suggested multiple times by different pieces.               |
-|  5  | "Removal of Guard (Self)" | Needs logical correction.                                            |
-|  6  | Potential fork flaws      | Doesn't consider opponent's immediate response.                      |
-
----
-
-## 🧰 Tech Stack
-
-| Component        | Description                       |
-| ---------------- | --------------------------------- |
-| **Language**     | Python                            |
-| **Engine**       | Stockfish                         |
-| **AI Model**     | Google Gemini API                 |
-| **Game Data**    | Chess.com and Lichess APIs        |
-| **UI Framework** | CustomTkinter                     |
-
----
-
-## 💬 License & Credits
-
-* **License:** [GPL-3.0](LICENSE) (required by python-chess, which is GPL-3.0)
-* **Engine:** [Stockfish](https://stockfishchess.org/) (GPL-3.0)
-* **Chess library:** [python-chess](https://github.com/niklasf/python-chess) (GPL-3.0)
-* **AI Model:** Google Gemini API
-* **Data Sources:** Chess.com and Lichess APIs
+Started from [Chess Analyzer](https://github.com/yusufelgen07/chess-analyzer-vibe-coding-) by yusufelgen07 (MIT License). See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

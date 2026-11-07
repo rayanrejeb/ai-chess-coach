@@ -2675,7 +2675,7 @@ class ChessGUI(ctk.CTk):
         self.bind("<Configure>", self._on_resize)
 
     def setup_ui(self):
-        self.title("chessyn")
+        self.title("AI Chess Coach")
         self.geometry("1400x950")
         try:
             self.iconphoto(True, tk.PhotoImage(file=resource_path('Chess.ico')))
