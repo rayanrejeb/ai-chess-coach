@@ -8,6 +8,7 @@ import customtkinter as ctk
 import datetime
 import io
 import json
+import logging
 import math
 import os
 import re
@@ -26,6 +27,9 @@ from chessdotcom import Client
 import google.generativeai as genai
 import google.api_core.exceptions
 import google.generativeai.types as types
+from dotenv import load_dotenv
+
+log = logging.getLogger(__name__)
 
 # ========================================================================================
 # 0. HELPER FUNCTION FOR PYINSTALLER
@@ -80,7 +84,7 @@ class Constants:
 
     # --- API & Network ---
     LICHESS_API_URL = "https://lichess.org/api"
-    CHESSDOTCOM_USER_AGENT = "Gemini Chess Analyzer App"
+    CHESSDOTCOM_USER_AGENT = "AI Chess Coach"
 
     # --- Move Classifications ---
     BRILLIANT = "Brilliant"
@@ -540,7 +544,7 @@ class TacticalAnalyzer:
         except Exception as e:
             if board.move_stack and board.peek() == move:
                 board.pop()
-            print(f"Error during quiescence evaluation for move {move.uci()} on FEN {board.fen()}: {e}")
+            log.warning(f"Error during quiescence evaluation for move {move.uci()} on FEN {board.fen()}: {e}")
             return 0, 0, []
 
     # ========================================================================================
@@ -659,7 +663,7 @@ class TacticalAnalyzer:
 
         if ply_index is not None and new_motifs and new_motifs[0].get("tactic") != "None":
             motifs_for_display = [{k: v for k, v in m.items() if k != 'value'} for m in new_motifs]
-            print(f"[DEBUG] Ply {ply_index + 1} ({move.uci()}): Detected New Motifs -> {motifs_for_display}")
+            log.debug(f"Ply {ply_index + 1} ({move.uci()}): Detected New Motifs -> {motifs_for_display}")
         
         return new_motifs if new_motifs else [{"tactic": "None", "details": "No tactical opportunities detected"}]
 
@@ -2043,7 +2047,7 @@ class ChessAnalyzer:
                     tools=[self.analyze_fen_for_chatbot]
                 )
             except Exception as e:
-                print(f"--- WARNING: Failed to configure Gemini: {e}. AI models disabled. ---")
+                log.warning(f"Failed to configure Gemini: {e}. AI models disabled.")
         # --- END OF CHANGE 1 ---
 
         self.opening_book = None
@@ -2051,14 +2055,14 @@ class ChessAnalyzer:
             try:
                 self.opening_book = chess.polyglot.open_reader(opening_book_path)
             except Exception as e:
-                print(f"--- WARNING: Could not load opening book: {e}. ---")
+                log.warning(f"Could not load opening book: {e}.")
         self.tablebases = None
         if syzygy_path and os.path.exists(syzygy_path):
             try:
                 self.tablebases = chess.syzygy.open_tablebase(syzygy_path)
-                print("--- INFO: Syzygy tablebases loaded successfully. ---")
+                log.info("Syzygy tablebases loaded successfully.")
             except Exception as e:
-                print(f"--- WARNING: Could not load Syzygy tablebases: {e}. ---")
+                log.warning(f"Could not load Syzygy tablebases: {e}.")
 
         self._san_cache: OrderedDict = OrderedDict()
         self._max_san_cache = 256
@@ -2076,10 +2080,10 @@ class ChessAnalyzer:
             try:
                 return self.engine.analyse(board, chess.engine.Limit(depth=depth, time=time_limit), multipv=multipv)
             except chess.engine.EngineTerminatedError:
-                print("Engine terminated unexpectedly")
+                log.error("Engine terminated unexpectedly")
                 return []
             except Exception as e:
-                print(f"Engine analysis failed: {e}")
+                log.error(f"Engine analysis failed: {e}")
                 return []
 
     def _cp_to_expected_points(self, cp):
@@ -2282,7 +2286,7 @@ Now, generate the JSON response for the provided game data. Be as detailed and h
                 )
                 
                 if not response.parts:
-                    print(f"--- WARN: Gemini returned no content. Finish Reason: {response.candidates[0].finish_reason if response.candidates else 'N/A'} ---")
+                    log.warning(f"Gemini returned no content. Finish Reason: {response.candidates[0].finish_reason if response.candidates else 'N/A'}")
                     if attempt < 4: time.sleep(2)
                     continue
 
@@ -2304,26 +2308,26 @@ Now, generate the JSON response for the provided game data. Be as detailed and h
                         commentaries[str(item['ply'])] = GeminiCommentary.from_dict(item)
                 
                 if not commentaries:
-                    print("--- WARN: JSON parsed successfully but 'game_commentary' was empty. ---")
+                    log.warning("JSON parsed successfully but 'game_commentary' was empty.")
                     
                 return commentaries, game_summary
 
             except google.api_core.exceptions.ResourceExhausted as e:
                 # If the quota is 0 (Daily limit hit), don't waste 2 minutes retrying
                 if 'daily' in str(e).lower() or 'quota' in str(e).lower():
-                    print(f"--- ERROR: Fatal Gemini Quota Limit hit: {e} ---")
+                    log.error(f"Fatal Gemini Quota Limit hit: {e}")
                     return None, None
                 
                 wait_time = 5 * (2 ** attempt)
-                print(f"--- WARN: Gemini rate limit hit. Waiting {wait_time} seconds... ---")
+                log.warning(f"Gemini rate limit hit. Waiting {wait_time} seconds...")
                 time.sleep(wait_time)
                 
             except json.JSONDecodeError as e:
-                print(f"--- ERROR: JSON decoding failed (Attempt {attempt + 1}): {e} ---")
+                log.error(f"JSON decoding failed (Attempt {attempt + 1}): {e}")
                 if attempt < 4: time.sleep(2)
                 
             except Exception as e:
-                print(f"--- ERROR: Gemini analysis failed (Attempt {attempt + 1}): {e} ---")
+                log.error(f"Gemini analysis failed (Attempt {attempt + 1}): {e}")
                 if attempt < 4: time.sleep(2)
                 
         return None, None
@@ -2560,7 +2564,7 @@ Your Task:
             response = chat.send_message(question)
             return response.text
         except Exception as e:
-            print(f"--- ERROR: Gemini chat failed: {e} ---")
+            log.error(f"Gemini chat failed: {e}")
             return f"An error occurred while analyzing that move: {e}"
 
     def find_key_moments(self, full_game_analysis: List[PlyAnalysis], num_moments: int = 5) -> List[PlyAnalysis]:
@@ -2676,7 +2680,7 @@ class ChessGUI(ctk.CTk):
         try:
             self.iconphoto(True, tk.PhotoImage(file=resource_path('Chess.ico')))
         except tk.TclError:
-            print("--- WARN: Could not load application icon. ---")
+            log.warning("Could not load application icon.")
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
@@ -2810,16 +2814,13 @@ class ChessGUI(ctk.CTk):
             "best_alternative_line": simplified_best_alternative_line,
             "best_opponent_follow_up": simplified_best_opponent_follow_up
         }
-        print("--- CHATBOT INPUT (game_context) ---")
-        print(json.dumps(game_context, indent=2))
-        print("--- END CHATBOT INPUT ---")
+        log.debug("Chat context: %s", json.dumps(game_context, indent=2))
         chat_history = self.chat_history.get("1.0", "end").strip()
         future = self._ui_executor.submit(self._get_and_display_chat_response, question, game_context, chat_history)
         def chat_done_callback(fut: Future):
             try: fut.result()
             except Exception as e:
-                print(f"--- ERROR in chat thread: {e} ---")
-                import traceback; traceback.print_exc()
+                log.exception(f"Chat thread failed: {e}")
                 self.after(0, self._display_chat_message, "System Error", f"An error occurred in the chat task: {e}")
                 self.after(0, self.send_chat_btn.configure, {"state": "normal", "text": "Send"})
         future.add_done_callback(chat_done_callback)
@@ -2961,7 +2962,7 @@ class ChessGUI(ctk.CTk):
             self.after(0, self._finalize_analysis, local_moves, full_analysis, gemini_comments, game_summary, player_stats, game_url, key_moments)
             
         except Exception as e:
-            import traceback; traceback.print_exc()
+            log.exception("Game analysis failed")
             self.after(0, lambda e=e: self.display_message("Analysis Error", f"An unexpected error occurred: {e}"))
             self.after(0, self._reset_ui_after_error)
 
@@ -3003,7 +3004,7 @@ class ChessGUI(ctk.CTk):
             board_before_move = chess.Board(analysis.fen_before)
             player_move = self.moves[self.current_ply - 1]
             if player_move not in board_before_move.legal_moves:
-                print(f"--- ERROR: Illegal move detected in display. Move: {player_move.uci()}, FEN: {board_before_move.fen()} ---")
+                log.error(f"Illegal move detected in display. Move: {player_move.uci()}, FEN: {board_before_move.fen()}")
                 return 
             arrows.append(chess.svg.Arrow(player_move.from_square, player_move.to_square, color=Constants.ARROW_PLAYER_MOVE))
             if analysis.raw_engine_lines_for_display:
@@ -3070,7 +3071,7 @@ class ChessGUI(ctk.CTk):
             analysis = self.analyzer._get_analysis(board, 15, 1, 1.0)
             if analysis: self.after(0, self.update_score_bar, analysis[0]['score'].white().score(mate_score=self.analyzer.config.MATE_SCORE))
         except Exception as e:
-            print(f"Error getting score for board: {e}")
+            log.warning(f"Error getting score for board: {e}")
             self.after(0, self.update_score_bar, None)
 
     def _update_analysis_display(self, title="", commentary="", engine_lines=None, board_fen=None, show_sections=True):
@@ -3171,7 +3172,7 @@ class ChessGUI(ctk.CTk):
             tmp = filepath + ".tmp"
             with open(tmp, 'w', encoding='utf-8') as f: json.dump(games, f, ensure_ascii=False, indent=2)
             os.replace(tmp, filepath)
-        except Exception as e: print(f"--- WARN: Failed to save local games: {e}")
+        except Exception as e: log.warning(f"Failed to save local games: {e}")
 
     def _fetch_games_thread(self, username):
         platform = self.platform_var.get()
@@ -3202,7 +3203,7 @@ class ChessGUI(ctk.CTk):
             params = {"pgnInJson": "true", "perfType": "rapid,classical,blitz,correspondence", "since": since_ms, "max": 500}
             response = requests.get(f"{Constants.LICHESS_API_URL}/games/user/{username}", headers=headers, params=params, stream=True, timeout=30)
             if response.status_code == 429:
-                print("--- WARN: Lichess rate limit. Waiting 5 seconds. ---"); time.sleep(5)
+                log.warning("Lichess rate limit. Waiting 5 seconds."); time.sleep(5)
                 response = requests.get(f"{Constants.LICHESS_API_URL}/games/user/{username}", headers=headers, params=params, stream=True, timeout=30)
             response.raise_for_status()
             games_data = []
@@ -3232,7 +3233,7 @@ class ChessGUI(ctk.CTk):
                 
                 monthly_res = requests.get(url, headers=headers, timeout=20)
                 if monthly_res.status_code == 429:
-                    print("--- WARN: Rate limited by Chess.com API. Waiting 5 seconds... ---")
+                    log.warning("Rate limited by Chess.com API. Waiting 5 seconds...")
                     time.sleep(5)
                     monthly_res = requests.get(url, headers=headers, timeout=20)
                 
@@ -3254,7 +3255,7 @@ class ChessGUI(ctk.CTk):
                 # partially or fully downloaded. We can safely stop here, as all older months
                 # must have already been fetched.
                 if len(new_games_this_month) < len(monthly_games):
-                    print(f"--- INFO: Hit previously fetched data in archive {url.split('/')[-2:]}. Stopping search. ---")
+                    log.info(f"Hit previously fetched data in archive {url.split('/')[-2:]}. Stopping search.")
                     break 
             
             # --- END OF NEW LOGIC ---
@@ -3273,10 +3274,10 @@ class ChessGUI(ctk.CTk):
         if previous_game_count is not None:
             new_games_count = len(self.games) - previous_game_count
             if new_games_count > 0:
-                print(f"--- INFO: Added {new_games_count} new game(s). ---")
+                log.info(f"Added {new_games_count} new game(s).")
                 messagebox.showinfo("Fetch Complete", f"Added {new_games_count} new game(s) to the list.")
             else:
-                print("--- INFO: No new games found. ---")
+                log.info("No new games found.")
                 messagebox.showinfo("Fetch Complete", "No new games found. Your list is up to date.")
         # --- END OF NEW LOGIC ---
 
@@ -3468,10 +3469,16 @@ class ChessGUI(ctk.CTk):
 
     def load_config_and_initialize(self):
         try:
-            with open(Constants.CONFIG_FILE, 'r', encoding='utf-8') as f: config = json.load(f)
+            try:
+                with open(Constants.CONFIG_FILE, 'r', encoding='utf-8') as f: config = json.load(f)
+            except FileNotFoundError:
+                config = {}
+            # Environment variables (.env) override config.json.
+            env_overrides = {"gemini_api_key": "GEMINI_API_KEY", "gemini_model": "GEMINI_MODEL", "lichess_token": "LICHESS_TOKEN", "stockfish_path": "STOCKFISH_PATH"}
+            config.update({key: os.environ[var] for key, var in env_overrides.items() if os.environ.get(var)})
 
             # Load configuration settings
-            last_username = config.get("last_username", "hikaru")
+            last_username = config.get("last_username") or os.environ.get("DEFAULT_USERNAME", "hikaru")
             last_platform = config.get("last_platform", "Chess.com")
             
             self.username_entry.delete(0, "end")
@@ -3490,19 +3497,19 @@ class ChessGUI(ctk.CTk):
 
             # --- THIS IS THE CRITICAL NEW LOGIC ---
             # After loading the last username, immediately load their games.
-            print(f"--- INFO: Attempting to auto-load games for '{last_username}' ---")
+            log.info(f"Attempting to auto-load games for '{last_username}'")
             initial_games = self._load_local_games(last_username, last_platform)
             if initial_games:
-                print(f"--- INFO: Found {len(initial_games)} saved games. Populating list. ---")
+                log.info(f"Found {len(initial_games)} saved games. Populating list.")
                 # Use the existing handler to populate the UI with these games.
                 self._handle_fetched_games(games=initial_games)
             else:
-                print("--- INFO: No saved games found for last user. ---")
+                log.info("No saved games found for last user.")
             # --- END OF NEW LOGIC ---
 
         except FileNotFoundError:
             self.analyzer = None
-            self.display_message("Welcome!", "Configuration file not found. Please set paths in Settings.")
+            self.display_message("Welcome!", "Stockfish not found. Set STOCKFISH_PATH in .env or the Stockfish path in Settings.")
         except (TypeError, json.JSONDecodeError) as e:
             self.analyzer = None
             self.display_message("Initialization Error", f"Could not initialize analyzer: {e}. Please check your settings.")
@@ -3563,7 +3570,7 @@ class ChessGUI(ctk.CTk):
             tmp = filepath + ".tmp"
             with open(tmp, 'w', encoding='utf-8') as f: json.dump(data_to_save, f, ensure_ascii=False, indent=2)
             os.replace(tmp, filepath)
-        except Exception as e: print(f"--- WARN: Failed to save analysis: {e}")
+        except Exception as e: log.warning(f"Failed to save analysis: {e}")
 
     def _load_analysis_from_file(self, filepath):
         try:
@@ -3593,7 +3600,7 @@ class ChessGUI(ctk.CTk):
             gemini_data = {ply: GeminiCommentary.from_dict(comment) for ply, comment in data.get("gemini_data", {}).items()}
             self.after(0, self._finalize_loading, moves, analysis_data, gemini_data, data.get("game_summary"), data.get("player_stats", {}), data.get("player_accuracy", {}))
         except (json.JSONDecodeError, KeyError, TypeError) as e:
-            import traceback; traceback.print_exc()
+            log.exception("Loading saved analysis failed")
             self.after(0, lambda e=e: self.display_message("Load Error", f"Error loading analysis: {e}. Please Re-analyze."))
 
     def _finalize_loading(self, moves, analysis_data, gemini_data, game_summary, player_stats, player_accuracy):
@@ -3623,17 +3630,17 @@ class ChessGUI(ctk.CTk):
             self.destroy()
 
 def main():
+    load_dotenv()
+    logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO").upper(), format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     try:
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
-        print("--- Gemini Chess Analyzer ---")
+        log.info("AI Chess Coach starting")
         app = ChessGUI()
         app.protocol("WM_DELETE_WINDOW", app.on_closing)
         app.mainloop()
     except Exception as e:
-        print(f"FATAL: An unexpected error occurred in main: {e}")
-        import traceback
-        traceback.print_exc()
+        log.exception(f"Fatal error in main: {e}")
         try:
             messagebox.showerror("Fatal Error", f"A fatal error occurred on startup:\n{e}\n\nPlease see the console for details.")
         except tk.TclError:

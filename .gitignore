@@ -1,3 +1,46 @@
+# Secrets and local settings
+.env
+config.json
+config.json.tmp
+
+# Synced games and analysis caches
 analyzed_games/
 fetched_games/
-config.json
+
+# Chess engines, opening books, tablebases
+engines/
+/stockfish
+/stockfish*/
+*.exe
+*.bin
+syzygy/
+*.rtbw
+*.rtbz
+
+# Databases and logs
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
