@@ -1,0 +1,605 @@
+{
+  "engine_id": "Stockfish 19",
+  "expected_points": {
+    "-100": 0.401312,
+    "-1000": 0.017986,
+    "-300": 0.231475,
+    "0": 0.5,
+    "100": 0.598688,
+    "1000": 0.982014,
+    "300": 0.768525
+  },
+  "positions": [
+    {
+      "classify": [
+        [
+          "Best",
+          0.004985,
+          5
+        ],
+        [
+          "Great Move",
+          -0.272501,
+          -280
+        ],
+        [
+          "Best",
+          0.004972,
+          5
+        ],
+        [
+          "Excellent",
+          0.009991,
+          10
+        ],
+        [
+          "Good",
+          0.049953,
+          50
+        ],
+        [
+          "Inaccuracy",
+          0.137737,
+          140
+        ],
+        [
+          "Mistake",
+          0.251048,
+          270
+        ],
+        [
+          "Blunder",
+          0.462665,
+          720
+        ],
+        [
+          "Good",
+          0.037466,
+          50
+        ],
+        [
+          "Miss",
+          0.167982,
+          9597
+        ],
+        [
+          "Blunder",
+          0.549834,
+          10048
+        ],
+        [
+          "Brilliant",
+          -0.549834,
+          -10048
+        ]
+      ],
+      "engine_after": {
+        "best": "d8d7",
+        "score_white": 712
+      },
+      "engine_before": {
+        "best": "d1d7",
+        "score_white": 706
+      },
+      "fen": "3rkb1r/p2nqppp/5n2/1B2p1B1/4P3/1Q6/PPP2PPP/2KR3R w k - 3 13",
+      "motifs": [
+        {
+          "details": "The White bishop on g5 pins the enemy Black knight on f6 to the Black queen on e7. Moving the pinned piece would allow a profitable capture.",
+          "squares": [
+            38,
+            45,
+            52
+          ],
+          "tactic": "Pin",
+          "value": 300
+        },
+        {
+          "details": "The Black pawn on a7 is hanging and can be captured profitably (SEE: +1.00).",
+          "tactic": "Hanging Piece",
+          "value": 100
+        },
+        {
+          "details": "A battery has been formed by the Black bishop on f8 and the Black queen on e7.",
+          "tactic": "Battery",
+          "value": 50
+        },
+        {
+          "details": "Your move Rxd7 sets up a potential Pin. On your next turn, the move Bh4 would actualize it: The White bishop on h4 pins the enemy Black knight on f6 to the Black queen on e7. Moving the pinned piece would allow a profitable capture.",
+          "tactic": "Potential Pin",
+          "value": 300
+        },
+        {
+          "details": "The capture Rxd7 removes a key enemy defender. This exposes the knight on f6 to a profitable attack.",
+          "squares": [
+            51,
+            45
+          ],
+          "tactic": "Removal of the Guard (Capture)",
+          "value": 100
+        }
+      ],
+      "move": "d1d7",
+      "name": "opera_game_1858.pgn",
+      "positional_after": {
+        "advantages": [
+          "White has the bishop pair."
+        ],
+        "bad_bishops": [],
+        "has_bishop_pair": {
+          "black": false,
+          "white": true
+        },
+        "king_safety": {
+          "black": {
+            "attackers": 0,
+            "pawn_shield_holes": 2,
+            "status": "exposed"
+          },
+          "white": {
+            "attackers": 0,
+            "pawn_shield_holes": 1,
+            "status": "safe"
+          }
+        },
+        "knight_outposts": [],
+        "material_balance": 2.1999999999999993,
+        "pawn_structure": {
+          "backward_pawns": [],
+          "doubled_pawns": [],
+          "isolated_pawns": [
+            "Black's pawn on a7"
+          ],
+          "passed_pawns": [
+            "White's pawn on c2"
+          ],
+          "pawn_islands": [
+            "White has 2 pawn island(s).",
+            "Black has 2 pawn island(s)."
+          ]
+        },
+        "rook_activity": {
+          "black": [
+            "Black's Rook on d8 controls an open file."
+          ],
+          "white": [
+            "White's Rook on d7 is on the 7th rank, a major threat."
+          ]
+        }
+      },
+      "positional_before": {
+        "advantages": [
+          "White has the bishop pair."
+        ],
+        "bad_bishops": [],
+        "has_bishop_pair": {
+          "black": false,
+          "white": true
+        },
+        "king_safety": {
+          "black": {
+            "attackers": 0,
+            "pawn_shield_holes": 2,
+            "status": "exposed"
+          },
+          "white": {
+            "attackers": 0,
+            "pawn_shield_holes": 1,
+            "status": "safe"
+          }
+        },
+        "knight_outposts": [],
+        "material_balance": -0.8000000000000043,
+        "pawn_structure": {
+          "backward_pawns": [],
+          "doubled_pawns": [],
+          "isolated_pawns": [
+            "Black's pawn on a7"
+          ],
+          "passed_pawns": [
+            "White's pawn on c2"
+          ],
+          "pawn_islands": [
+            "White has 2 pawn island(s).",
+            "Black has 2 pawn island(s)."
+          ]
+        },
+        "rook_activity": {
+          "black": [
+            "Black's Rook on d8 controls an open file."
+          ],
+          "white": [
+            "White's Rook on d1 controls an open file."
+          ]
+        }
+      },
+      "see": {
+        "b3f7": -800,
+        "b5d7": 0,
+        "d1d7": 0,
+        "g5f6": 0
+      }
+    },
+    {
+      "classify": [
+        [
+          "Best",
+          0.004985,
+          5
+        ],
+        [
+          "Great Move",
+          -0.272501,
+          -280
+        ],
+        [
+          "Best",
+          0.004972,
+          5
+        ],
+        [
+          "Excellent",
+          0.009991,
+          10
+        ],
+        [
+          "Good",
+          0.049953,
+          50
+        ],
+        [
+          "Inaccuracy",
+          0.137737,
+          140
+        ],
+        [
+          "Mistake",
+          0.251048,
+          270
+        ],
+        [
+          "Blunder",
+          0.462665,
+          720
+        ],
+        [
+          "Good",
+          0.037466,
+          50
+        ],
+        [
+          "Miss",
+          0.167982,
+          9597
+        ],
+        [
+          "Blunder",
+          0.549834,
+          10048
+        ],
+        [
+          "Brilliant",
+          -0.549834,
+          -10048
+        ]
+      ],
+      "engine_after": {
+        "best": "f6b2",
+        "score_white": 363
+      },
+      "engine_before": {
+        "best": "g4g5",
+        "score_white": 413
+      },
+      "fen": "rnb1k1nr/p2p1ppp/5q2/1pb2N1P/4PBP1/2NP1Q2/PPP5/R4KR1 w kq - 3 17",
+      "motifs": [
+        {
+          "details": "The White pawn on b2 is hanging and can be captured profitably (SEE: +1.00).",
+          "tactic": "Hanging Piece",
+          "value": 100
+        },
+        {
+          "details": "The move made created a profitable trade potential for the opponent. The move Qxb2 starts a favorable tactical sequence, improving the evaluation by +1.00. The full sequence is: Qxb2.",
+          "sequence_uci": [
+            "f6b2"
+          ],
+          "tactic": "Profitable Trade",
+          "value": 100
+        }
+      ],
+      "move": "c3d5",
+      "name": "immortal_game_1851.pgn",
+      "positional_after": {
+        "advantages": [
+          "Black has the bishop pair."
+        ],
+        "bad_bishops": [
+          "Black's light-square bishop on c8 is a bad bishop."
+        ],
+        "has_bishop_pair": {
+          "black": true,
+          "white": false
+        },
+        "king_safety": {
+          "black": {
+            "attackers": 0,
+            "pawn_shield_holes": 1,
+            "status": "safe"
+          },
+          "white": {
+            "attackers": 0,
+            "pawn_shield_holes": 3,
+            "status": "exposed"
+          }
+        },
+        "knight_outposts": [
+          "White's knight on d5 is on a strong outpost.",
+          "White's knight on f5 is on a strong outpost."
+        ],
+        "material_balance": -2.1999999999999957,
+        "pawn_structure": {
+          "backward_pawns": [
+            "Black's pawn on g7"
+          ],
+          "doubled_pawns": [],
+          "isolated_pawns": [
+            "Black's pawn on d7"
+          ],
+          "passed_pawns": [],
+          "pawn_islands": [
+            "White has 2 pawn island(s).",
+            "Black has 3 pawn island(s)."
+          ]
+        },
+        "rook_activity": {
+          "black": [],
+          "white": []
+        }
+      },
+      "positional_before": {
+        "advantages": [
+          "Black has the bishop pair."
+        ],
+        "bad_bishops": [
+          "Black's light-square bishop on c8 is a bad bishop."
+        ],
+        "has_bishop_pair": {
+          "black": true,
+          "white": false
+        },
+        "king_safety": {
+          "black": {
+            "attackers": 0,
+            "pawn_shield_holes": 1,
+            "status": "safe"
+          },
+          "white": {
+            "attackers": 0,
+            "pawn_shield_holes": 3,
+            "status": "exposed"
+          }
+        },
+        "knight_outposts": [
+          "White's knight on f5 is on a strong outpost."
+        ],
+        "material_balance": -2.1999999999999957,
+        "pawn_structure": {
+          "backward_pawns": [
+            "Black's pawn on g7"
+          ],
+          "doubled_pawns": [],
+          "isolated_pawns": [
+            "Black's pawn on d7"
+          ],
+          "passed_pawns": [],
+          "pawn_islands": [
+            "White has 2 pawn island(s).",
+            "Black has 3 pawn island(s)."
+          ]
+        },
+        "rook_activity": {
+          "black": [],
+          "white": []
+        }
+      },
+      "see": {
+        "c3b5": -200,
+        "f4b8": -200,
+        "f5g7": -200
+      }
+    },
+    {
+      "classify": [
+        [
+          "Best",
+          0.004985,
+          5
+        ],
+        [
+          "Brilliant",
+          -0.272501,
+          -280
+        ],
+        [
+          "Best",
+          0.004972,
+          5
+        ],
+        [
+          "Excellent",
+          0.009991,
+          10
+        ],
+        [
+          "Good",
+          0.049953,
+          50
+        ],
+        [
+          "Inaccuracy",
+          0.137737,
+          140
+        ],
+        [
+          "Mistake",
+          0.251048,
+          270
+        ],
+        [
+          "Blunder",
+          0.462665,
+          720
+        ],
+        [
+          "Good",
+          0.037466,
+          50
+        ],
+        [
+          "Miss",
+          0.167982,
+          9597
+        ],
+        [
+          "Blunder",
+          0.549834,
+          10048
+        ],
+        [
+          "Brilliant",
+          -0.549834,
+          -10048
+        ]
+      ],
+      "engine_after": {
+        "best": "g7f6",
+        "score_white": 140
+      },
+      "engine_before": {
+        "best": "e4g3",
+        "score_white": 603
+      },
+      "fen": "1r2k2r/pbppnppp/1bn5/4P2q/Q3N3/B1PB1N2/P4PPP/R3R1K1 w k - 1 17",
+      "motifs": [
+        {
+          "details": "The Black queen on h5 is hanging and can be captured profitably (SEE: +9.00).",
+          "tactic": "Hanging Piece",
+          "value": 900
+        },
+        {
+          "details": "A battery has been formed by the White rook on e1 and the White rook on a1.",
+          "tactic": "Battery",
+          "value": 50
+        }
+      ],
+      "move": "e4f6",
+      "name": "evergreen_game_1852.pgn",
+      "positional_after": {
+        "advantages": [
+          "White has a space advantage.",
+          "White has the bishop pair.",
+          "Black has the bishop pair."
+        ],
+        "bad_bishops": [
+          "White's dark-square bishop on a3 is a bad bishop."
+        ],
+        "has_bishop_pair": {
+          "black": true,
+          "white": true
+        },
+        "king_safety": {
+          "black": {
+            "attackers": 1,
+            "pawn_shield_holes": 1,
+            "status": "exposed"
+          },
+          "white": {
+            "attackers": 0,
+            "pawn_shield_holes": 0,
+            "status": "safe"
+          }
+        },
+        "knight_outposts": [],
+        "material_balance": 0.0,
+        "pawn_structure": {
+          "backward_pawns": [
+            "Black's pawn on d7",
+            "Black's pawn on f7"
+          ],
+          "doubled_pawns": [],
+          "isolated_pawns": [
+            "White's pawn on a2",
+            "White's pawn on c3",
+            "Black's pawn on a7"
+          ],
+          "passed_pawns": [],
+          "pawn_islands": [
+            "White has 3 pawn island(s).",
+            "Black has 3 pawn island(s)."
+          ]
+        },
+        "rook_activity": {
+          "black": [
+            "Black's Rook on b8 controls an open file."
+          ],
+          "white": []
+        }
+      },
+      "positional_before": {
+        "advantages": [
+          "Black has a space advantage.",
+          "White has the bishop pair.",
+          "Black has the bishop pair."
+        ],
+        "bad_bishops": [
+          "White's dark-square bishop on a3 is a bad bishop."
+        ],
+        "has_bishop_pair": {
+          "black": true,
+          "white": true
+        },
+        "king_safety": {
+          "black": {
+            "attackers": 0,
+            "pawn_shield_holes": 1,
+            "status": "safe"
+          },
+          "white": {
+            "attackers": 0,
+            "pawn_shield_holes": 0,
+            "status": "safe"
+          }
+        },
+        "knight_outposts": [],
+        "material_balance": 0.0,
+        "pawn_structure": {
+          "backward_pawns": [
+            "Black's pawn on d7",
+            "Black's pawn on f7"
+          ],
+          "doubled_pawns": [],
+          "isolated_pawns": [
+            "White's pawn on a2",
+            "White's pawn on c3",
+            "Black's pawn on a7"
+          ],
+          "passed_pawns": [],
+          "pawn_islands": [
+            "White has 3 pawn island(s).",
+            "Black has 3 pawn island(s)."
+          ]
+        },
+        "rook_activity": {
+          "black": [
+            "Black's Rook on b8 controls an open file."
+          ],
+          "white": []
+        }
+      },
+      "see": {
+        "a3e7": 0,
+        "a4a7": -800,
+        "a4c6": -600
+      }
+    }
+  ]
+}
