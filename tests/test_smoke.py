@@ -17,7 +17,6 @@ MODULES = [
     "ai_chess_coach.llm.grounding",
     "ai_chess_coach.llm.commentary",
     "ai_chess_coach.llm.chat",
-    "ai_chess_coach.legacy",
     "ai_chess_coach.gui.app",
     "main",
 ]
