@@ -39,10 +39,6 @@ class Constants:
     ANALYSIS_DIR = "analyzed_games"
     GAMES_DIR = "fetched_games"
 
-    # --- API & Network ---
-    LICHESS_API_URL = "https://lichess.org/api"
-    CHESSDOTCOM_USER_AGENT = "AI Chess Coach"
-
     # --- Move Classifications ---
     BRILLIANT = "Brilliant"
     GREAT_MOVE = "Great Move"

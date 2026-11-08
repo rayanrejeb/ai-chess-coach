@@ -12,9 +12,7 @@ import json
 import logging
 import os
 import re
-import requests
 import threading
-import time
 import tkinter as tk
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, Future
@@ -30,6 +28,7 @@ from ai_chess_coach.engine.pool import EnginePool
 from ai_chess_coach.llm.chat import Coach
 from ai_chess_coach.llm.client import DEFAULT_MODEL
 from ai_chess_coach.models import GeminiCommentary, LineAnalysis, PlyAnalysis, PositionalFeatures
+from ai_chess_coach.sync import SyncError, store, sync
 
 log = logging.getLogger(__name__)
 
@@ -504,111 +503,21 @@ class ChessGUI(ctk.CTk):
         threading.Thread(target=self._fetch_games_thread, args=(username,), daemon=True).start()
 
     def _load_local_games(self, username, platform):
-        filepath = os.path.join(Constants.GAMES_DIR, f"{username.lower()}_{platform.lower()}_games.json")
-        if not os.path.exists(filepath): return []
         try:
-            with open(filepath, 'r', encoding='utf-8') as f: return json.load(f)
-        except (json.JSONDecodeError, IOError): return []
-
-    def _save_local_games(self, username, games, platform):
-        filepath = os.path.join(Constants.GAMES_DIR, f"{username.lower()}_{platform.lower()}_games.json")
-        try:
-            tmp = filepath + ".tmp"
-            with open(tmp, 'w', encoding='utf-8') as f: json.dump(games, f, ensure_ascii=False, indent=2)
-            os.replace(tmp, filepath)
-        except Exception as e: log.warning(f"Failed to save local games: {e}")
+            return store.load_games(Constants.GAMES_DIR, username, platform.lower())
+        except (OSError, ValueError) as e:
+            log.warning(f"Could not read the saved games: {e}")
+            return []
 
     def _fetch_games_thread(self, username):
         platform = self.platform_var.get()
-        local_games = self._load_local_games(username, platform)
-        
-        if platform == "Lichess":
-            last_game_ms = max((g.get('createdAt', 0) for g in local_games), default=0)
-            new_games = self._fetch_lichess_games(username, last_game_ms + 1 if last_game_ms > 0 else 0)
-        else: 
-            existing_urls = {g.get('url') for g in local_games}
-            new_games = self._fetch_chessdotcom_games(username, existing_urls)
-
-        final_games_list = local_games
-        if new_games:
-            final_games_list = sorted(local_games + new_games, key=lambda x: x.get('end_time', x.get('createdAt', 0)))
-            self._save_local_games(username, final_games_list, platform)
-        
-        # --- MODIFICATION HERE ---
-        # Pass the original count of local_games along with the final list
-        self.after(0, self._handle_fetched_games, final_games_list, len(local_games))
-
-    def _fetch_lichess_games(self, username, since_ms):
-        if not self.lichess_token:
-            self.after(0, lambda: self.display_message("Lichess Error", "Lichess API token is not set."))
-            return []
+        previous_count = len(self._load_local_games(username, platform))
+        def status(message): self.after(0, lambda: self.fetch_btn.configure(text=message))
         try:
-            headers = {"Authorization": f"Bearer {self.lichess_token}", "Accept": "application/x-ndjson"}
-            params = {"pgnInJson": "true", "perfType": "rapid,classical,blitz,correspondence", "since": since_ms, "max": 500}
-            response = requests.get(f"{Constants.LICHESS_API_URL}/games/user/{username}", headers=headers, params=params, stream=True, timeout=30)
-            if response.status_code == 429:
-                log.warning("Lichess rate limit. Waiting 5 seconds."); time.sleep(5)
-                response = requests.get(f"{Constants.LICHESS_API_URL}/games/user/{username}", headers=headers, params=params, stream=True, timeout=30)
-            response.raise_for_status()
-            games_data = []
-            for line in response.iter_lines():
-                if line:
-                    g = json.loads(line)
-                    clock = g.get('clock', {})
-                    games_data.append({'url': f"https://lichess.org/{g['id']}", 'pgn': g.get('pgn', ''), 'createdAt': g.get('createdAt', 0), 'white': {'username': g.get('players', {}).get('white', {}).get('user', {}).get('name', 'White')}, 'black': {'username': g.get('players', {}).get('black', {}).get('user', {}).get('name', 'Black')}, 'time_control': f"{clock.get('initial', '?')}+{clock.get('increment', '?')}"})
-            return games_data
-        except (requests.RequestException, json.JSONDecodeError) as e:
-            self.after(0, lambda err=e: self.display_message("Lichess Error", f"Error fetching Lichess games: {err}."))
-            return []
-
-    def _fetch_chessdotcom_games(self, username, existing_urls):
-        try:
-            headers = {"User-Agent": Constants.CHESSDOTCOM_USER_AGENT}
-            archives_res = requests.get(f"https://api.chess.com/pub/player/{username}/games/archives", headers=headers, timeout=20)
-            archives_res.raise_for_status()
-            archive_urls = archives_res.json().get('archives', [])
-            
-            all_new_games = []
-            
-            # --- NEW, EFFICIENT LOGIC ---
-            # Iterate through the archives from most recent to oldest
-            for url in reversed(archive_urls):
-                self.after(0, lambda u=url.split('/')[-2:]: self.fetch_btn.configure(text=f"Checking {u[0]}-{u[1]}..."))
-                
-                monthly_res = requests.get(url, headers=headers, timeout=20)
-                if monthly_res.status_code == 429:
-                    log.warning("Rate limited by Chess.com API. Waiting 5 seconds...")
-                    time.sleep(5)
-                    monthly_res = requests.get(url, headers=headers, timeout=20)
-                
-                monthly_res.raise_for_status()
-                monthly_games = monthly_res.json().get('games', [])
-
-                if not monthly_games:
-                    # This month is empty, so older months will also be empty.
-                    continue
-
-                new_games_this_month = [g for g in monthly_games if g.get('url') not in existing_urls]
-                
-                if new_games_this_month:
-                    all_new_games.extend(new_games_this_month)
-
-                # ** THE KEY OPTIMIZATION **
-                # If the number of new games found this month is LESS than the total number of games
-                # in this month's archive, it means we have hit a month that we have previously
-                # partially or fully downloaded. We can safely stop here, as all older months
-                # must have already been fetched.
-                if len(new_games_this_month) < len(monthly_games):
-                    log.info(f"Hit previously fetched data in archive {url.split('/')[-2:]}. Stopping search.")
-                    break 
-            
-            # --- END OF NEW LOGIC ---
-
-            return all_new_games
-            
-        except (requests.RequestException, json.JSONDecodeError) as e:
-            self.after(0, lambda err=e: self.display_message("Chess.com Error", f"Error fetching games: {err}."))
-            return []
+            sync(username, platform.lower(), Constants.GAMES_DIR, token=self.lichess_token, status=status)
+        except (SyncError, OSError, ValueError) as e:  # games saved before the error are kept
+            self.after(0, lambda err=e: self.display_message(f"{platform} Error", f"Error fetching games: {err}"))
+        self.after(0, self._handle_fetched_games, self._load_local_games(username, platform), previous_count)
 
     def _handle_fetched_games(self, games, previous_game_count=None):
         self.fetch_btn.configure(state="normal", text="Fetch Games")
@@ -822,7 +731,7 @@ class ChessGUI(ctk.CTk):
             config.update({key: os.environ[var] for key, var in env_overrides.items() if os.environ.get(var)})
 
             # Load configuration settings
-            last_username = config.get("last_username") or os.environ.get("DEFAULT_USERNAME", "hikaru")
+            last_username = config.get("last_username") or os.environ.get("DEFAULT_USERNAME", "")
             last_platform = config.get("last_platform", "Chess.com")
             
             self.username_entry.delete(0, "end")
@@ -841,7 +750,7 @@ class ChessGUI(ctk.CTk):
 
             # --- THIS IS THE CRITICAL NEW LOGIC ---
             # After loading the last username, immediately load their games.
-            log.info(f"Attempting to auto-load games for '{last_username}'")
+            log.info("Loading the saved games of the last user")
             initial_games = self._load_local_games(last_username, last_platform)
             if initial_games:
                 log.info(f"Found {len(initial_games)} saved games. Populating list.")
