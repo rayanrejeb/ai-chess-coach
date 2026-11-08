@@ -6,7 +6,7 @@ import chess
 from ai_chess_coach.llm.client import GeminiClient
 from ai_chess_coach.llm.commentary import (
     SYSTEM_PROMPT, CommentaryBatch, CommentaryContext, GameSummary, MoveComment,
-    build_ply_payload, chunk_payloads, generate_game_commentary,
+    build_ply_payload, chunk_payloads, generate_game_commentary, line_requests,
 )
 from fakes import FakeSDK, api_error, fake_describe, plies_from_game, response
 
@@ -86,3 +86,22 @@ def test_payload_has_the_real_move_number():
     numbers = [build_ply_payload(p, fake_describe, set())["move_number"] for p in plies]
     assert numbers == ["1.", "1...", "2.", "2...", "3.", "3..."]
     assert "`ply` only identifies the input" in SYSTEM_PROMPT
+
+
+def test_lines_are_prefetched_before_the_payloads_are_built():
+    plies = plies_from_game(GAME, alternatives={3: ["b1c3"], 5: ["d2d4"]}, replies={3: ["g8f6"]})
+    calls = []
+
+    class Describer:
+        def prefetch(self, requests):
+            calls.append(("prefetch", list(requests)))
+
+        def __call__(self, fen, uci):
+            calls.append(("describe", (fen, list(uci))))
+            return fake_describe(fen, uci)
+
+    batch = CommentaryBatch(comments=[MoveComment(ply=p.ply, move_san=p.move_san, move_commentary="ok") for p in plies])
+    generate_game_commentary(GeminiClient("k", "m", sdk_client=FakeSDK([response(parsed=batch)])), plies, CTX, Describer())
+    kind, requests = calls[0]
+    assert kind == "prefetch" and requests == line_requests(plies) == [c[1] for c in calls[1:]]
+    assert len(requests) == 3

@@ -110,6 +110,14 @@ def build_ply_payload(ply, describe_line: DescribeLine, already_reported: set[st
     }
 
 
+def line_requests(plies) -> list[tuple[str, list[str]]]:
+    """Every (fen, uci) line build_ply_payload will describe for these plies, in order."""
+    requests: list = []
+    for ply in plies:
+        build_ply_payload(ply, lambda fen, uci: requests.append((fen, list(uci))) or {}, set())
+    return requests
+
+
 def chunk_payloads(payloads: list[dict], max_plies: Optional[int] = None, max_chars: Optional[int] = None) -> list[list[dict]]:
     max_plies = max_plies or MAX_PLIES_PER_CHUNK
     max_chars = max_chars or MAX_CHARS_PER_CHUNK
@@ -166,7 +174,13 @@ def generate_game_commentary(
     game_moves: Sequence[chess.Move] = (),
     on_status: Optional[Callable[[str], None]] = None,
 ) -> tuple[dict[str, GeminiCommentary], Optional[dict]]:
-    """Returns ({ply number as str: commentary}, summary dict or None). Stops early if the daily quota runs out."""
+    """Returns ({ply number as str: commentary}, summary dict or None). Stops early if the daily quota runs out.
+
+    If describe_line has a prefetch(requests) method (engine.game.LineDescriber), every line is handed
+    to it first, so it can describe them all at once in parallel.
+    """
+    if hasattr(describe_line, "prefetch"):
+        describe_line.prefetch(line_requests(plies))
     reported: set[str] = set()
     payloads = [build_ply_payload(ply, describe_line, reported) for ply in plies]
     chunks = chunk_payloads(payloads)
