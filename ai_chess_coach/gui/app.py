@@ -223,7 +223,7 @@ class ChessGUI(ctk.CTk):
         if not self.analyzer.coach:
             response = "The AI chat model is not configured. Please check your Gemini API key in the settings."
         else:
-            response = self.analyzer.coach.answer(question, game_context, chat_history, analysis, self.moves)
+            response = self.analyzer.coach.answer(question, game_context, chat_history, analysis, self.moves, self.gemini_language)
         self.after(0, self._display_chat_message, "Coach", response)
         self.after(0, self.send_chat_btn.configure, {"state": "normal", "text": "Send"})
 

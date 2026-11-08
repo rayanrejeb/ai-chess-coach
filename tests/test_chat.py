@@ -99,3 +99,12 @@ def test_moves_the_tool_rejected_are_not_flagged():
     ply, moves = opera_ply_and_moves()
     answer = CoachChat(GeminiClient("k", "m", sdk_client=FakeSDK([model])), fake_analyse).answer("What about Qb3?", {}, "", references_for_ply(ply, moves))
     assert answer.final_report.ok and not answer.retried
+
+
+def test_chat_follows_the_language_setting():
+    ply, moves = opera_ply_and_moves()
+    sdk = FakeSDK([response(text="13. Rxd7 était le meilleur coup.")])
+    coach = Coach("k", "m", fake_analyse, fake_describe, client=GeminiClient("k", "m", sdk_client=sdk))
+    assert coach.answer("Quel était le meilleur coup ?", {}, "", ply, moves, "French").startswith("13. Rxd7")
+    system = sdk.calls[0]["config"].system_instruction
+    assert "Answer in French." in system and "English Standard Algebraic Notation" in system

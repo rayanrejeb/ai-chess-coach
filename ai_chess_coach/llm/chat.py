@@ -25,6 +25,7 @@ Analyse = Callable[[chess.Board], Optional[dict]]
 SYSTEM_PROMPT = """You are a friendly chess coach answering a student's questions about one moment of their game.
 
 Rules:
+- Answer in {language}.
 - Write every chess move in English Standard Algebraic Notation (SAN): K Q R B N for pieces, O-O and O-O-O for castling, e.g. Nf3, Bxb5+. Never translate piece letters, even if you answer in another language.
 - Every move you name must come from the game context, from the game itself, or from a call to `evaluate_position`.
 - When you refer to a move played earlier in the game, write it with its move number, e.g. 7.Qb3 or 13...Rxd7.
@@ -118,14 +119,15 @@ class CoachChat:
         self.analyse = analyse
         self.describe_line = describe_line
 
-    def answer(self, question: str, game_context: dict, history_text: str, refs: References) -> CoachAnswer:
+    def answer(self, question: str, game_context: dict, history_text: str, refs: References, language: str = "English") -> CoachAnswer:
         tool = EngineTool(self.analyse, self.describe_line)
+        system = SYSTEM_PROMPT.format(language=language)
         message = (
             "Game context:\n" + json.dumps(game_context, ensure_ascii=False, indent=1)
             + ("\n\nConversation so far:\n" + history_text if history_text else "")
             + "\n\nStudent's question: " + question
         )
-        text = self.client.chat(SYSTEM_PROMPT, [], message, tools=[tool.as_function()])
+        text = self.client.chat(system, [], message, tools=[tool.as_function()])
         first = check(text, refs, tool.evaluated)
         final, retried = first, False
         if not first.ok:
@@ -134,7 +136,7 @@ class CoachChat:
                 types.Content(role="user", parts=[types.Part(text=message)]),
                 types.Content(role="model", parts=[types.Part(text=text)]),
             ]
-            text = self.client.chat(SYSTEM_PROMPT, history, _correction(first), tools=[tool.as_function()])
+            text = self.client.chat(system, history, _correction(first), tools=[tool.as_function()])
             final = check(text, refs, tool.evaluated)
         log.info(
             "grounding chat first_illegal=%s first_unverified=%s final_illegal=%s final_unverified=%s retried=%s",
@@ -158,9 +160,9 @@ class Coach:
         ctx = CommentaryContext(language, username, player_color)
         return generate_game_commentary(self.client, plies, ctx, self.describe_line, game_moves, on_status)
 
-    def answer(self, question: str, game_context: dict, history_text: str, ply, game_moves: Sequence[chess.Move] = ()) -> str:
+    def answer(self, question: str, game_context: dict, history_text: str, ply, game_moves: Sequence[chess.Move] = (), language: str = "English") -> str:
         try:
-            return self.chat.answer(question, game_context, history_text, references_for_ply(ply, game_moves)).text
+            return self.chat.answer(question, game_context, history_text, references_for_ply(ply, game_moves), language).text
         except LLMError as err:
             log.error("Coach chat failed (%s): %s", err.kind, err)
             if err.kind == "quota_exhausted":
