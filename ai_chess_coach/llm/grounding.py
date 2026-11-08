@@ -6,6 +6,8 @@ A mentioned move is:
   - unverified: legal in a reference position, but not backed by the engine
   - illegal:    not legal in any reference position (an invented move)
 Moves the engine tool rejected as illegal are not flagged: the model was told, and is explaining that.
+A bare square ("f7") counts as a pawn move only if a reference position allows a pawn move there;
+otherwise it is a square name ("the weak f7-pawn", "**b3**", "la case b3") and is ignored.
 """
 
 import logging
@@ -48,8 +50,8 @@ def normalize_san(san: str) -> str:
 Cite = tuple[int, bool]
 
 
-def _mentions(text: str) -> Iterator[tuple[str, Optional[Cite]]]:
-    """Every move written in English SAN, normalized, with its move number if one was written."""
+def _mentions(text: str) -> Iterator[tuple[str, Optional[Cite], bool]]:
+    """Every move written in English SAN, normalized: (san, move number if written, is a bare square)."""
     for m in _MOVE_RE.finditer(text):
         token = m.group("san")
         is_bare_square = _BARE_SQUARE_RE.fullmatch(token) and not m.group("suffix") and m.group(0) == token
@@ -58,12 +60,12 @@ def _mentions(text: str) -> Iterator[tuple[str, Optional[Cite]]]:
         if is_bare_square and _SQUARE_CONTEXT_RE.search(text[: m.start()]):
             continue
         cite = (int(m.group("num")), m.group("dots") != ".") if m.group("num") else None
-        yield normalize_san(token), cite
+        yield normalize_san(token), cite, bool(is_bare_square)
 
 
 def extract_moves(text: str) -> list[str]:
     """Moves written in English SAN, normalized, in order of first appearance."""
-    return list(dict.fromkeys(san for san, _ in _mentions(text)))
+    return list(dict.fromkeys(san for san, _, _ in _mentions(text)))
 
 
 @dataclass
@@ -148,11 +150,16 @@ def check(text: str, refs: References, extra: Optional[References] = None) -> Gr
     positions = refs.positions + (extra.positions if extra else [])
     verified = refs.verified | (extra.verified if extra else set())
     rejected = refs.rejected | (extra.rejected if extra else set())
-    report = GroundingReport(moves=extract_moves(text))
-    for san, cite in _mentions(text):
+    report = GroundingReport()
+    for san, cite, bare in _mentions(text):
+        legal = _is_legal_somewhere(san, positions)
+        if bare and not legal:
+            continue  # a square name, not a pawn move
+        if san not in report.moves:
+            report.moves.append(san)
         if san in verified or san in rejected or (cite and refs.game_moves.get(cite) == san):
             continue
-        bucket = report.unverified if _is_legal_somewhere(san, positions) else report.illegal
+        bucket = report.unverified if legal else report.illegal
         if san not in bucket:
             bucket.append(san)
     return report

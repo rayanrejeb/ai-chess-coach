@@ -77,3 +77,14 @@ def test_extra_references_count_as_verified():
     tool_refs.add_line(_opera_refs().positions[0].fen(), ["b3a4"])
     report = check("What about Qa4?", _opera_refs(), tool_refs)
     assert report.ok
+
+
+@pytest.mark.parametrize("text, unverified", [
+    ("Bc4 targets the weak f7-pawn and the loose b7-pawn.", ["Bc4"]),  # no pawn can reach f7 or b7
+    ("The queen already sits on the **b3** square.", []),               # markdown hides the "on" context
+    ("La dame est déjà sur la case b3.", []),                           # French context word
+    ("White can also play a3 here.", ["a3"]),                           # a real pawn move still counts
+])
+def test_bare_squares_count_only_as_possible_pawn_moves(text, unverified):
+    report = check(text, _opera_refs())
+    assert report.illegal == [] and report.unverified == unverified
