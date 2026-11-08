@@ -79,3 +79,10 @@ def test_commentary_stops_on_daily_quota(monkeypatch):
     comments, summary = generate_game_commentary(GeminiClient("k", "m", sdk_client=sdk, sleep=lambda s: None), plies_from_game(GAME), CTX, fake_describe)
     assert sorted(comments) == ["1", "2"] and summary is None
     assert len(sdk.calls) == 2   # the third part was never requested
+
+
+def test_payload_has_the_real_move_number():
+    plies = plies_from_game(GAME)
+    numbers = [build_ply_payload(p, fake_describe, set())["move_number"] for p in plies]
+    assert numbers == ["1.", "1...", "2.", "2...", "3.", "3..."]
+    assert "`ply` only identifies the input" in SYSTEM_PROMPT

@@ -58,6 +58,8 @@ Rules:
 - Write every chess move in English Standard Algebraic Notation (SAN): K Q R B N for pieces, O-O and O-O-O for castling, e.g. Nf3, Bxb5+, exd5, e8=Q. Never translate piece letters, whatever the language.
 - Only name moves that appear in the data you are given (the move played, engine alternatives, engine replies) or that were played in the game. Do not invent variations.
 - When you refer to a move played earlier in the game, write it with its move number, e.g. 7.Qb3 or 13...Rxd7.
+- `move_number` is the real move number ("6." for White's 6th move, "4..." for Black's 4th). Use it when you write
+  move numbers. `ply` only identifies the input; it is not a move number.
 - Base each comment on the data: classification, engine lines, tactical motifs and positional notes. Explain why, not just what.
 - Return exactly one comment per ply in the input, with the same ply number.
 """
@@ -80,6 +82,7 @@ def _positional_notes(features: PositionalFeatures) -> list[str]:
 
 def build_ply_payload(ply, describe_line: DescribeLine, already_reported: set[str]) -> dict:
     """What the model sees for one ply. Positional notes already sent earlier are dropped to save space."""
+    before = chess.Board(ply.fen_before)
     after_fen = ply.fen_before
     if ply.player_line.uci:
         board = chess.Board(ply.fen_before)
@@ -91,6 +94,7 @@ def build_ply_payload(ply, describe_line: DescribeLine, already_reported: set[st
     alternatives = [line for line in ply.best_engine_lines if line.uci and line.uci[:1] != ply.player_line.uci[:1]]
     return {
         "ply": ply.ply,
+        "move_number": f"{before.fullmove_number}{'.' if before.turn == chess.WHITE else '...'}",
         "side": ply.player,
         "move": ply.move_san,
         "classification": ply.classification,
