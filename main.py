@@ -1,6 +1,7 @@
 """Entry point: python main.py"""
 
 import logging
+import multiprocessing
 import os
 import tkinter as tk
 from tkinter import messagebox
@@ -31,5 +32,6 @@ def main():
             pass
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # required on Windows: worker processes re-import this module
+    multiprocessing.freeze_support()  # needed if the app is frozen into an .exe (PyInstaller)
     main()

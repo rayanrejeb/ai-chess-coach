@@ -29,9 +29,10 @@ log = logging.getLogger(__name__)
 OPENING_LAST_MOVE = 12            # moves 1-12 are the opening
 ENDGAME_LAST_PLIES = 30           # the last 30 plies of a game are the endgame
 DESCRIBE_DEPTH = 3                # moves of a line described with tactics and positional notes
-# Worker processes for line descriptions. Measured on 16 cores (15-ply Opera commentary input,
-# 2026-11-08): 4 workers 9.73 s, 8 workers 9.98 s, 16 workers 11.48 s, start-up included.
-DESCRIBE_WORKERS = 4
+# Worker processes for line descriptions, never more than the machine's cores. Measured on 16 cores
+# (15-ply Opera commentary input, 2026-11-08): 4 workers 9.73 s, 8 workers 9.98 s, 16 workers 11.48 s,
+# start-up included.
+DESCRIBE_WORKERS = min(4, os.cpu_count() or 1)
 
 # Extra engine checks on the played move (depth, time limit in s)
 ZWISCHENZUG_CHECK = (14, 0.5)
@@ -128,6 +129,17 @@ def _describe_in_worker(key: tuple) -> tuple:
     return key, _describe(*_worker_analyzers, fen, uci)
 
 
+def _stop_workers(executor: ProcessPoolExecutor) -> None:
+    """Cancel queued work and end the worker processes now, even busy ones."""
+    processes = list((executor._processes or {}).values())  # private: the only handle on busy workers
+    executor.shutdown(wait=False, cancel_futures=True)
+    for process in processes:
+        if process.is_alive():
+            process.terminate()
+    for process in processes:
+        process.join(timeout=5)
+
+
 class LineDescriber:
     """describe(fen, uci) for engine lines, as used in the coach's prompts.
 
@@ -142,6 +154,8 @@ class LineDescriber:
         self._positional = PositionalAnalyzer(AnalysisConfig())
         self._done: dict = {}
         self._lock = threading.Lock()
+        self._executor: Optional[ProcessPoolExecutor] = None
+        self._closed = False
 
     @staticmethod
     def _key(fen: str, uci: Sequence[str]) -> tuple:
@@ -158,22 +172,52 @@ class LineDescriber:
         return copy.deepcopy(known)
 
     def prefetch(self, requests: Iterable[tuple]) -> None:
-        """Describe every (fen, uci) not seen yet, spread over worker processes."""
+        """Describe every (fen, uci) not seen yet, spread over worker processes. Does nothing after close()."""
         with self._lock:
+            if self._closed:
+                return
             missing = [k for k in dict.fromkeys(self._key(f, u) for f, u in requests) if k not in self._done]
         if len(missing) < 2 or self._workers < 2:
             for fen, uci in missing:
                 self(fen, uci)
             return
-        try:
-            with ProcessPoolExecutor(max_workers=min(self._workers, len(missing), os.cpu_count() or 1),
-                                     initializer=_start_worker) as pool:
-                results = dict(pool.map(_describe_in_worker, missing))
-        except Exception as e:  # e.g. a worker crashed: fall back to this process
-            log.warning("Parallel line descriptions failed (%s); describing them here", e)
+        results = self._describe_in_workers(missing)
+        if results is None:  # the workers could not start or failed: describe the lines here
+            if self._closed:
+                return
             results = {k: _describe(self._tactics, self._positional, *k) for k in missing}
         with self._lock:
             self._done.update(results)
+
+    def _describe_in_workers(self, keys: list) -> Optional[dict]:
+        try:
+            executor = ProcessPoolExecutor(max_workers=min(self._workers, len(keys)), initializer=_start_worker)
+        except Exception as e:
+            log.warning("Could not start worker processes (%s); describing lines in this process", e)
+            return None
+        with self._lock:
+            if self._closed:
+                _stop_workers(executor)
+                return None
+            self._executor = executor
+        try:
+            return dict(executor.map(_describe_in_worker, keys))
+        except Exception as e:  # a worker failed to start or crashed, or close() stopped them
+            if not self._closed:
+                log.warning("Worker processes failed (%s); describing lines in this process", e)
+            return None
+        finally:
+            with self._lock:
+                self._executor = None
+            _stop_workers(executor)
+
+    def close(self) -> None:
+        """Stop worker processes still running (window closed); later prefetch() calls do nothing."""
+        with self._lock:
+            self._closed = True
+            executor = self._executor
+        if executor:
+            _stop_workers(executor)
 
 
 # ---- game analysis ---------------------------------------------------------------------------
@@ -205,6 +249,7 @@ class GameAnalyzer:
         return self.pool.analyse(board, depth, multipv, time_limit)
 
     def close(self) -> None:
+        self.describe_line.close()
         self.pool.close()
         if self.opening_book:
             self.opening_book.close()

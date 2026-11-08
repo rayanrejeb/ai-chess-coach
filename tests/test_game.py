@@ -1,9 +1,14 @@
 import json
+import os
+import threading
+import time
 from dataclasses import asdict
 
 import chess
+import pytest
 
 from ai_chess_coach.config import Constants
+from ai_chess_coach.engine import game as game_module
 from ai_chess_coach.engine.game import GameAnalyzer, LineDescriber, find_key_moments, game_phase, san_line
 from ai_chess_coach.models import PlyAnalysis
 from fakes import FakePool
@@ -85,3 +90,75 @@ def test_describer_returns_copies_and_ignores_game_state():
     game = GameAnalyzer(FakePool(), describer=describer)
     game.analyze_game(opera_moves()[:3])  # moves the game's tactics state, not the describer's
     assert describer(fen, uci) == LineDescriber(workers=1)(fen, uci) != first
+
+
+def _middlegame_lines(count=10):
+    """Lines from later Opera positions: slower to describe, so workers are busy for a while."""
+    board, lines = chess.Board(), []
+    for i, move in enumerate(opera_moves()[:24]):
+        if i >= 24 - count:
+            lines.append((board.fen(), [m.uci() for m in FakePool().analyse(board, 1)[0]["pv"]]))
+        board.push(move)
+    return lines
+
+
+class _RecordingExecutor(game_module.ProcessPoolExecutor):
+    """Keeps a handle on every worker process it started, to check none is left running."""
+    processes: list = []
+
+    def shutdown(self, *args, **kwargs):
+        _RecordingExecutor.processes.extend((self._processes or {}).values())
+        super().shutdown(*args, **kwargs)
+
+
+def _wait_until(condition, timeout=60.0):
+    deadline = time.monotonic() + timeout
+    while not condition() and time.monotonic() < deadline:
+        time.sleep(0.05)
+    return condition()
+
+
+def test_worker_count_is_capped_by_the_cores():
+    assert 1 <= game_module.DESCRIBE_WORKERS <= (os.cpu_count() or 1)
+
+
+def test_close_stops_busy_workers():
+    describer = LineDescriber(workers=2)
+    worker = threading.Thread(target=describer.prefetch, args=(_middlegame_lines(),))
+    worker.start()
+    assert _wait_until(lambda: describer._executor is not None and describer._executor._processes)
+    processes = list(describer._executor._processes.values())
+    describer.close()
+    worker.join(30)
+    assert not worker.is_alive()
+    assert processes and not any(p.is_alive() for p in processes)
+    assert describer._done == {}  # interrupted: nothing stored
+    describer.prefetch(_opening_lines())  # closed: does nothing
+    assert describer._executor is None
+
+
+def test_workers_are_stopped_after_an_error(monkeypatch):
+    monkeypatch.setattr(game_module, "ProcessPoolExecutor", _RecordingExecutor)
+    _RecordingExecutor.processes = []
+    with pytest.raises(ValueError):
+        LineDescriber(workers=2).prefetch(_opening_lines() + [("not a fen", ["e2e4"])])
+    assert _RecordingExecutor.processes and not any(p.is_alive() for p in _RecordingExecutor.processes)
+
+
+def test_falls_back_to_one_process_if_workers_cannot_start(monkeypatch):
+    def no_workers(*args, **kwargs):
+        raise OSError("no processes for you")
+
+    monkeypatch.setattr(game_module, "ProcessPoolExecutor", no_workers)
+    lines = _opening_lines()
+    describer = LineDescriber(workers=2)
+    describer.prefetch(lines)
+    assert len(describer._done) == len({(f, tuple(u[:3])) for f, u in lines})
+    assert [describer(f, u) for f, u in lines] == [LineDescriber(workers=1)(f, u) for f, u in lines]
+
+
+def test_closing_the_analyzer_closes_the_describer():
+    """The window's close handler calls GameAnalyzer.close(): no worker may outlive it."""
+    game = GameAnalyzer(FakePool())
+    game.close()
+    assert game.describe_line._closed
