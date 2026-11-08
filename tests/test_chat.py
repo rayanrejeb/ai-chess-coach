@@ -88,6 +88,9 @@ def test_coach_turns_errors_into_messages():
     assert "daily quota" in coach.answer("?", {}, "", ply, moves)
     coach = Coach("k", "m", fake_analyse, fake_describe, client=GeminiClient("k", "old-model", sdk_client=FakeSDK([api_error(404, "not found")])))
     assert "GEMINI_MODEL" in coach.answer("?", {}, "", ply, moves)
+    slow = FakeSDK([api_error(504, "Deadline expired")] * 2)
+    coach = Coach("k", "m", fake_analyse, fake_describe, client=GeminiClient("k", "slow-model", sdk_client=slow, sleep=lambda s: None))
+    assert "too slow" in coach.answer("?", {}, "", ply, moves)
 
 
 def test_moves_the_tool_rejected_are_not_flagged():

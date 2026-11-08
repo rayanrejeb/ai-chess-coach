@@ -38,6 +38,7 @@ def test_model_from_env(monkeypatch):
     (api_error(429, "Too many requests", [PER_MINUTE, RETRY_37S]), "rate_limited", 37.0),
     (api_error(429, "Too many requests"), "rate_limited", None),
     (api_error(503), "unavailable", None),
+    (api_error(504, "Deadline expired before operation could complete."), "too_slow", None),
     (api_error(400, "Invalid argument"), "bad_request", None),
     (api_error(404, "models/x is not found"), "model_not_found", None),
 ])
@@ -163,3 +164,22 @@ def test_requests_never_overlap():
     for t in threads:
         t.join()
     assert len(sdk.calls) == 4 and peak[0] == 1
+
+
+def test_deadline_is_retried_once():
+    client, sdk, sleeps = make([api_error(504, "Deadline expired"), response(parsed=BATCH)])
+    assert client.generate_json("p", CommentaryBatch) == BATCH
+    assert len(sdk.calls) == 2 and len(sleeps) == 1
+
+
+@pytest.mark.parametrize("first", [api_error(504, "Deadline expired"), httpx2.ReadTimeout("stalled")])
+def test_second_deadline_miss_says_the_model_is_too_slow(first):
+    client, sdk, sleeps = make([first, api_error(504, "Deadline expired"), response(parsed=BATCH)])
+    with pytest.raises(LLMError) as exc:
+        client.generate_json("p", CommentaryBatch)
+    assert exc.value.kind == "too_slow" and len(sdk.calls) == 2 and len(sleeps) == 1
+    assert "too slow" in str(exc.value) and "GEMINI_MODEL" in str(exc.value)
+
+
+def test_timeout_is_60_seconds():
+    assert REQUEST_TIMEOUT_S == 60

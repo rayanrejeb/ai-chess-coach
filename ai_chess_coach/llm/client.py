@@ -3,7 +3,8 @@
 Every failure surfaces as LLMError with a `kind`:
   quota_exhausted  daily quota used up; not retried
   rate_limited     429 still failing after retries
-  unavailable      5xx, timeout or connection error still failing after retries
+  unavailable      5xx or connection error still failing after retries
+  too_slow         the request deadline expired (504 or client timeout) twice; retried once only
   model_not_found  404: GEMINI_MODEL names a model this key cannot use; not retried
   bad_request      other 4xx; not retried
   blocked          the model returned nothing (safety or other finish reason), twice
@@ -31,7 +32,11 @@ MAX_CONTENT_ATTEMPTS = 2      # for empty, blocked or malformed answers
 BASE_DELAY_S = 2.0
 MAX_DELAY_S = 60.0
 MAX_TOOL_CALLS = 5
-REQUEST_TIMEOUT_S = 120     # per HTTP request; without it a stalled request hangs forever
+# Per HTTP request. Sent only through HttpOptions: the SDK also passes it to the server as its deadline
+# (X-Server-Timeout), so the server stops working when we stop waiting. Longest successful request
+# measured on gemini-3.5-flash (2026-11-08): 23.6 s.
+REQUEST_TIMEOUT_S = 60
+MAX_DEADLINE_RETRIES = 1     # a slow model rarely gets faster on retry, and each retry is billed
 
 # Chess vocabulary ("attack", "kill", "sacrifice") must not trip safety filters.
 _SAFETY = [
@@ -74,6 +79,8 @@ def classify_api_error(err: errors.APIError) -> tuple[str, Optional[float]]:
         return "rate_limited", float(match.group(1)) if match else None
     if err.code == 404:
         return "model_not_found", None
+    if err.code == 504:
+        return "too_slow", None
     if isinstance(err, errors.ServerError):
         return "unavailable", None
     return "bad_request", None
@@ -94,13 +101,22 @@ class GeminiClient:
             return self._call_api_locked(fn)
 
     def _call_api_locked(self, fn: Callable[[], object]):
+        deadline_misses = 0
         for attempt in range(1, MAX_API_ATTEMPTS + 1):
             try:
                 return fn()
             except (errors.APIError, httpx2.TransportError) as err:  # TransportError: timeouts, connection errors
-                kind, delay = classify_api_error(err) if isinstance(err, errors.APIError) else ("unavailable", None)
+                if isinstance(err, errors.APIError):
+                    kind, delay = classify_api_error(err)
+                else:
+                    kind, delay = ("too_slow" if isinstance(err, httpx2.TimeoutException) else "unavailable"), None
                 if kind == "model_not_found":
                     raise LLMError(kind, f"Gemini model '{self.model}' is not available for this API key. Change GEMINI_MODEL in .env. ({err})") from err
+                if kind == "too_slow":
+                    deadline_misses += 1
+                if kind == "too_slow" and (deadline_misses > MAX_DEADLINE_RETRIES or attempt == MAX_API_ATTEMPTS):
+                    raise LLMError(kind, f"Gemini model '{self.model}' did not answer within {REQUEST_TIMEOUT_S} s ({deadline_misses}x). "
+                                         "The model is too slow right now: try another GEMINI_MODEL in .env.") from err
                 if kind in ("quota_exhausted", "bad_request") or attempt == MAX_API_ATTEMPTS:
                     raise LLMError(kind, str(err)) from err
                 wait = delay if delay is not None else min(MAX_DELAY_S, BASE_DELAY_S * 2 ** (attempt - 1)) * random.uniform(0.8, 1.2)

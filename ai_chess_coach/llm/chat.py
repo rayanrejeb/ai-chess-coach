@@ -167,6 +167,8 @@ class Coach:
             log.error("Coach chat failed (%s): %s", err.kind, err)
             if err.kind == "quota_exhausted":
                 return "The Gemini daily quota is used up. Try again tomorrow or use another API key."
+            if err.kind == "too_slow":
+                return f"The Gemini model '{self.client.model}' is too slow right now. Try again later or change GEMINI_MODEL in .env."
             if err.kind == "model_not_found":
                 return f"The Gemini model '{self.client.model}' is not available. Change GEMINI_MODEL in .env."
             return f"The coach could not answer right now ({err.kind}). Please try again."
