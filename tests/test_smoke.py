@@ -10,6 +10,8 @@ MODULES = [
     "ai_chess_coach.models",
     "ai_chess_coach.engine.positional",
     "ai_chess_coach.engine.classify",
+    "ai_chess_coach.engine.pool",
+    "ai_chess_coach.engine.game",
     "ai_chess_coach.tactics.analyzer",
     "ai_chess_coach.llm.client",
     "ai_chess_coach.llm.grounding",
