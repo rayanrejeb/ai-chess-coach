@@ -1,5 +1,6 @@
 # Adapted from Chess Analyzer by yusufelgen07 (MIT License).
 # See THIRD_PARTY_NOTICES.md.
+# Modified by Rayan: get_material_balance optimized for performance (identical output).
 import chess
 import chess.engine
 import chess.pgn
