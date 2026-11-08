@@ -1,6 +1,6 @@
 """Reference outputs on 3 sample positions, used to prove refactors don't change behavior.
 
-`compute()` takes the classes as arguments so the same code runs against the old
+`compute()` takes the analyzers and functions as arguments so the same code runs against the old
 single-file app (to create golden.json) and against the new package (to check it).
 """
 
@@ -70,17 +70,15 @@ def _normalize(obj):
     return json.loads(json.dumps(obj, sort_keys=True, default=str))
 
 
-def compute(PositionalAnalyzer, TacticalAnalyzer, ChessAnalyzer, AnalysisConfig, with_engine=True):
+def compute(PositionalAnalyzer, TacticalAnalyzer, classify_move, win_probability, AnalysisConfig, with_engine=True):
+    """classify_move(board, move, lines_before, info_after, opponent_class) -> (class, loss, cp_loss);
+    win_probability(cp) -> 0..1 (stored as "expected_points")."""
     config = AnalysisConfig()
     positional = PositionalAnalyzer(config)
 
-    # ChessAnalyzer without starting an engine: classify_move only needs these attributes.
-    classifier = ChessAnalyzer.__new__(ChessAnalyzer)
-    classifier.config, classifier.opening_book, classifier.tablebases = config, None, None
-
     out = {"positions": [], "expected_points": {}}
     for cp in (-1000, -300, -100, 0, 100, 300, 1000):
-        out["expected_points"][str(cp)] = round(classifier._cp_to_expected_points(cp), 6)
+        out["expected_points"][str(cp)] = round(win_probability(cp), 6)
 
     engine = None
     if with_engine:
@@ -112,7 +110,7 @@ def compute(PositionalAnalyzer, TacticalAnalyzer, ChessAnalyzer, AnalysisConfig,
                 for _ in range(n_lines - 1):
                     lines.append({"score": _score(second_cp, board.turn), "pv": [other]})
                 after_info = {"score": _score(cp_after, board.turn), "pv": []}
-                cls, points_loss, cp_loss = classifier.classify_move(board.copy(), move, lines, after_info, opp)
+                cls, points_loss, cp_loss = classify_move(board.copy(), move, lines, after_info, opp)
                 entry["classify"].append([cls, round(points_loss, 6), cp_loss])
 
             if engine:

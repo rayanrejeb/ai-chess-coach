@@ -9,6 +9,7 @@ MODULES = [
     "ai_chess_coach.config",
     "ai_chess_coach.models",
     "ai_chess_coach.engine.positional",
+    "ai_chess_coach.engine.classify",
     "ai_chess_coach.tactics.analyzer",
     "ai_chess_coach.llm.client",
     "ai_chess_coach.llm.grounding",
@@ -27,11 +28,11 @@ def test_module_imports(name):
 
 def _current(with_engine):
     from ai_chess_coach.config import AnalysisConfig
+    from ai_chess_coach.engine.classify import classify_move, win_probability
     from ai_chess_coach.engine.positional import PositionalAnalyzer
-    from ai_chess_coach.legacy import ChessAnalyzer
     from ai_chess_coach.tactics.analyzer import TacticalAnalyzer
 
-    return compute(PositionalAnalyzer, TacticalAnalyzer, ChessAnalyzer, AnalysisConfig, with_engine=with_engine)
+    return compute(PositionalAnalyzer, TacticalAnalyzer, classify_move, win_probability, AnalysisConfig, with_engine=with_engine)
 
 
 def _strip_engine(data):
