@@ -57,6 +57,7 @@ Rules:
 - Write explanations in {language}.
 - Write every chess move in English Standard Algebraic Notation (SAN): K Q R B N for pieces, O-O and O-O-O for castling, e.g. Nf3, Bxb5+, exd5, e8=Q. Never translate piece letters, whatever the language.
 - Only name moves that appear in the data you are given (the move played, engine alternatives, engine replies) or that were played in the game. Do not invent variations.
+- When you refer to a move played earlier in the game, write it with its move number, e.g. 7.Qb3 or 13...Rxd7.
 - Base each comment on the data: classification, engine lines, tactical motifs and positional notes. Explain why, not just what.
 - Return exactly one comment per ply in the input, with the same ply number.
 """

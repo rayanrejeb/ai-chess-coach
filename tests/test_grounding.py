@@ -60,6 +60,18 @@ def test_moves_played_in_the_game_are_verified():
     assert report.ok, report
 
 
+@pytest.mark.parametrize("text, illegal, unverified", [
+    ("Earlier, 7.Qb3 was active.", [], []),          # right number: the game move
+    ("Now 13.Qb3 is strong.", ["Qb3"], []),          # wrong number: the queen is already on b3
+    ("White should play Qb3.", ["Qb3"], []),         # no number: normal check, illegal here
+    ("Black answered 7...Qb3.", ["Qb3"], []),        # Black's 7th move was Qe7
+    ("Bc4 was the plan.", [], ["Bc4"]),              # game move 6.Bc4, bare: legal now (Bb5-c4) but not engine-backed
+])
+def test_game_moves_need_the_right_move_number(text, illegal, unverified):
+    report = check(text, _opera_refs())
+    assert (report.illegal, report.unverified) == (illegal, unverified)
+
+
 def test_extra_references_count_as_verified():
     tool_refs = References()
     tool_refs.add_line(_opera_refs().positions[0].fen(), ["b3a4"])
