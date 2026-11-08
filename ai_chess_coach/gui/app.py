@@ -24,9 +24,12 @@ from typing import Dict, List, Optional
 from PIL import Image
 
 from ai_chess_coach.config import Constants, resource_path
-from ai_chess_coach.legacy import ChessAnalyzer
+from ai_chess_coach.engine.classify import MATE_SCORE, win_probability
+from ai_chess_coach.engine.game import GameAnalyzer, find_key_moments, san_line
+from ai_chess_coach.engine.pool import EnginePool
+from ai_chess_coach.llm.chat import Coach
 from ai_chess_coach.llm.client import DEFAULT_MODEL
-from ai_chess_coach.models import Classification, GeminiCommentary, LineAnalysis, PlyAnalysis, PositionalFeatures
+from ai_chess_coach.models import GeminiCommentary, LineAnalysis, PlyAnalysis, PositionalFeatures
 
 log = logging.getLogger(__name__)
 
@@ -36,7 +39,10 @@ class ChessGUI(ctk.CTk):
 
     def __init__(self):
         super().__init__()
-        self.analyzer: Optional[ChessAnalyzer] = None
+        self.analyzer: Optional[GameAnalyzer] = None
+        self.coach: Optional[Coach] = None
+        self._engine_generation = 0  # bumped when the engine is restarted or the app closes
+        self._engine_future: Optional[Future] = None
         self.stockfish_path: Optional[str] = None
         self.opening_book_path: Optional[str] = None
         self.syzygy_path: Optional[str] = None
@@ -194,9 +200,9 @@ class ChessGUI(ctk.CTk):
             player_move_obj = chess.Move.from_uci(player_move_uci)
             board_after_player_move.push(player_move_obj)
         fen_after_player_move = board_after_player_move.fen()
-        simplified_player_line = self.analyzer._get_simplified_line_analysis(analysis.player_line, analysis.fen_before)
-        simplified_best_alternative_line = self.analyzer._get_simplified_line_analysis(analysis.best_engine_line, analysis.fen_before)
-        simplified_best_opponent_follow_up = self.analyzer._get_simplified_line_analysis(analysis.best_follow_up, fen_after_player_move)
+        simplified_player_line = self.analyzer.describe_line(analysis.fen_before, analysis.player_line.uci)
+        simplified_best_alternative_line = self.analyzer.describe_line(analysis.fen_before, analysis.best_engine_line.uci)
+        simplified_best_opponent_follow_up = self.analyzer.describe_line(fen_after_player_move, analysis.best_follow_up.uci)
         game_context = {
             "ply": self.current_ply,
             "fen_before": analysis.fen_before,
@@ -220,10 +226,10 @@ class ChessGUI(ctk.CTk):
         future.add_done_callback(chat_done_callback)
 
     def _get_and_display_chat_response(self, question, game_context, chat_history, analysis):
-        if not self.analyzer.coach:
+        if not self.coach:
             response = "The AI chat model is not configured. Please check your Gemini API key in the settings."
         else:
-            response = self.analyzer.coach.answer(question, game_context, chat_history, analysis, self.moves, self.gemini_language)
+            response = self.coach.answer(question, game_context, chat_history, analysis, self.moves, self.gemini_language)
         self.after(0, self._display_chat_message, "Coach", response)
         self.after(0, self.send_chat_btn.configure, {"state": "normal", "text": "Send"})
 
@@ -257,57 +263,6 @@ class ChessGUI(ctk.CTk):
             label.pack(fill="x", padx=5)
             label.bind("<Button-1>", lambda e, m=key_moments: self._show_moments_menu(e, m))
 
-    def _get_game_phase(self, ply: int, total_moves: int) -> str:
-        move_number = (ply // 2) + 1
-        if move_number <= 12: return "opening"
-        elif ply > total_moves - 15 * 2: return "endgame"
-        return "middlegame"
-
-    def _build_ply_analysis(self, board: chess.Board, move: chess.Move, ply_index: int, total_moves: int, last_move_classification: Optional[Classification], opening_name: str, previous_move: Optional[chess.Move] = None, fast_pass: bool = True) -> PlyAnalysis:
-        if ply_index == 0: self.analyzer.tactical_analyzer.reset_state()
-        depth, multipv, time_limit = (self.analyzer.config.FAST_PASS_DEPTH, self.analyzer.config.FAST_PASS_MULTIPV, self.analyzer.config.FAST_PASS_TIME) if fast_pass else (self.analyzer.config.FULL_DEPTH, self.analyzer.config.FULL_MULTIPV, self.analyzer.config.FULL_TIME)
-        analysis_before = self.analyzer._get_analysis(board, depth, multipv, time_limit)
-        temp_board_after = board.copy()
-        temp_board_after.push(move)
-        analysis_follow_up_list = self.analyzer._get_analysis(temp_board_after, depth, multipv, time_limit)
-        score_cp_white_before, score_cp_white_after = 0, 0
-        if analysis_before:
-            try: score_cp_white_before = analysis_before[0]['score'].white().score(mate_score=self.analyzer.config.MATE_SCORE)
-            except: pass
-        if analysis_follow_up_list:
-            try: score_cp_white_after = analysis_follow_up_list[0]['score'].white().score(mate_score=self.analyzer.config.MATE_SCORE)
-            except: pass
-        
-        # --- FIX IS ON THIS LINE ---
-        def create_line_analysis(board_state: chess.Board, pv: List[chess.Move], score_cp: Optional[int], previous_move: Optional[chess.Move] = None) -> LineAnalysis:
-        # --- END OF FIX ---
-            if not pv: return LineAnalysis()
-            first_move = pv[0]
-            board_after_first_move = board_state.copy()
-            try: board_after_first_move.push(first_move)
-            except: return LineAnalysis()
-            return LineAnalysis(san=" ".join(self.analyzer._get_san_line(pv, board_state.copy())), uci=[m.uci() for m in pv], score_cp=score_cp or 0, tactical_motifs=self.analyzer.tactical_analyzer.find_tactical_motifs(board_state, board_after_first_move, first_move, previous_move=previous_move), positional_analysis=self.analyzer.positional_analyzer.analyze_position(board_after_first_move))
-        
-        engine_lines = [create_line_analysis(board.copy(), item.get('pv', []), item['score'].white().score(mate_score=self.analyzer.config.MATE_SCORE) if item.get('score') else None, previous_move=previous_move) for item in analysis_before] if analysis_before else []
-        positional_analysis_before = self.analyzer.positional_analyzer.analyze_position(board.copy())
-        player_line = LineAnalysis(san=board.san(move), uci=[move.uci()], score_cp=score_cp_white_after, tactical_motifs=self.analyzer.tactical_analyzer.find_tactical_motifs(board.copy(), temp_board_after, move, ply_index=ply_index, previous_move=previous_move), positional_analysis=self.analyzer.positional_analyzer.analyze_position(temp_board_after))
-        zwischenzug_motif = self.analyzer._detect_zwischenzug(board.copy(), move, analysis_before)
-        if zwischenzug_motif: player_line.tactical_motifs.insert(0, zwischenzug_motif)
-        opponent_choice_motif = self.analyzer._analyze_opponent_choice(temp_board_after, analysis_follow_up_list, move)
-        if opponent_choice_motif: player_line.tactical_motifs.insert(0, opponent_choice_motif)
-        follow_up_lines = [create_line_analysis(temp_board_after.copy(), item.get('pv', []), item['score'].white().score(mate_score=self.analyzer.config.MATE_SCORE) if item.get('score') else None, previous_move=move) for item in analysis_follow_up_list] if analysis_follow_up_list else []
-        if not analysis_follow_up_list or not analysis_before: classification, points_loss, cp_loss = Constants.BLUNDER, 1.0, self.analyzer.config.MATE_SCORE
-        else: classification, points_loss, cp_loss = self.analyzer.classify_move(board.copy(), move, analysis_before, analysis_follow_up_list[0], last_move_classification)
-        return PlyAnalysis(
-            ply=ply_index + 1, move_number_str=str((ply_index // 2) + 1), player="White" if board.turn == chess.WHITE else "Black",
-            move_san=board.san(move), evaluation_symbol=Constants.EVALUATION_SYMBOLS.get(classification, ""), fen_before=board.fen(), classification=classification,
-            points_loss=points_loss, cp_loss=cp_loss, player_line=player_line, best_engine_line=engine_lines[0] if engine_lines else LineAnalysis(),
-            best_engine_lines=engine_lines, best_follow_up=follow_up_lines[0] if follow_up_lines else LineAnalysis(), best_follow_up_lines=follow_up_lines,
-            positional_analysis_before=positional_analysis_before, positional_analysis_after=player_line.positional_analysis, syzygy_wdl=self.analyzer._probe_syzygy(board),
-            raw_engine_lines_for_display=[{"line": [m.uci() for m in l.get('pv', [])], "score": str(l['score'].pov(board.turn))} for l in analysis_before] if analysis_before else [],
-            game_phase=self._get_game_phase(ply_index, total_moves), opening_name=opening_name, score_cp_white_before=score_cp_white_before, score_cp_white_after=score_cp_white_after
-        )
-    
     def _analyze_thread(self, pgn_data: str, game_url: str, username: str):
         try:
             game = chess.pgn.read_game(io.StringIO(pgn_data))
@@ -315,32 +270,24 @@ class ChessGUI(ctk.CTk):
             
             player_color = "white" if username.lower() == game.headers.get("White", "").lower() else "black"
             opening_name = game.headers.get("Opening", "Unknown Opening")
-            board = game.board()
-            
             # --- FIX: Use a local variable to prevent UI state desync ---
             local_moves = list(game.mainline_moves())
-            
-            full_analysis: List[PlyAnalysis] =[]
+
+            self.after(0, lambda: self.analyze_btn.configure(text=f"Analyzing 0/{len(local_moves)}..."))
+            def progress(done, total):
+                self.after(0, lambda: self.analyze_btn.configure(text=f"Analyzing {done}/{total}..."))
+            full_analysis: List[PlyAnalysis] = self.analyzer.analyze_game(local_moves, opening_name, on_progress=progress, start=game.board())
             player_stats = {"white": defaultdict(int), "black": defaultdict(int)}
-            last_move_class, previous_move = None, None
-            
-            # --- FIX: Iterate over local_moves instead of self.moves ---
-            for i, move in enumerate(local_moves):
-                self.after(0, lambda i=i, l=len(local_moves): self.analyze_btn.configure(text=f"Analyzing {i+1}/{l}..."))
-                ply_analysis = self._build_ply_analysis(board.copy(), move, i, len(local_moves), last_move_class, opening_name, previous_move, fast_pass=True)
-                full_analysis.append(ply_analysis)
-                last_move_class = ply_analysis.classification
+            for ply_analysis in full_analysis:
                 player_stats[ply_analysis.player.lower()][ply_analysis.classification] += 1
-                board.push(move)
-                previous_move = move
-                
+
             gemini_comments, game_summary = {}, None
 
-            if self.analyzer and self.analyzer.coach:
+            if self.coach:
                 self.after(0, lambda: self._set_navigation_enabled(False))
                 status_callback = lambda text: self.after(0, lambda: self.analyze_btn.configure(text=text))
 
-                gemini_comments, game_summary = self.analyzer.coach.comment_game(full_analysis, self.gemini_language, username, player_color, local_moves, status_callback)
+                gemini_comments, game_summary = self.coach.comment_game(full_analysis, self.gemini_language, username, player_color, local_moves, status_callback)
                 
                 # --- FIX 3: Display a popup if the AI completely fails ---
                 if not gemini_comments:
@@ -352,7 +299,7 @@ class ChessGUI(ctk.CTk):
                 
                 self.after(0, lambda: self._set_navigation_enabled(True))
             
-            key_moments = self.analyzer.find_key_moments(full_analysis, num_moments=3)
+            key_moments = find_key_moments(full_analysis, 3)
             
             # --- FIX: Pass local_moves into finalize_analysis. 
             # This safely updates the UI's self.moves on the main thread only when done. ---
@@ -425,9 +372,9 @@ class ChessGUI(ctk.CTk):
         gen = self._nav_generation = self._nav_generation + 1
         def work():
             try:
-                before = self.analyzer._get_analysis(board_before_move, self.analyzer.config.FULL_DEPTH, self.analyzer.config.FULL_MULTIPV, self.analyzer.config.FULL_TIME)
+                before = self.analyzer.analyse(board_before_move, self.analyzer.config.FULL_DEPTH, self.analyzer.config.FULL_MULTIPV, self.analyzer.config.FULL_TIME)
                 after_board = board_before_move.copy(); after_board.push(player_move)
-                after = self.analyzer._get_analysis(after_board, self.analyzer.config.FULL_DEPTH, self.analyzer.config.FULL_MULTIPV, self.analyzer.config.FULL_TIME)
+                after = self.analyzer.analyse(after_board, self.analyzer.config.FULL_DEPTH, self.analyzer.config.FULL_MULTIPV, self.analyzer.config.FULL_TIME)
                 return before, after
             except Exception: return None, None
         def done(fut: Future):
@@ -453,7 +400,7 @@ class ChessGUI(ctk.CTk):
             except: break
         analysis = self.analysis_data[self.current_ply - 1]
         self._update_analysis_display(title=self._get_title_for_analysis(analysis), commentary=self._get_gemini_commentary_for_ply(analysis.ply), engine_lines=analysis.raw_engine_lines_for_display, board_fen=analysis.fen_before)
-        line_san = self.analyzer._get_san_line([chess.Move.from_uci(m) for m in self.engine_line_moves], self.engine_line_board.copy())
+        line_san = san_line([chess.Move.from_uci(m) for m in self.engine_line_moves], self.engine_line_board)
         self.explored_line_label.configure(text=f"Exploring: {' '.join(line_san)}")
         self.update_board(board)
         threading.Thread(target=self._get_and_update_score_for_board, args=(board.fen(),), daemon=True).start()
@@ -465,8 +412,8 @@ class ChessGUI(ctk.CTk):
     def _get_and_update_score_for_board(self, board_fen):
         try:
             board = chess.Board(board_fen)
-            analysis = self.analyzer._get_analysis(board, 15, 1, 1.0)
-            if analysis: self.after(0, self.update_score_bar, analysis[0]['score'].white().score(mate_score=self.analyzer.config.MATE_SCORE))
+            analysis = self.analyzer.analyse(board, 15, 1, 1.0)
+            if analysis: self.after(0, self.update_score_bar, analysis[0]['score'].white().score(mate_score=MATE_SCORE))
         except Exception as e:
             log.warning(f"Error getting score for board: {e}")
             self.after(0, self.update_score_bar, None)
@@ -491,11 +438,11 @@ class ChessGUI(ctk.CTk):
             self.engine_lines_frame.pack(fill="x", expand=True, padx=5, after=self.lines_title)
             self.explored_line_label.pack(fill="x", padx=10, pady=5, after=self.engine_lines_frame)
         for widget in self.engine_lines_frame.winfo_children(): widget.destroy()
-        if engine_lines and board_fen and self.analyzer:
+        if engine_lines and board_fen:
             board = chess.Board(board_fen)
             for i, line_data in enumerate(engine_lines[:3]):
                 if line_uci := line_data.get('line', []):
-                    line_san = " ".join(self.analyzer._get_san_line([chess.Move.from_uci(m) for m in line_uci], board.copy()))
+                    line_san = " ".join(san_line([chess.Move.from_uci(m) for m in line_uci], board))
                     btn = ctk.CTkButton(self.engine_lines_frame, text=f"{i+1}. {line_san}", fg_color="transparent", text_color=["#3B8ED0", "#2FA572"], hover_color=["#E5E5E5", "#1F1F1F"], anchor="w", command=lambda u=line_uci, b=board.copy(): self._explore_specific_line(u, b))
                     btn.pack(fill="x")
                     score_label = ctk.CTkLabel(self.engine_lines_frame, text=f"   Score: {line_data.get('score', 'N/A')}", font=("Courier", 11, "italic"))
@@ -538,13 +485,13 @@ class ChessGUI(ctk.CTk):
             self.score_bar.set(0.5); self.score_label.configure(text="--")
             return
         try:
-            mate_score = self.analyzer.config.MATE_SCORE if self.analyzer else 10000
+            mate_score = MATE_SCORE
             if abs(white_cp) > mate_score - 1000:
                 mate_in = (mate_score + 1 - abs(white_cp)) // 2 + (mate_score + 1 - abs(white_cp)) % 2
                 self.score_label.configure(text=f"M{mate_in}")
                 score_val = 1.0 if white_cp > 0 else 0.0
             else:
-                score_val = self.analyzer._cp_to_expected_points(white_cp) if self.analyzer else 0.5
+                score_val = win_probability(white_cp)
                 self.score_label.configure(text=f"{white_cp/100.0:+.2f}")
             self.score_bar.set(score_val)
         except: self.score_bar.set(0.5); self.score_label.configure(text="ERR")
@@ -917,11 +864,49 @@ class ChessGUI(ctk.CTk):
 
 
     def initialize_analyzer(self, gemini_key):
-        if self.analyzer: self.analyzer.quit()
+        """Starts the engine pool on a worker thread; Analyze stays disabled until it is ready."""
+        old, self.analyzer, self.coach = self.analyzer, None, None
+        self._engine_generation += 1
+        if old: self._ui_executor.submit(old.close)
         if not self.stockfish_path or not os.path.exists(self.stockfish_path):
-            self.analyzer = None
             raise FileNotFoundError("Stockfish path is not configured or is invalid.")
-        self.analyzer = ChessAnalyzer(self.stockfish_path, gemini_key, self.gemini_model, self.opening_book_path, self.syzygy_path) 
+        generation = self._engine_generation
+        paths = (self.stockfish_path, self.opening_book_path, self.syzygy_path)
+
+        def start():
+            analyzer = GameAnalyzer(EnginePool(paths[0]), opening_book_path=paths[1], syzygy_path=paths[2])
+            if generation != self._engine_generation:  # restarted or closed meanwhile
+                analyzer.close()
+                return None
+            return analyzer
+
+        # The UI thread polls the start-up: Tk must not be called from the worker thread, and the
+        # start may finish before mainloop() runs.
+        self._engine_future = self._ui_executor.submit(start)
+        self.after(100, self._on_engine_started, self._engine_future, generation, gemini_key)
+
+    def _on_engine_started(self, future: Future, generation: int, gemini_key):
+        if not future.done():
+            self.after(100, self._on_engine_started, future, generation, gemini_key)
+            return
+        try:
+            analyzer = future.result()
+        except Exception as e:
+            log.exception("Stockfish failed to start")
+            self.display_message("Engine Error", f"Could not start Stockfish: {e}")
+            return
+        if analyzer is None: return
+        if generation != self._engine_generation:
+            self._ui_executor.submit(analyzer.close)
+            return
+        self.analyzer = analyzer
+        log.info("Engine ready: %s x%d", analyzer.pool.name, analyzer.pool.size)
+        if gemini_key:
+            c = analyzer.config
+            self.coach = Coach(gemini_key, self.gemini_model,
+                               analyse=lambda board: next(iter(analyzer.analyse(board, c.FULL_DEPTH, 1, c.FULL_TIME)), None),
+                               describe_line=analyzer.describe_line)
+        self.on_game_select()
 
     def save_config(self, **kwargs):
         try:
@@ -1005,8 +990,8 @@ class ChessGUI(ctk.CTk):
         self.game_summary, self.player_stats, self.player_accuracy = game_summary, player_stats, player_accuracy
         self.current_ply = 0
         self.on_game_select()
-        if self.analyzer and self.analysis_data:
-            key_moments = self.analyzer.find_key_moments(self.analysis_data, num_moments=3)
+        if self.analysis_data:
+            key_moments = find_key_moments(self.analysis_data, 3)
             self._update_key_moments_display(key_moments)
         self.update_stats()
         self.update_display()
@@ -1019,7 +1004,10 @@ class ChessGUI(ctk.CTk):
 
     def on_closing(self):
         try:
-            if self.analyzer: self.analyzer.quit()
+            self._engine_generation += 1  # an engine still starting closes itself
+            if self.analyzer: self.analyzer.close()
+            elif self._engine_future:  # started but not picked up yet: close it when it is there
+                self._engine_future.add_done_callback(lambda f: f.exception() is None and f.result() and f.result().close())
         finally:
             try:
                 if self.username_entry.get(): self.save_config()
