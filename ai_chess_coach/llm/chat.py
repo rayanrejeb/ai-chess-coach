@@ -11,7 +11,7 @@ from google.genai import types
 
 from ai_chess_coach.llm.client import GeminiClient, LLMError
 from ai_chess_coach.llm.commentary import CommentaryContext, DescribeLine, generate_game_commentary
-from ai_chess_coach.llm.grounding import GroundingReport, References, check, references_for_ply
+from ai_chess_coach.llm.grounding import GroundingReport, References, check, normalize_san, references_for_ply
 
 log = logging.getLogger(__name__)
 
@@ -66,6 +66,7 @@ class EngineTool:
             try:
                 move = board.parse_san(move_san)
             except ValueError:
+                self.evaluated.rejected.add(normalize_san(move_san.strip()))
                 examples = ", ".join(board.san(m) for m in list(board.legal_moves)[:ILLEGAL_EXAMPLES])
                 return {"error": f"{move_san} is not a legal move here. Legal moves include: {examples}."}
             self.evaluated.add_line(start_fen, [move.uci()])

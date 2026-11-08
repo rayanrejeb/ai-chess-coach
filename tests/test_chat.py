@@ -88,3 +88,14 @@ def test_coach_turns_errors_into_messages():
     assert "daily quota" in coach.answer("?", {}, "", ply, moves)
     coach = Coach("k", "m", fake_analyse, fake_describe, client=GeminiClient("k", "old-model", sdk_client=FakeSDK([api_error(404, "not found")])))
     assert "GEMINI_MODEL" in coach.answer("?", {}, "", ply, moves)
+
+
+def test_moves_the_tool_rejected_are_not_flagged():
+    """The coach correctly says Qb3 is illegal (the queen is already on b3): no flag, no retry."""
+    def model(message, config):
+        assert "error" in config.tools[0](OPERA_FEN, "Qb3")
+        return response(text="13. Qb3 is not legal: the queen is already there. 13. Rxd7 was best.")
+
+    ply, moves = opera_ply_and_moves()
+    answer = CoachChat(GeminiClient("k", "m", sdk_client=FakeSDK([model])), fake_analyse).answer("What about Qb3?", {}, "", references_for_ply(ply, moves))
+    assert answer.final_report.ok and not answer.retried

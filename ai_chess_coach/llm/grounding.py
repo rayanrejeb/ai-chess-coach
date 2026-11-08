@@ -5,6 +5,7 @@ A mentioned move is:
                 ("7.Qb3", "13...Rxd7"), part of an engine line, or evaluated by the engine tool
   - unverified: legal in a reference position, but not backed by the engine
   - illegal:    not legal in any reference position (an invented move)
+Moves the engine tool rejected as illegal are not flagged: the model was told, and is explaining that.
 """
 
 import logging
@@ -72,6 +73,7 @@ class References:
     positions: list[chess.Board] = field(default_factory=list)
     verified: set[str] = field(default_factory=set)
     game_moves: dict[Cite, str] = field(default_factory=dict)
+    rejected: set[str] = field(default_factory=set)  # moves the engine tool refused as illegal
 
     def add_position(self, board: chess.Board) -> None:
         if all(b.fen() != board.fen() for b in self.positions):
@@ -145,9 +147,10 @@ def _is_legal_somewhere(san: str, positions: Iterable[chess.Board]) -> bool:
 def check(text: str, refs: References, extra: Optional[References] = None) -> GroundingReport:
     positions = refs.positions + (extra.positions if extra else [])
     verified = refs.verified | (extra.verified if extra else set())
+    rejected = refs.rejected | (extra.rejected if extra else set())
     report = GroundingReport(moves=extract_moves(text))
     for san, cite in _mentions(text):
-        if san in verified or (cite and refs.game_moves.get(cite) == san):
+        if san in verified or san in rejected or (cite and refs.game_moves.get(cite) == san):
             continue
         bucket = report.unverified if _is_legal_somewhere(san, positions) else report.illegal
         if san not in bucket:
