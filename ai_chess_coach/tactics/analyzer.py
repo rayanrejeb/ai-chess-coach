@@ -38,9 +38,12 @@ class TacticalAnalyzer:
     # --- NEW QUIESCENCE SEARCH METHODS ---
     def get_material_balance(self, board: chess.Board) -> int:
         """Calculates the material balance of the board from White's perspective."""
-        white_material = sum(self.PIECE_VALUES.get(p.piece_type, 0) for p in board.piece_map().values() if p.color == chess.WHITE)
-        black_material = sum(self.PIECE_VALUES.get(p.piece_type, 0) for p in board.piece_map().values() if p.color == chess.BLACK)
-        return white_material - black_material
+        # Counted from the bitboards: the quiescence search calls this very often, and building
+        # piece_map() twice per call was the largest single cost of the tactical analysis.
+        return sum(
+            value * (chess.popcount(board.pieces_mask(piece_type, chess.WHITE)) - chess.popcount(board.pieces_mask(piece_type, chess.BLACK)))
+            for piece_type, value in self.PIECE_VALUES.items()
+        )
 
     def quiescence_search(self, board: chess.Board, alpha: float, beta: float, depth: int, max_depth: int = 10) -> Tuple[int, int, List[chess.Move]]:
         """
