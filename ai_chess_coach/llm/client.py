@@ -14,6 +14,7 @@ import logging
 import os
 import random
 import re
+import threading
 import time
 from typing import Callable, Optional, Sequence, TypeVar
 
@@ -83,9 +84,16 @@ class GeminiClient:
         self.model = model or model_from_env()
         self._sdk = sdk_client or genai.Client(api_key=api_key, http_options=types.HttpOptions(timeout=REQUEST_TIMEOUT_S * 1000))
         self._sleep = sleep
+        # One request at a time, so chat and commentary never overlap and trip the per-minute rate limit.
+        # Held through retry waits too, so nothing is sent while backing off from a 429.
+        self._lock = threading.Lock()
 
     def _call_api(self, fn: Callable[[], object]):
-        """Run one API call, retrying 429 and 5xx with backoff."""
+        """Run one API call, retrying 429 and 5xx with backoff. Calls from other threads wait their turn."""
+        with self._lock:
+            return self._call_api_locked(fn)
+
+    def _call_api_locked(self, fn: Callable[[], object]):
         for attempt in range(1, MAX_API_ATTEMPTS + 1):
             try:
                 return fn()

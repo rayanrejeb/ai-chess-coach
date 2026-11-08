@@ -1,3 +1,5 @@
+import threading
+import time
 from pathlib import Path
 
 import httpx2
@@ -141,3 +143,23 @@ def test_real_client_sets_a_request_timeout():
 def test_env_example_uses_the_default_model():
     env_example = (Path(__file__).resolve().parent.parent / ".env.example").read_text(encoding="utf-8")
     assert f"GEMINI_MODEL={DEFAULT_MODEL}\n" in env_example
+
+
+def test_requests_never_overlap():
+    """Chat and commentary run on different threads; the client sends one request at a time."""
+    active, peak = [0], [0]
+
+    def slow(*_):
+        active[0] += 1
+        peak[0] = max(peak[0], active[0])
+        time.sleep(0.05)
+        active[0] -= 1
+        return response(parsed=BATCH)
+
+    client, sdk, _ = make([slow] * 4)
+    threads = [threading.Thread(target=client.generate_json, args=("p", CommentaryBatch)) for _ in range(4)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    assert len(sdk.calls) == 4 and peak[0] == 1
