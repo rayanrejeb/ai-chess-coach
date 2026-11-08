@@ -24,7 +24,7 @@ from pydantic import BaseModel, ValidationError
 
 log = logging.getLogger(__name__)
 
-DEFAULT_MODEL = "gemini-3.8-flash"
+DEFAULT_MODEL = "gemini-3.5-flash"
 MAX_API_ATTEMPTS = 4          # for 429 / 5xx
 MAX_CONTENT_ATTEMPTS = 2      # for empty, blocked or malformed answers
 BASE_DELAY_S = 2.0
