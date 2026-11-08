@@ -3,7 +3,7 @@
 Every failure surfaces as LLMError with a `kind`:
   quota_exhausted  daily quota used up; not retried
   rate_limited     429 still failing after retries
-  unavailable      5xx still failing after retries
+  unavailable      5xx, timeout or connection error still failing after retries
   model_not_found  404: GEMINI_MODEL names a model this key cannot use; not retried
   bad_request      other 4xx; not retried
   blocked          the model returned nothing (safety or other finish reason), twice
@@ -17,6 +17,7 @@ import re
 import time
 from typing import Callable, Optional, Sequence, TypeVar
 
+import httpx2  # google-genai's HTTP transport
 from google import genai
 from google.genai import errors, types
 from pydantic import BaseModel, ValidationError
@@ -29,6 +30,7 @@ MAX_CONTENT_ATTEMPTS = 2      # for empty, blocked or malformed answers
 BASE_DELAY_S = 2.0
 MAX_DELAY_S = 60.0
 MAX_TOOL_CALLS = 5
+REQUEST_TIMEOUT_S = 120     # per HTTP request; without it a stalled request hangs forever
 
 # Chess vocabulary ("attack", "kill", "sacrifice") must not trip safety filters.
 _SAFETY = [
@@ -79,7 +81,7 @@ def classify_api_error(err: errors.APIError) -> tuple[str, Optional[float]]:
 class GeminiClient:
     def __init__(self, api_key: str, model: Optional[str] = None, *, sdk_client=None, sleep: Callable[[float], None] = time.sleep):
         self.model = model or model_from_env()
-        self._sdk = sdk_client or genai.Client(api_key=api_key)
+        self._sdk = sdk_client or genai.Client(api_key=api_key, http_options=types.HttpOptions(timeout=REQUEST_TIMEOUT_S * 1000))
         self._sleep = sleep
 
     def _call_api(self, fn: Callable[[], object]):
@@ -87,8 +89,8 @@ class GeminiClient:
         for attempt in range(1, MAX_API_ATTEMPTS + 1):
             try:
                 return fn()
-            except errors.APIError as err:
-                kind, delay = classify_api_error(err)
+            except (errors.APIError, httpx2.TransportError) as err:  # TransportError: timeouts, connection errors
+                kind, delay = classify_api_error(err) if isinstance(err, errors.APIError) else ("unavailable", None)
                 if kind == "model_not_found":
                     raise LLMError(kind, f"Gemini model '{self.model}' is not available for this API key. Change GEMINI_MODEL in .env. ({err})") from err
                 if kind in ("quota_exhausted", "bad_request") or attempt == MAX_API_ATTEMPTS:

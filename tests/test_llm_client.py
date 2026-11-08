@@ -1,9 +1,10 @@
+import httpx2
 import pytest
 from google import genai
 from google.genai import _transformers, types
 
 from ai_chess_coach.llm.chat import EngineTool
-from ai_chess_coach.llm.client import GeminiClient, LLMError, classify_api_error, model_from_env
+from ai_chess_coach.llm.client import REQUEST_TIMEOUT_S, GeminiClient, LLMError, classify_api_error, model_from_env
 from ai_chess_coach.llm.commentary import CommentaryBatch, MoveComment
 from fakes import FakeSDK, api_error, fake_analyse, response
 
@@ -123,3 +124,13 @@ def test_unknown_model_is_not_retried_and_names_the_setting():
     assert exc.value.kind == "model_not_found" and len(sdk.calls) == 1 and sleeps == []
     assert "GEMINI_MODEL" in str(exc.value) and "test-model" in str(exc.value)
 
+
+def test_timeouts_are_retried():
+    client, sdk, sleeps = make([httpx2.ReadTimeout("stalled"), response(parsed=BATCH)])
+    assert client.generate_json("p", CommentaryBatch) == BATCH
+    assert len(sdk.calls) == 2 and len(sleeps) == 1
+
+
+def test_real_client_sets_a_request_timeout():
+    client = GeminiClient("fake-key", "m")
+    assert client._sdk._api_client._http_options.timeout == REQUEST_TIMEOUT_S * 1000
