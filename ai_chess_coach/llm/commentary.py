@@ -179,7 +179,7 @@ def generate_game_commentary(
             batch = client.generate_json(_chunk_prompt(ctx, patterns, chunk, i, len(chunks)), CommentaryBatch, system=system)
         except LLMError as err:
             log.error("Commentary part %d/%d failed (%s): %s", i + 1, len(chunks), err.kind, err)
-            if err.kind == "quota_exhausted":
+            if err.kind in ("quota_exhausted", "model_not_found"):
                 break
             continue
         for c in batch.comments:

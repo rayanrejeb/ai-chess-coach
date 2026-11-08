@@ -4,6 +4,7 @@ Every failure surfaces as LLMError with a `kind`:
   quota_exhausted  daily quota used up; not retried
   rate_limited     429 still failing after retries
   unavailable      5xx still failing after retries
+  model_not_found  404: GEMINI_MODEL names a model this key cannot use; not retried
   bad_request      other 4xx; not retried
   blocked          the model returned nothing (safety or other finish reason), twice
   bad_response     the answer did not match the schema, twice
@@ -22,7 +23,7 @@ from pydantic import BaseModel, ValidationError
 
 log = logging.getLogger(__name__)
 
-DEFAULT_MODEL = "gemini-2.5-flash"
+DEFAULT_MODEL = "gemini-3.8-flash"
 MAX_API_ATTEMPTS = 4          # for 429 / 5xx
 MAX_CONTENT_ATTEMPTS = 2      # for empty, blocked or malformed answers
 BASE_DELAY_S = 2.0
@@ -68,6 +69,8 @@ def classify_api_error(err: errors.APIError) -> tuple[str, Optional[float]]:
         delays = [d.get("retryDelay", "") for d in details if "retryDelay" in d]
         match = re.fullmatch(r"(\d+(?:\.\d+)?)s", delays[0]) if delays else None
         return "rate_limited", float(match.group(1)) if match else None
+    if err.code == 404:
+        return "model_not_found", None
     if isinstance(err, errors.ServerError):
         return "unavailable", None
     return "bad_request", None
@@ -86,6 +89,8 @@ class GeminiClient:
                 return fn()
             except errors.APIError as err:
                 kind, delay = classify_api_error(err)
+                if kind == "model_not_found":
+                    raise LLMError(kind, f"Gemini model '{self.model}' is not available for this API key. Change GEMINI_MODEL in .env. ({err})") from err
                 if kind in ("quota_exhausted", "bad_request") or attempt == MAX_API_ATTEMPTS:
                     raise LLMError(kind, str(err)) from err
                 wait = delay if delay is not None else min(MAX_DELAY_S, BASE_DELAY_S * 2 ** (attempt - 1)) * random.uniform(0.8, 1.2)

@@ -25,6 +25,7 @@ from PIL import Image
 
 from ai_chess_coach.config import Constants, resource_path
 from ai_chess_coach.legacy import ChessAnalyzer
+from ai_chess_coach.llm.client import DEFAULT_MODEL
 from ai_chess_coach.models import Classification, GeminiCommentary, LineAnalysis, PlyAnalysis, PositionalFeatures
 
 log = logging.getLogger(__name__)
@@ -40,7 +41,7 @@ class ChessGUI(ctk.CTk):
         self.opening_book_path: Optional[str] = None
         self.syzygy_path: Optional[str] = None
         self.lichess_token: Optional[str] = None
-        self.gemini_model, self.gemini_language = "gemini-2.5-pro", "English"
+        self.gemini_model, self.gemini_language = DEFAULT_MODEL, "English"
         self.analysis_depth = 18
         self.moves: List[chess.Move] = []
         self.analysis_data: List[PlyAnalysis] = []
@@ -345,7 +346,7 @@ class ChessGUI(ctk.CTk):
                 if not gemini_comments:
                     self.after(0, lambda: messagebox.showwarning(
                         "AI Commentary Failed", 
-                        "The engine finished analyzing, but no AI commentary was generated.\n\nThis usually happens because your Google Cloud API key ran out of daily free requests, or the model returned empty output due to limits."
+                        "The engine finished analyzing, but no AI commentary was generated.\n\nThis usually happens because your Google Cloud API key ran out of daily free requests, the model returned empty output due to limits, or GEMINI_MODEL in .env names a model that is not available (see the log)."
                     ))
                 # ---------------------------------------------------------
                 
@@ -818,7 +819,7 @@ class ChessGUI(ctk.CTk):
         ctk.CTkLabel(settings_win, text="Google Gemini API Key:").pack(pady=(10, 0), padx=20, anchor="w")
         key_entry = ctk.CTkEntry(settings_win, width=400, show="*"); key_entry.pack(pady=5, padx=20, fill="x")
         ctk.CTkLabel(settings_win, text="Gemini Model:").pack(pady=(10, 0), padx=20, anchor="w")
-        model_menu = ctk.CTkOptionMenu(settings_win, values=["gemini-2.5-pro", "gemini-2.5-flash", "gemini-2.5-flash-lite"]) ; model_menu.pack(pady=5, padx=20, fill="x")
+        model_menu = ctk.CTkOptionMenu(settings_win, values=[DEFAULT_MODEL]) ; model_menu.pack(pady=5, padx=20, fill="x")
         ctk.CTkLabel(settings_win, text="Commentary Language:").pack(pady=(10, 0), padx=20, anchor="w")
         lang_menu = ctk.CTkOptionMenu(settings_win, values=["English", "Spanish", "French", "German"]); lang_menu.pack(pady=5, padx=20, fill="x")
         ctk.CTkLabel(settings_win, text="Lichess API Token:").pack(pady=(10, 0), padx=20, anchor="w")
@@ -881,7 +882,7 @@ class ChessGUI(ctk.CTk):
             self.username_entry.insert(0, last_username)
             self.platform_var.set(last_platform)
             
-            self.gemini_model = config.get("gemini_model", "gemini-2.5-pro")
+            self.gemini_model = config.get("gemini_model", DEFAULT_MODEL)
             self.gemini_language = config.get("gemini_language", "English")
             self.lichess_token = config.get("lichess_token")
             self.analysis_depth = config.get("analysis_depth", 18)

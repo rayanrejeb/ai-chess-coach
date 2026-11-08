@@ -86,3 +86,5 @@ def test_coach_turns_errors_into_messages():
     per_day = {"violations": [{"quotaId": "GenerateRequestsPerDayPerProjectPerModel"}]}
     coach = Coach("k", "m", fake_analyse, fake_describe, client=GeminiClient("k", "m", sdk_client=FakeSDK([api_error(429, "q", [per_day])])))
     assert "daily quota" in coach.answer("?", {}, "", ply, moves)
+    coach = Coach("k", "m", fake_analyse, fake_describe, client=GeminiClient("k", "old-model", sdk_client=FakeSDK([api_error(404, "not found")])))
+    assert "GEMINI_MODEL" in coach.answer("?", {}, "", ply, moves)

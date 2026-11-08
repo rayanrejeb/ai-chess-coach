@@ -34,6 +34,7 @@ def test_model_from_env(monkeypatch):
     (api_error(429, "Too many requests"), "rate_limited", None),
     (api_error(503), "unavailable", None),
     (api_error(400, "Invalid argument"), "bad_request", None),
+    (api_error(404, "models/x is not found"), "model_not_found", None),
 ])
 def test_classify_api_error(err, kind, delay):
     assert classify_api_error(err) == (kind, delay)
@@ -113,3 +114,12 @@ def test_real_sdk_accepts_schema_and_tool():
     decl = types.FunctionDeclaration.from_callable(client=api_client, callable=EngineTool(fake_analyse).as_function())
     assert decl.name == "evaluate_position"
     assert set(decl.parameters.properties) == {"fen", "move_san"} and decl.parameters.required == ["fen"]
+
+
+def test_unknown_model_is_not_retried_and_names_the_setting():
+    client, sdk, sleeps = make([api_error(404, "models/test-model is not found")])
+    with pytest.raises(LLMError) as exc:
+        client.generate_json("p", CommentaryBatch)
+    assert exc.value.kind == "model_not_found" and len(sdk.calls) == 1 and sleeps == []
+    assert "GEMINI_MODEL" in str(exc.value) and "test-model" in str(exc.value)
+
