@@ -111,3 +111,41 @@ def test_chat_follows_the_language_setting():
     assert coach.answer("Quel était le meilleur coup ?", {}, "", ply, moves, "French").startswith("13. Rxd7")
     system = sdk.calls[0]["config"].system_instruction
     assert "Answer in French." in system and "English Standard Algebraic Notation" in system
+
+
+@pytest.mark.parametrize("number, plies_played, next_move", [
+    ("10.", 18, "Nxb5"),    # before White's 10th move, the sacrifice
+    ("10...", 19, "cxb5"),  # before Black's 10th move
+    ("13.", 24, "Rxd7"),    # the current position
+])
+def test_tool_finds_past_game_positions(number, plies_played, next_move):
+    _, moves = opera_ply_and_moves()
+    board = EngineTool(fake_analyse, game_moves=moves).game_position(number)
+    assert board.san(moves[plies_played]) == next_move
+    expected = chess.Board()
+    for m in moves[:plies_played]:
+        expected.push(m)
+    assert board.fen() == expected.fen()
+
+
+@pytest.mark.parametrize("number", ["14.", "99...", "ten", "0."])
+def test_tool_rejects_move_numbers_outside_the_game(number):
+    _, moves = opera_ply_and_moves()
+    assert "No position for move number" in EngineTool(fake_analyse, game_moves=moves[:24]).evaluate(move_number=number)["error"]
+
+
+def test_model_checks_a_past_sacrifice():
+    """Asked about 10.Nxb5, the model evaluates the position before White's 10th move, as AFC would call it."""
+    tool_results = []
+
+    def model(message, config):
+        tool_results.append(config.tools[0](move_number="10.", move_san="Nxb5"))
+        return response(text="10.Nxb5 was sound: after 10...cxb5 11.Bxb5+ White's attack is worth the piece.")
+
+    ply, moves = opera_ply_and_moves()
+    sdk = FakeSDK([model])
+    coach = Coach("k", "m", fake_analyse, fake_describe, client=GeminiClient("k", "m", sdk_client=sdk))
+    text = coach.answer("Was 10.Nxb5 a sound sacrifice?", {"fen_before": OPERA_FEN}, "", ply, moves)
+    assert "error" not in tool_results[0] and tool_results[0]["side_to_move"] == "Black"
+    assert "Not verified" not in text and len(sdk.calls) == 1
+    assert "move_number" in sdk.calls[0]["config"].system_instruction

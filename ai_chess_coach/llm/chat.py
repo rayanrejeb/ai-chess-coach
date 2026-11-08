@@ -2,6 +2,7 @@
 
 import json
 import logging
+import re
 from dataclasses import dataclass
 from typing import Callable, Optional, Sequence
 
@@ -30,6 +31,7 @@ Rules:
 - Every move you name must come from the game context, from the game itself, or from a call to `evaluate_position`.
 - When you refer to a move played earlier in the game, write it with its move number, e.g. 7.Qb3 or 13...Rxd7.
 - For any "what if" question about a move not in the context, call `evaluate_position` with the context's `fen_before` copied exactly and the move in SAN. Never compute a FEN yourself.
+- To check a move from earlier in the game, call `evaluate_position` with `move_number` instead of a FEN: "10." is the position before White's 10th move, "10..." the position before Black's 10th move. Put the move to test in `move_san`.
 - If the tool says a move is illegal, tell the student.
 - Answer in plain, encouraging language. No raw JSON.
 """
@@ -38,30 +40,53 @@ Rules:
 class EngineTool:
     """Wraps the engine as a function the model can call, and remembers what it evaluated."""
 
-    def __init__(self, analyse: Analyse, describe_line: Optional[DescribeLine] = None):
+    def __init__(self, analyse: Analyse, describe_line: Optional[DescribeLine] = None,
+                 game_moves: Sequence[chess.Move] = (), start_fen: str = chess.STARTING_FEN):
         self._analyse = analyse
         self._describe_line = describe_line
+        self._game_moves = list(game_moves)
+        self._start_fen = start_fen
         self.evaluated = References()
 
     def as_function(self) -> Callable[..., dict]:
         tool = self
 
-        def evaluate_position(fen: str, move_san: str = "") -> dict:
+        def evaluate_position(fen: str = "", move_san: str = "", move_number: str = "") -> dict:
             """Evaluate a chess position with Stockfish, optionally after playing one move first.
 
             Args:
-              fen: The position in FEN. Copy fen_before from the game context exactly.
+              fen: The position in FEN. Copy fen_before from the game context exactly. Leave empty when using move_number.
               move_san: Optional move to play first, in English SAN (for example "Nf3" or "exd5"). Empty to evaluate the position as it is.
+              move_number: Optional, to evaluate an earlier position of this game instead of fen: "10." is the position before White's 10th move, "10..." the position before Black's 10th move.
             """
-            return tool.evaluate(fen, move_san)
+            return tool.evaluate(fen, move_san, move_number)
 
         return evaluate_position
 
-    def evaluate(self, fen: str, move_san: str = "") -> dict:
-        try:
-            board = chess.Board(fen)
-        except ValueError:
-            return {"error": "Invalid FEN. Use fen_before from the game context exactly."}
+    def game_position(self, move_number: str) -> Optional[chess.Board]:
+        """The game position before the move numbered "10." (White) or "10..." (Black), or None."""
+        match = re.fullmatch(r"\s*(\d+)\s*(\.\.\.|\.|…)\s*", move_number)
+        if not match:
+            return None
+        wanted = (int(match.group(1)), chess.WHITE if match.group(2) == "." else chess.BLACK)
+        board = chess.Board(self._start_fen)
+        for move in [*self._game_moves, None]:
+            if (board.fullmove_number, board.turn) == wanted:
+                return board
+            if move is None or move not in board.legal_moves:
+                return None
+            board.push(move)
+
+    def evaluate(self, fen: str = "", move_san: str = "", move_number: str = "") -> dict:
+        if move_number:
+            board = self.game_position(move_number)
+            if board is None:
+                return {"error": f"No position for move number {move_number!r} in this game. Use \"10.\" (before White's 10th move) or \"10...\" (before Black's)."}
+        else:
+            try:
+                board = chess.Board(fen)
+            except ValueError:
+                return {"error": "Invalid FEN. Use fen_before from the game context exactly, or move_number for an earlier position."}
         start_fen = board.fen()
         if move_san:
             try:
@@ -119,8 +144,9 @@ class CoachChat:
         self.analyse = analyse
         self.describe_line = describe_line
 
-    def answer(self, question: str, game_context: dict, history_text: str, refs: References, language: str = "English") -> CoachAnswer:
-        tool = EngineTool(self.analyse, self.describe_line)
+    def answer(self, question: str, game_context: dict, history_text: str, refs: References, language: str = "English",
+               game_moves: Sequence[chess.Move] = ()) -> CoachAnswer:
+        tool = EngineTool(self.analyse, self.describe_line, game_moves)
         system = SYSTEM_PROMPT.format(language=language)
         message = (
             "Game context:\n" + json.dumps(game_context, ensure_ascii=False, indent=1)
@@ -162,7 +188,7 @@ class Coach:
 
     def answer(self, question: str, game_context: dict, history_text: str, ply, game_moves: Sequence[chess.Move] = (), language: str = "English") -> str:
         try:
-            return self.chat.answer(question, game_context, history_text, references_for_ply(ply, game_moves), language).text
+            return self.chat.answer(question, game_context, history_text, references_for_ply(ply, game_moves), language, game_moves).text
         except LLMError as err:
             log.error("Coach chat failed (%s): %s", err.kind, err)
             if err.kind == "quota_exhausted":

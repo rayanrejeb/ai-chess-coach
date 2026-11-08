@@ -119,7 +119,7 @@ def test_real_sdk_accepts_schema_and_tool():
     assert schema.required == ["comments"]
     decl = types.FunctionDeclaration.from_callable(client=api_client, callable=EngineTool(fake_analyse).as_function())
     assert decl.name == "evaluate_position"
-    assert set(decl.parameters.properties) == {"fen", "move_san"} and decl.parameters.required == ["fen"]
+    assert set(decl.parameters.properties) == {"fen", "move_san", "move_number"} and not decl.parameters.required
 
 
 def test_unknown_model_is_not_retried_and_names_the_setting():
