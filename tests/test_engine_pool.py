@@ -66,3 +66,23 @@ def test_close_stops_every_process():
     pool.close()
     assert all(e.transport.get_returncode() is not None for e in engines)
     assert pool.analyse(chess.Board(), depth=6) == []
+
+
+def test_results_do_not_depend_on_earlier_positions():
+    """Each analysis starts from a cleared hash, so analysing another position first changes nothing.
+    Opera, before and after 15.Bxd7+: at depth 12 a warm hash used to change the verdict on this move."""
+    from golden_plies_cases import opera_moves
+    before = chess.Board()
+    for move in opera_moves()[:28]:
+        before.push(move)
+    after = before.copy()
+    after.push(opera_moves()[28])
+    pool = EnginePool(stockfish_path(), size=1)
+    try:
+        cold = pool.analyse(after, depth=12)
+        pool.analyse(before, depth=12)  # fills the hash with the previous position
+        pool._cache.clear()
+        warm = pool.analyse(after, depth=12)
+    finally:
+        pool.close()
+    assert warm[0]["score"] == cold[0]["score"] and warm[0]["pv"] == cold[0]["pv"]

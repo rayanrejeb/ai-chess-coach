@@ -2,6 +2,10 @@
 
 Callers on different threads (game analysis, the score bar, the coach's engine tool) each borrow an
 idle process instead of queueing behind one engine. Results are cached by (FEN, depth, multipv).
+
+Every analysis starts from a cleared hash (python-chess sends ucinewgame for a new `game` object), so a
+result depends only on the position and the limits, not on what that process analysed before: a cached
+result equals a fresh one.
 """
 
 import logging
@@ -85,11 +89,11 @@ class EnginePool:
         engine = self._idle.get()
         try:
             try:
-                return engine.analyse(board, limit, multipv=multipv)
+                return engine.analyse(board, limit, multipv=multipv, game=object())
             except _ENGINE_DIED:
                 log.error("Stockfish exited unexpectedly; restarting it")
                 engine = self._restart(engine)
-                return engine.analyse(board, limit, multipv=multipv)
+                return engine.analyse(board, limit, multipv=multipv, game=object())
         except Exception as e:
             log.error("Engine analysis failed: %s", e)
             return []
