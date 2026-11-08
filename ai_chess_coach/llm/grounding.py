@@ -134,11 +134,21 @@ class GroundingReport:
         return not self.illegal and not self.unverified
 
 
+_DISAMBIGUATION_RE = re.compile(r"^([KQRBN])[a-h]?[1-8]?(?=x?[a-h][1-8])")
+
+
+def _same_san(written: str, actual: str) -> bool:
+    """Exact SAN match, except a redundant disambiguation ("Nbd7" for "Nd7") is accepted.
+    The capture mark must match: "Qb3" is not "Qxb3"."""
+    return _DISAMBIGUATION_RE.sub(r"", written) == _DISAMBIGUATION_RE.sub(r"", actual)
+
+
 def _is_legal_somewhere(san: str, positions: Iterable[chess.Board]) -> bool:
     for board in positions:
         try:
-            board.parse_san(san)
-            return True
+            move = board.parse_san(san)  # python-chess is lenient here (accepts "Qb3" for Qxb3)
+            if _same_san(san, normalize_san(board.san(move))):
+                return True
         except chess.AmbiguousMoveError:
             return True  # the notation fits more than one piece, but such a move exists
         except ValueError:

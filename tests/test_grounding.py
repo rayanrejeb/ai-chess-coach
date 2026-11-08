@@ -1,7 +1,7 @@
 import chess
 import pytest
 
-from ai_chess_coach.llm.grounding import References, check, extract_moves, normalize_san, references_for_ply
+from ai_chess_coach.llm.grounding import References, _same_san, check, extract_moves, normalize_san, references_for_ply
 from fakes import plies_from_game
 
 OPERA = "e4 e5 Nf3 d6 d4 Bg4 dxe5 Bxf3 Qxf3 dxe5 Bc4 Nf6 Qb3 Qe7 Nc3 c6 Bg5 b5 Nxb5 cxb5 Bxb5+ Nbd7 O-O-O Rd8".split()
@@ -88,3 +88,21 @@ def test_extra_references_count_as_verified():
 def test_bare_squares_count_only_as_possible_pawn_moves(text, unverified):
     report = check(text, _opera_refs())
     assert report.illegal == [] and report.unverified == unverified
+
+
+def test_mentioned_move_must_match_the_legal_moves_own_san():
+    # After 13.Rxd7 Rxd7 14.Rd1 Qb4 15.Bxf6, Black can play ...Qxb3; "Qb3" must not count as that capture.
+    refs = References()
+    refs.add_line(_opera_refs().positions[0].fen(), ["d1d7", "d8d7", "h1d1", "e7b4", "g5f6"])
+    assert check("Qb3", References(positions=refs.positions)).illegal == ["Qb3"]
+    assert check("Qxb3", References(positions=refs.positions)).unverified == ["Qxb3"]
+
+
+@pytest.mark.parametrize("written, actual, same", [
+    ("Nbd7", "Nd7", True),    # redundant disambiguation is fine
+    ("Rxd7", "Rxd7", True),
+    ("Qb3", "Qxb3", False),   # missing capture mark
+    ("Qxb3", "Qb3", False),   # invented capture mark
+])
+def test_same_san(written, actual, same):
+    assert _same_san(written, actual) is same
