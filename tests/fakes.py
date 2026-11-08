@@ -83,3 +83,48 @@ def plies_from_game(game_san, alternatives=None, replies=None):
         ))
         board.push(move)
     return plies
+
+
+_VALUES = {chess.PAWN: 100, chess.KNIGHT: 300, chess.BISHOP: 300, chess.ROOK: 500, chess.QUEEN: 900, chess.KING: 0}
+
+
+def _fake_move_order(board):
+    """Captures of the most valuable piece first, then checks, then UCI order: varied but deterministic."""
+    def key(m):
+        victim = board.piece_at(m.to_square)
+        return (-(_VALUES[victim.piece_type] if victim else 0), not board.gives_check(m), m.uci())
+    return sorted(board.legal_moves, key=key)
+
+
+def fake_engine_lines(board, depth=None, multipv=1, time_limit=None):
+    """Deterministic stand-in for EnginePool.analyse: material plus mobility for the side to move,
+    lines of up to 3 moves picked by _fake_move_order. Returns [] for a finished game."""
+    if board.is_game_over():
+        return []
+    lines = []
+    for first in _fake_move_order(board)[:multipv]:
+        pv, b = [first], board.copy()
+        b.push(first)
+        while len(pv) < 3 and not b.is_game_over():
+            pv.append(_fake_move_order(b)[0])
+            b.push(pv[-1])
+        own = sum(_VALUES[p.piece_type] * (1 if p.color == board.turn else -1) for p in board.piece_map().values())
+        cp = own + 2 * (board.legal_moves.count() - 30) - 10 * len(lines)
+        lines.append({"score": chess.engine.PovScore(chess.engine.Cp(cp), board.turn), "pv": pv})
+    return lines
+
+
+class FakePool:
+    """EnginePool interface backed by fake_engine_lines."""
+
+    size = 1
+    name = "fake engine"
+
+    def analyse(self, board, depth, multipv=1, time_limit=None):
+        return fake_engine_lines(board, depth, multipv, time_limit)
+
+    def analyse_many(self, boards, depth, multipv=1, time_limit=None):
+        return [self.analyse(b, depth, multipv, time_limit) for b in boards]
+
+    def close(self):
+        pass

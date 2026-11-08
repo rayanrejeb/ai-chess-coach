@@ -1,0 +1,4889 @@
+[
+ {
+  "best_engine_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [
+     "White's dark-square bishop on c1 is a bad bishop."
+    ],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 0,
+      "status": "safe"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 0,
+      "status": "safe"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.0,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 1 pawn island(s).",
+      "Black has 1 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "a3 a5 Ra2",
+   "score_cp": -20,
+   "tactical_motifs": [
+    {
+     "details": "No tactical opportunities detected",
+     "tactic": "None"
+    }
+   ],
+   "uci": [
+    "a2a3",
+    "a7a5",
+    "a1a2"
+   ]
+  },
+  "best_engine_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "Black has a space advantage.",
+      "White has the bishop pair.",
+      "Black has the bishop pair."
+     ],
+     "bad_bishops": [
+      "White's dark-square bishop on c1 is a bad bishop."
+     ],
+     "has_bishop_pair": {
+      "black": true,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 0,
+       "status": "safe"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 0,
+       "status": "safe"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 0.0,
+     "pawn_structure": {
+      "backward_pawns": [],
+      "doubled_pawns": [],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 1 pawn island(s).",
+       "Black has 1 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "a3 a5 Ra2",
+    "score_cp": -20,
+    "tactical_motifs": [
+     {
+      "details": "No tactical opportunities detected",
+      "tactic": "None"
+     }
+    ],
+    "uci": [
+     "a2a3",
+     "a7a5",
+     "a1a2"
+    ]
+   }
+  ],
+  "best_follow_up": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 0,
+      "status": "safe"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.0,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 1 pawn island(s).",
+      "Black has 1 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "a5 a3 a4",
+   "score_cp": 20,
+   "tactical_motifs": [
+    {
+     "details": "No tactical opportunities detected",
+     "tactic": "None"
+    }
+   ],
+   "uci": [
+    "a7a5",
+    "a2a3",
+    "a5a4"
+   ]
+  },
+  "best_follow_up_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "Black has a space advantage.",
+      "White has the bishop pair.",
+      "Black has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": true,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 0,
+       "status": "safe"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 1,
+       "status": "safe"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 0.0,
+     "pawn_structure": {
+      "backward_pawns": [],
+      "doubled_pawns": [],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 1 pawn island(s).",
+       "Black has 1 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "a5 a3 a4",
+    "score_cp": 20,
+    "tactical_motifs": [
+     {
+      "details": "No tactical opportunities detected",
+      "tactic": "None"
+     }
+    ],
+    "uci": [
+     "a7a5",
+     "a2a3",
+     "a5a4"
+    ]
+   }
+  ],
+  "classification": "Excellent",
+  "cp_loss": -40,
+  "evaluation_symbol": "!",
+  "fen_before": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  "game_phase": "opening",
+  "move_number_str": "1",
+  "move_san": "e4",
+  "opening_name": "Philidor Defense",
+  "player": "White",
+  "player_line": {
+   "positional_analysis": {
+    "advantages": [
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 0,
+      "status": "safe"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.0,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 1 pawn island(s).",
+      "Black has 1 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "e4",
+   "score_cp": 20,
+   "tactical_motifs": [
+    {
+     "details": "No tactical opportunities detected",
+     "tactic": "None"
+    }
+   ],
+   "uci": [
+    "e2e4"
+   ]
+  },
+  "ply": 1,
+  "points_loss": -0.039978680311163584,
+  "positional_analysis_after": {
+   "advantages": [
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 0,
+     "status": "safe"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 1,
+     "status": "safe"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.0,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 1 pawn island(s).",
+     "Black has 1 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "positional_analysis_before": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 0,
+     "status": "safe"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 0,
+     "status": "safe"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.0,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 1 pawn island(s).",
+     "Black has 1 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "raw_engine_lines_for_display": [
+   {
+    "line": [
+     "a2a3",
+     "a7a5",
+     "a1a2"
+    ],
+    "score": "-20"
+   }
+  ],
+  "score_cp_white_after": 20,
+  "score_cp_white_before": -20,
+  "syzygy_wdl": null
+ },
+ {
+  "best_engine_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 0,
+      "status": "safe"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.0,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 1 pawn island(s).",
+      "Black has 1 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "a5 a3 a4",
+   "score_cp": 20,
+   "tactical_motifs": [
+    {
+     "details": "No tactical opportunities detected",
+     "tactic": "None"
+    }
+   ],
+   "uci": [
+    "a7a5",
+    "a2a3",
+    "a5a4"
+   ]
+  },
+  "best_engine_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "Black has a space advantage.",
+      "White has the bishop pair.",
+      "Black has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": true,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 0,
+       "status": "safe"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 1,
+       "status": "safe"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 0.0,
+     "pawn_structure": {
+      "backward_pawns": [],
+      "doubled_pawns": [],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 1 pawn island(s).",
+       "Black has 1 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "a5 a3 a4",
+    "score_cp": 20,
+    "tactical_motifs": [
+     {
+      "details": "No tactical opportunities detected",
+      "tactic": "None"
+     }
+    ],
+    "uci": [
+     "a7a5",
+     "a2a3",
+     "a5a4"
+    ]
+   }
+  ],
+  "best_follow_up": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [
+     "White's dark-square bishop on c1 is a bad bishop."
+    ],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.0,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 1 pawn island(s).",
+      "Black has 1 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "a3 Bxa3 Rxa3",
+   "score_cp": -2,
+   "tactical_motifs": [
+    {
+     "details": "No tactical opportunities detected",
+     "tactic": "None"
+    }
+   ],
+   "uci": [
+    "a2a3",
+    "f8a3",
+    "a1a3"
+   ]
+  },
+  "best_follow_up_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "Black has a space advantage.",
+      "White has the bishop pair.",
+      "Black has the bishop pair."
+     ],
+     "bad_bishops": [
+      "White's dark-square bishop on c1 is a bad bishop."
+     ],
+     "has_bishop_pair": {
+      "black": true,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 1,
+       "status": "safe"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 1,
+       "status": "safe"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 0.0,
+     "pawn_structure": {
+      "backward_pawns": [],
+      "doubled_pawns": [],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 1 pawn island(s).",
+       "Black has 1 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "a3 Bxa3 Rxa3",
+    "score_cp": -2,
+    "tactical_motifs": [
+     {
+      "details": "No tactical opportunities detected",
+      "tactic": "None"
+     }
+    ],
+    "uci": [
+     "a2a3",
+     "f8a3",
+     "a1a3"
+    ]
+   }
+  ],
+  "classification": "Excellent",
+  "cp_loss": -22,
+  "evaluation_symbol": "!",
+  "fen_before": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+  "game_phase": "opening",
+  "move_number_str": "1",
+  "move_san": "e5",
+  "opening_name": "Philidor Defense",
+  "player": "Black",
+  "player_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.0,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 1 pawn island(s).",
+      "Black has 1 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "e5",
+   "score_cp": -2,
+   "tactical_motifs": [
+    {
+     "details": "No tactical opportunities detected",
+     "tactic": "None"
+    }
+   ],
+   "uci": [
+    "e7e5"
+   ]
+  },
+  "ply": 2,
+  "points_loss": -0.021989329488983356,
+  "positional_analysis_after": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 1,
+     "status": "safe"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 1,
+     "status": "safe"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.0,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 1 pawn island(s).",
+     "Black has 1 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "positional_analysis_before": {
+   "advantages": [
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 0,
+     "status": "safe"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 1,
+     "status": "safe"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.0,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 1 pawn island(s).",
+     "Black has 1 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "raw_engine_lines_for_display": [
+   {
+    "line": [
+     "a7a5",
+     "a2a3",
+     "a5a4"
+    ],
+    "score": "-20"
+   }
+  ],
+  "score_cp_white_after": -2,
+  "score_cp_white_before": 20,
+  "syzygy_wdl": null
+ },
+ {
+  "best_engine_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [
+     "White's dark-square bishop on c1 is a bad bishop."
+    ],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.0,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 1 pawn island(s).",
+      "Black has 1 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "a3 Bxa3 Rxa3",
+   "score_cp": -2,
+   "tactical_motifs": [
+    {
+     "details": "No tactical opportunities detected",
+     "tactic": "None"
+    }
+   ],
+   "uci": [
+    "a2a3",
+    "f8a3",
+    "a1a3"
+   ]
+  },
+  "best_engine_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "Black has a space advantage.",
+      "White has the bishop pair.",
+      "Black has the bishop pair."
+     ],
+     "bad_bishops": [
+      "White's dark-square bishop on c1 is a bad bishop."
+     ],
+     "has_bishop_pair": {
+      "black": true,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 1,
+       "status": "safe"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 1,
+       "status": "safe"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 0.0,
+     "pawn_structure": {
+      "backward_pawns": [],
+      "doubled_pawns": [],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 1 pawn island(s).",
+       "Black has 1 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "a3 Bxa3 Rxa3",
+    "score_cp": -2,
+    "tactical_motifs": [
+     {
+      "details": "No tactical opportunities detected",
+      "tactic": "None"
+     }
+    ],
+    "uci": [
+     "a2a3",
+     "f8a3",
+     "a1a3"
+    ]
+   }
+  ],
+  "best_follow_up": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.0,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 1 pawn island(s).",
+      "Black has 1 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "a5 Nxe5 a4",
+   "score_cp": 2,
+   "tactical_motifs": [
+    {
+     "details": "The move made created a profitable trade potential for the opponent. The move Nxe5 starts a favorable tactical sequence, improving the evaluation by +1.00. The full sequence is: Nxe5.",
+     "sequence_uci": [
+      "f3e5"
+     ],
+     "tactic": "Profitable Trade",
+     "value": 100
+    }
+   ],
+   "uci": [
+    "a7a5",
+    "f3e5",
+    "a5a4"
+   ]
+  },
+  "best_follow_up_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "Black has a space advantage.",
+      "White has the bishop pair.",
+      "Black has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": true,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 1,
+       "status": "safe"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 1,
+       "status": "safe"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 0.0,
+     "pawn_structure": {
+      "backward_pawns": [],
+      "doubled_pawns": [],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 1 pawn island(s).",
+       "Black has 1 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "a5 Nxe5 a4",
+    "score_cp": 2,
+    "tactical_motifs": [
+     {
+      "details": "The move made created a profitable trade potential for the opponent. The move Nxe5 starts a favorable tactical sequence, improving the evaluation by +1.00. The full sequence is: Nxe5.",
+      "sequence_uci": [
+       "f3e5"
+      ],
+      "tactic": "Profitable Trade",
+      "value": 100
+     }
+    ],
+    "uci": [
+     "a7a5",
+     "f3e5",
+     "a5a4"
+    ]
+   }
+  ],
+  "classification": "Excellent",
+  "cp_loss": -4,
+  "evaluation_symbol": "!",
+  "fen_before": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+  "game_phase": "opening",
+  "move_number_str": "2",
+  "move_san": "Nf3",
+  "opening_name": "Philidor Defense",
+  "player": "White",
+  "player_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.0,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 1 pawn island(s).",
+      "Black has 1 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Nf3",
+   "score_cp": 2,
+   "tactical_motifs": [
+    {
+     "details": "The Black pawn on e5 is hanging and can be captured profitably (SEE: +1.00).",
+     "tactic": "Hanging Piece",
+     "value": 100
+    }
+   ],
+   "uci": [
+    "g1f3"
+   ]
+  },
+  "ply": 3,
+  "points_loss": -0.003999978666803239,
+  "positional_analysis_after": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 1,
+     "status": "safe"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 1,
+     "status": "safe"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.0,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 1 pawn island(s).",
+     "Black has 1 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "positional_analysis_before": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 1,
+     "status": "safe"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 1,
+     "status": "safe"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.0,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 1 pawn island(s).",
+     "Black has 1 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "raw_engine_lines_for_display": [
+   {
+    "line": [
+     "a2a3",
+     "f8a3",
+     "a1a3"
+    ],
+    "score": "-2"
+   }
+  ],
+  "score_cp_white_after": 2,
+  "score_cp_white_before": -2,
+  "syzygy_wdl": null
+ },
+ {
+  "best_engine_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.0,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 1 pawn island(s).",
+      "Black has 1 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "a5 Nxe5 a4",
+   "score_cp": 2,
+   "tactical_motifs": [
+    {
+     "details": "The move made created a profitable trade potential for the opponent. The move Nxe5 starts a favorable tactical sequence, improving the evaluation by +1.00. The full sequence is: Nxe5.",
+     "sequence_uci": [
+      "f3e5"
+     ],
+     "tactic": "Profitable Trade",
+     "value": 100
+    }
+   ],
+   "uci": [
+    "a7a5",
+    "f3e5",
+    "a5a4"
+   ]
+  },
+  "best_engine_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "Black has a space advantage.",
+      "White has the bishop pair.",
+      "Black has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": true,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 1,
+       "status": "safe"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 1,
+       "status": "safe"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 0.0,
+     "pawn_structure": {
+      "backward_pawns": [],
+      "doubled_pawns": [],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 1 pawn island(s).",
+       "Black has 1 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "a5 Nxe5 a4",
+    "score_cp": 2,
+    "tactical_motifs": [
+     {
+      "details": "The move made created a profitable trade potential for the opponent. The move Nxe5 starts a favorable tactical sequence, improving the evaluation by +1.00. The full sequence is: Nxe5.",
+      "sequence_uci": [
+       "f3e5"
+      ],
+      "tactic": "Profitable Trade",
+      "value": 100
+     }
+    ],
+    "uci": [
+     "a7a5",
+     "f3e5",
+     "a5a4"
+    ]
+   }
+  ],
+  "best_follow_up": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 1.0,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 1 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Nxe5 dxe5 Bb5+",
+   "score_cp": -6,
+   "tactical_motifs": [
+    {
+     "details": "The move Qe7 creates a potential pin. The new threat is: The Black queen on e7 pins the enemy White knight on e5 to the White pawn on e4. Moving the pinned piece would allow a profitable capture.",
+     "tactic": "Potential Pin",
+     "value": 300
+    }
+   ],
+   "uci": [
+    "f3e5",
+    "d6e5",
+    "f1b5"
+   ]
+  },
+  "best_follow_up_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "Black has a space advantage.",
+      "White has the bishop pair.",
+      "Black has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": true,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 1,
+       "status": "safe"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 1.0,
+     "pawn_structure": {
+      "backward_pawns": [],
+      "doubled_pawns": [],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 1 pawn island(s).",
+       "Black has 2 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "Nxe5 dxe5 Bb5+",
+    "score_cp": -6,
+    "tactical_motifs": [
+     {
+      "details": "The move Qe7 creates a potential pin. The new threat is: The Black queen on e7 pins the enemy White knight on e5 to the White pawn on e4. Moving the pinned piece would allow a profitable capture.",
+      "tactic": "Potential Pin",
+      "value": 300
+     }
+    ],
+    "uci": [
+     "f3e5",
+     "d6e5",
+     "f1b5"
+    ]
+   }
+  ],
+  "classification": "Excellent",
+  "cp_loss": -8,
+  "evaluation_symbol": "!",
+  "fen_before": "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
+  "game_phase": "opening",
+  "move_number_str": "2",
+  "move_san": "d6",
+  "opening_name": "Philidor Defense",
+  "player": "Black",
+  "player_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [
+     "Black's dark-square bishop on f8 is a bad bishop."
+    ],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.0,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 1 pawn island(s).",
+      "Black has 1 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "d6",
+   "score_cp": -6,
+   "tactical_motifs": [
+    {
+     "details": "No tactical opportunities detected",
+     "tactic": "None"
+    }
+   ],
+   "uci": [
+    "d7d6"
+   ]
+  },
+  "ply": 4,
+  "points_loss": -0.007999701349989508,
+  "positional_analysis_after": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [
+    "Black's dark-square bishop on f8 is a bad bishop."
+   ],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 1,
+     "status": "safe"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.0,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 1 pawn island(s).",
+     "Black has 1 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "positional_analysis_before": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 1,
+     "status": "safe"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 1,
+     "status": "safe"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.0,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 1 pawn island(s).",
+     "Black has 1 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "raw_engine_lines_for_display": [
+   {
+    "line": [
+     "a7a5",
+     "f3e5",
+     "a5a4"
+    ],
+    "score": "-2"
+   }
+  ],
+  "score_cp_white_after": -6,
+  "score_cp_white_before": 2,
+  "syzygy_wdl": null
+ },
+ {
+  "best_engine_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 1,
+      "status": "safe"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 1.0,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 1 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Nxe5 dxe5 Bb5+",
+   "score_cp": -6,
+   "tactical_motifs": [
+    {
+     "details": "The move Qe7 creates a potential pin. The new threat is: The Black queen on e7 pins the enemy White knight on e5 to the White pawn on e4. Moving the pinned piece would allow a profitable capture.",
+     "tactic": "Potential Pin",
+     "value": 300
+    }
+   ],
+   "uci": [
+    "f3e5",
+    "d6e5",
+    "f1b5"
+   ]
+  },
+  "best_engine_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "Black has a space advantage.",
+      "White has the bishop pair.",
+      "Black has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": true,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 1,
+       "status": "safe"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 1.0,
+     "pawn_structure": {
+      "backward_pawns": [],
+      "doubled_pawns": [],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 1 pawn island(s).",
+       "Black has 2 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "Nxe5 dxe5 Bb5+",
+    "score_cp": -6,
+    "tactical_motifs": [
+     {
+      "details": "The move Qe7 creates a potential pin. The new threat is: The Black queen on e7 pins the enemy White knight on e5 to the White pawn on e4. Moving the pinned piece would allow a profitable capture.",
+      "tactic": "Potential Pin",
+      "value": 300
+     }
+    ],
+    "uci": [
+     "f3e5",
+     "d6e5",
+     "f1b5"
+    ]
+   }
+  ],
+  "best_follow_up": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [
+     "Black's dark-square bishop on f8 is a bad bishop."
+    ],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": -1.0,
+    "pawn_structure": {
+     "backward_pawns": [
+      "White's pawn on c2"
+     ],
+     "doubled_pawns": [
+      "Black's pawn on d4",
+      "Black's pawn on d6"
+     ],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "exd4 Qxd4 a5",
+   "score_cp": -6,
+   "tactical_motifs": [
+    {
+     "details": "No tactical opportunities detected",
+     "tactic": "None"
+    }
+   ],
+   "uci": [
+    "e5d4",
+    "d1d4",
+    "a7a5"
+   ]
+  },
+  "best_follow_up_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "Black has a space advantage.",
+      "White has the bishop pair.",
+      "Black has the bishop pair."
+     ],
+     "bad_bishops": [
+      "Black's dark-square bishop on f8 is a bad bishop."
+     ],
+     "has_bishop_pair": {
+      "black": true,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": -1.0,
+     "pawn_structure": {
+      "backward_pawns": [
+       "White's pawn on c2"
+      ],
+      "doubled_pawns": [
+       "Black's pawn on d4",
+       "Black's pawn on d6"
+      ],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 2 pawn island(s).",
+       "Black has 2 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "exd4 Qxd4 a5",
+    "score_cp": -6,
+    "tactical_motifs": [
+     {
+      "details": "No tactical opportunities detected",
+      "tactic": "None"
+     }
+    ],
+    "uci": [
+     "e5d4",
+     "d1d4",
+     "a7a5"
+    ]
+   }
+  ],
+  "classification": "Excellent",
+  "cp_loss": 0,
+  "evaluation_symbol": "!",
+  "fen_before": "rnbqkbnr/ppp2ppp/3p4/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 3",
+  "game_phase": "opening",
+  "move_number_str": "3",
+  "move_san": "d4",
+  "opening_name": "Philidor Defense",
+  "player": "White",
+  "player_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [
+     "Black's dark-square bishop on f8 is a bad bishop."
+    ],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.0,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 1 pawn island(s).",
+      "Black has 1 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "d4",
+   "score_cp": -6,
+   "tactical_motifs": [
+    {
+     "details": "No tactical opportunities detected",
+     "tactic": "None"
+    }
+   ],
+   "uci": [
+    "d2d4"
+   ]
+  },
+  "ply": 5,
+  "points_loss": 0.0,
+  "positional_analysis_after": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [
+    "Black's dark-square bishop on f8 is a bad bishop."
+   ],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.0,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 1 pawn island(s).",
+     "Black has 1 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "positional_analysis_before": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [
+    "Black's dark-square bishop on f8 is a bad bishop."
+   ],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 1,
+     "status": "safe"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.0,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 1 pawn island(s).",
+     "Black has 1 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "raw_engine_lines_for_display": [
+   {
+    "line": [
+     "f3e5",
+     "d6e5",
+     "f1b5"
+    ],
+    "score": "-6"
+   }
+  ],
+  "score_cp_white_after": -6,
+  "score_cp_white_before": -6,
+  "syzygy_wdl": null
+ },
+ {
+  "best_engine_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [
+     "Black's dark-square bishop on f8 is a bad bishop."
+    ],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": -1.0,
+    "pawn_structure": {
+     "backward_pawns": [
+      "White's pawn on c2"
+     ],
+     "doubled_pawns": [
+      "Black's pawn on d4",
+      "Black's pawn on d6"
+     ],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "exd4 Qxd4 a5",
+   "score_cp": -6,
+   "tactical_motifs": [
+    {
+     "details": "No tactical opportunities detected",
+     "tactic": "None"
+    }
+   ],
+   "uci": [
+    "e5d4",
+    "d1d4",
+    "a7a5"
+   ]
+  },
+  "best_engine_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "Black has a space advantage.",
+      "White has the bishop pair.",
+      "Black has the bishop pair."
+     ],
+     "bad_bishops": [
+      "Black's dark-square bishop on f8 is a bad bishop."
+     ],
+     "has_bishop_pair": {
+      "black": true,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": -1.0,
+     "pawn_structure": {
+      "backward_pawns": [
+       "White's pawn on c2"
+      ],
+      "doubled_pawns": [
+       "Black's pawn on d4",
+       "Black's pawn on d6"
+      ],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 2 pawn island(s).",
+       "Black has 2 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "exd4 Qxd4 a5",
+    "score_cp": -6,
+    "tactical_motifs": [
+     {
+      "details": "No tactical opportunities detected",
+      "tactic": "None"
+     }
+    ],
+    "uci": [
+     "e5d4",
+     "d1d4",
+     "a7a5"
+    ]
+   }
+  ],
+  "best_follow_up": {
+   "positional_analysis": {
+    "advantages": [
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 1.0,
+    "pawn_structure": {
+     "backward_pawns": [
+      "Black's pawn on f7"
+     ],
+     "doubled_pawns": [
+      "White's pawn on e4",
+      "White's pawn on e5"
+     ],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "dxe5 Bxf3 Qxf3",
+   "score_cp": 10,
+   "tactical_motifs": [
+    {
+     "details": "The move made created a profitable trade potential for the opponent. The move Bxf3 starts a favorable tactical sequence, improving the evaluation by +1.00. The full sequence is: Bxf3 Qxf3 dxe5.",
+     "sequence_uci": [
+      "g4f3",
+      "d1f3",
+      "d6e5"
+     ],
+     "tactic": "Profitable Trade",
+     "value": 100
+    }
+   ],
+   "uci": [
+    "d4e5",
+    "g4f3",
+    "d1f3"
+   ]
+  },
+  "best_follow_up_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "White has the bishop pair.",
+      "Black has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": true,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 1.0,
+     "pawn_structure": {
+      "backward_pawns": [
+       "Black's pawn on f7"
+      ],
+      "doubled_pawns": [
+       "White's pawn on e4",
+       "White's pawn on e5"
+      ],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 2 pawn island(s).",
+       "Black has 2 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "dxe5 Bxf3 Qxf3",
+    "score_cp": 10,
+    "tactical_motifs": [
+     {
+      "details": "The move made created a profitable trade potential for the opponent. The move Bxf3 starts a favorable tactical sequence, improving the evaluation by +1.00. The full sequence is: Bxf3 Qxf3 dxe5.",
+      "sequence_uci": [
+       "g4f3",
+       "d1f3",
+       "d6e5"
+      ],
+      "tactic": "Profitable Trade",
+      "value": 100
+     }
+    ],
+    "uci": [
+     "d4e5",
+     "g4f3",
+     "d1f3"
+    ]
+   }
+  ],
+  "classification": "Excellent",
+  "cp_loss": 16,
+  "evaluation_symbol": "!",
+  "fen_before": "rnbqkbnr/ppp2ppp/3p4/4p3/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 3",
+  "game_phase": "opening",
+  "move_number_str": "3",
+  "move_san": "Bg4",
+  "opening_name": "Philidor Defense",
+  "player": "Black",
+  "player_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [
+     "Black's dark-square bishop on f8 is a bad bishop."
+    ],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.0,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 1 pawn island(s).",
+      "Black has 1 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Bg4",
+   "score_cp": 10,
+   "tactical_motifs": [
+    {
+     "details": "The Black bishop on g4 pins the enemy White knight on f3 to the White queen on d1. Moving the pinned piece would allow a profitable capture.",
+     "squares": [
+      30,
+      21,
+      3
+     ],
+     "tactic": "Pin",
+     "value": 300
+    }
+   ],
+   "uci": [
+    "c8g4"
+   ]
+  },
+  "ply": 6,
+  "points_loss": 0.01599837889655331,
+  "positional_analysis_after": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [
+    "Black's dark-square bishop on f8 is a bad bishop."
+   ],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.0,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 1 pawn island(s).",
+     "Black has 1 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "positional_analysis_before": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [
+    "Black's dark-square bishop on f8 is a bad bishop."
+   ],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.0,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 1 pawn island(s).",
+     "Black has 1 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "raw_engine_lines_for_display": [
+   {
+    "line": [
+     "e5d4",
+     "d1d4",
+     "a7a5"
+    ],
+    "score": "+6"
+   }
+  ],
+  "score_cp_white_after": 10,
+  "score_cp_white_before": -6,
+  "syzygy_wdl": null
+ },
+ {
+  "best_engine_line": {
+   "positional_analysis": {
+    "advantages": [
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 1.0,
+    "pawn_structure": {
+     "backward_pawns": [
+      "Black's pawn on f7"
+     ],
+     "doubled_pawns": [
+      "White's pawn on e4",
+      "White's pawn on e5"
+     ],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "dxe5 Bxf3 Qxf3",
+   "score_cp": 10,
+   "tactical_motifs": [
+    {
+     "details": "The move made created a profitable trade potential for the opponent. The move Bxf3 starts a favorable tactical sequence, improving the evaluation by +1.00. The full sequence is: Bxf3 Qxf3 dxe5.",
+     "sequence_uci": [
+      "g4f3",
+      "d1f3",
+      "d6e5"
+     ],
+     "tactic": "Profitable Trade",
+     "value": 100
+    }
+   ],
+   "uci": [
+    "d4e5",
+    "g4f3",
+    "d1f3"
+   ]
+  },
+  "best_engine_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "White has the bishop pair.",
+      "Black has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": true,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 1.0,
+     "pawn_structure": {
+      "backward_pawns": [
+       "Black's pawn on f7"
+      ],
+      "doubled_pawns": [
+       "White's pawn on e4",
+       "White's pawn on e5"
+      ],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 2 pawn island(s).",
+       "Black has 2 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "dxe5 Bxf3 Qxf3",
+    "score_cp": 10,
+    "tactical_motifs": [
+     {
+      "details": "The move made created a profitable trade potential for the opponent. The move Bxf3 starts a favorable tactical sequence, improving the evaluation by +1.00. The full sequence is: Bxf3 Qxf3 dxe5.",
+      "sequence_uci": [
+       "g4f3",
+       "d1f3",
+       "d6e5"
+      ],
+      "tactic": "Profitable Trade",
+      "value": 100
+     }
+    ],
+    "uci": [
+     "d4e5",
+     "g4f3",
+     "d1f3"
+    ]
+   }
+  ],
+  "best_follow_up": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": -2.0,
+    "pawn_structure": {
+     "backward_pawns": [
+      "Black's pawn on f7"
+     ],
+     "doubled_pawns": [
+      "White's pawn on e4",
+      "White's pawn on e5"
+     ],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Bxf3 Qxf3 dxe5",
+   "score_cp": 88,
+   "tactical_motifs": [
+    {
+     "details": "The White pawn on e4 is hanging and can be captured profitably (SEE: +1.00).",
+     "tactic": "Hanging Piece",
+     "value": 100
+    }
+   ],
+   "uci": [
+    "g4f3",
+    "d1f3",
+    "d6e5"
+   ]
+  },
+  "best_follow_up_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "Black has a space advantage.",
+      "White has the bishop pair.",
+      "Black has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": true,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": -2.0,
+     "pawn_structure": {
+      "backward_pawns": [
+       "Black's pawn on f7"
+      ],
+      "doubled_pawns": [
+       "White's pawn on e4",
+       "White's pawn on e5"
+      ],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 2 pawn island(s).",
+       "Black has 2 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "Bxf3 Qxf3 dxe5",
+    "score_cp": 88,
+    "tactical_motifs": [
+     {
+      "details": "The White pawn on e4 is hanging and can be captured profitably (SEE: +1.00).",
+      "tactic": "Hanging Piece",
+      "value": 100
+     }
+    ],
+    "uci": [
+     "g4f3",
+     "d1f3",
+     "d6e5"
+    ]
+   }
+  ],
+  "classification": "Best",
+  "cp_loss": -78,
+  "evaluation_symbol": "!",
+  "fen_before": "rn1qkbnr/ppp2ppp/3p4/4p3/3PP1b1/5N2/PPP2PPP/RNBQKB1R w KQkq - 1 4",
+  "game_phase": "opening",
+  "move_number_str": "4",
+  "move_san": "dxe5",
+  "opening_name": "Philidor Defense",
+  "player": "White",
+  "player_line": {
+   "positional_analysis": {
+    "advantages": [
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 1.0,
+    "pawn_structure": {
+     "backward_pawns": [
+      "Black's pawn on f7"
+     ],
+     "doubled_pawns": [
+      "White's pawn on e4",
+      "White's pawn on e5"
+     ],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "dxe5",
+   "score_cp": 88,
+   "tactical_motifs": [
+    {
+     "details": "The move made created a profitable trade potential for the opponent. The move Bxf3 starts a favorable tactical sequence, improving the evaluation by +1.00. The full sequence is: Bxf3 Qxf3 dxe5.",
+     "sequence_uci": [
+      "g4f3",
+      "d1f3",
+      "d6e5"
+     ],
+     "tactic": "Profitable Trade",
+     "value": 100
+    }
+   ],
+   "uci": [
+    "d4e5"
+   ]
+  },
+  "ply": 7,
+  "points_loss": -0.07710382266220406,
+  "positional_analysis_after": {
+   "advantages": [
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 1.0,
+   "pawn_structure": {
+    "backward_pawns": [
+     "Black's pawn on f7"
+    ],
+    "doubled_pawns": [
+     "White's pawn on e4",
+     "White's pawn on e5"
+    ],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 2 pawn island(s).",
+     "Black has 2 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "positional_analysis_before": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [
+    "Black's dark-square bishop on f8 is a bad bishop."
+   ],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.0,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 1 pawn island(s).",
+     "Black has 1 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "raw_engine_lines_for_display": [
+   {
+    "line": [
+     "d4e5",
+     "g4f3",
+     "d1f3"
+    ],
+    "score": "+10"
+   }
+  ],
+  "score_cp_white_after": 88,
+  "score_cp_white_before": 10,
+  "syzygy_wdl": null
+ },
+ {
+  "best_engine_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": -2.0,
+    "pawn_structure": {
+     "backward_pawns": [
+      "Black's pawn on f7"
+     ],
+     "doubled_pawns": [
+      "White's pawn on e4",
+      "White's pawn on e5"
+     ],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Bxf3 Qxf3 dxe5",
+   "score_cp": 88,
+   "tactical_motifs": [
+    {
+     "details": "The White pawn on e4 is hanging and can be captured profitably (SEE: +1.00).",
+     "tactic": "Hanging Piece",
+     "value": 100
+    }
+   ],
+   "uci": [
+    "g4f3",
+    "d1f3",
+    "d6e5"
+   ]
+  },
+  "best_engine_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "Black has a space advantage.",
+      "White has the bishop pair.",
+      "Black has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": true,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": -2.0,
+     "pawn_structure": {
+      "backward_pawns": [
+       "Black's pawn on f7"
+      ],
+      "doubled_pawns": [
+       "White's pawn on e4",
+       "White's pawn on e5"
+      ],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 2 pawn island(s).",
+       "Black has 2 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "Bxf3 Qxf3 dxe5",
+    "score_cp": 88,
+    "tactical_motifs": [
+     {
+      "details": "The White pawn on e4 is hanging and can be captured profitably (SEE: +1.00).",
+      "tactic": "Hanging Piece",
+      "value": 100
+     }
+    ],
+    "uci": [
+     "g4f3",
+     "d1f3",
+     "d6e5"
+    ]
+   }
+  ],
+  "best_follow_up": {
+   "positional_analysis": {
+    "advantages": [
+     "White has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": false,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 1.1999999999999957,
+    "pawn_structure": {
+     "backward_pawns": [
+      "Black's pawn on f7"
+     ],
+     "doubled_pawns": [
+      "White's pawn on e4",
+      "White's pawn on e5"
+     ],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Qxf3 dxe5 Qxf7+",
+   "score_cp": -190,
+   "tactical_motifs": [
+    {
+     "details": "The White pawn on e5 is hanging and can be captured profitably (SEE: +1.00).",
+     "tactic": "Hanging Piece",
+     "value": 100
+    },
+    {
+     "details": "The move made created a profitable trade potential for the opponent. The move dxe5 starts a favorable tactical sequence, improving the evaluation by +1.00. The full sequence is: dxe5.",
+     "sequence_uci": [
+      "d6e5"
+     ],
+     "tactic": "Profitable Trade",
+     "value": 100
+    }
+   ],
+   "uci": [
+    "d1f3",
+    "d6e5",
+    "f3f7"
+   ]
+  },
+  "best_follow_up_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "White has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": false,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 1.1999999999999957,
+     "pawn_structure": {
+      "backward_pawns": [
+       "Black's pawn on f7"
+      ],
+      "doubled_pawns": [
+       "White's pawn on e4",
+       "White's pawn on e5"
+      ],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 2 pawn island(s).",
+       "Black has 2 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "Qxf3 dxe5 Qxf7+",
+    "score_cp": -190,
+    "tactical_motifs": [
+     {
+      "details": "The White pawn on e5 is hanging and can be captured profitably (SEE: +1.00).",
+      "tactic": "Hanging Piece",
+      "value": 100
+     },
+     {
+      "details": "The move made created a profitable trade potential for the opponent. The move dxe5 starts a favorable tactical sequence, improving the evaluation by +1.00. The full sequence is: dxe5.",
+      "sequence_uci": [
+       "d6e5"
+      ],
+      "tactic": "Profitable Trade",
+      "value": 100
+     }
+    ],
+    "uci": [
+     "d1f3",
+     "d6e5",
+     "f3f7"
+    ]
+   }
+  ],
+  "classification": "Best",
+  "cp_loss": -278,
+  "evaluation_symbol": "!",
+  "fen_before": "rn1qkbnr/ppp2ppp/3p4/4P3/4P1b1/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 4",
+  "game_phase": "opening",
+  "move_number_str": "4",
+  "move_san": "Bxf3",
+  "opening_name": "Philidor Defense",
+  "player": "Black",
+  "player_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair.",
+     "Black has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": true,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": -2.0,
+    "pawn_structure": {
+     "backward_pawns": [
+      "Black's pawn on f7"
+     ],
+     "doubled_pawns": [
+      "White's pawn on e4",
+      "White's pawn on e5"
+     ],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Bxf3",
+   "score_cp": -190,
+   "tactical_motifs": [
+    {
+     "details": "Your move gives the opponent a choice between two good captures: Qxf3 (eval for them: +1.02) and gxf3 (eval for them: +1.02).",
+     "tactic": "Opponent Choice",
+     "value": 0
+    },
+    {
+     "details": "The White pawn on e4 is hanging and can be captured profitably (SEE: +1.00).",
+     "tactic": "Hanging Piece",
+     "value": 100
+    }
+   ],
+   "uci": [
+    "g4f3"
+   ]
+  },
+  "ply": 8,
+  "points_loss": -0.2684562233311952,
+  "positional_analysis_after": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": -2.0,
+   "pawn_structure": {
+    "backward_pawns": [
+     "Black's pawn on f7"
+    ],
+    "doubled_pawns": [
+     "White's pawn on e4",
+     "White's pawn on e5"
+    ],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 2 pawn island(s).",
+     "Black has 2 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "positional_analysis_before": {
+   "advantages": [
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 1.0,
+   "pawn_structure": {
+    "backward_pawns": [
+     "Black's pawn on f7"
+    ],
+    "doubled_pawns": [
+     "White's pawn on e4",
+     "White's pawn on e5"
+    ],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 2 pawn island(s).",
+     "Black has 2 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "raw_engine_lines_for_display": [
+   {
+    "line": [
+     "g4f3",
+     "d1f3",
+     "d6e5"
+    ],
+    "score": "-88"
+   }
+  ],
+  "score_cp_white_after": -190,
+  "score_cp_white_before": 88,
+  "syzygy_wdl": null
+ },
+ {
+  "best_engine_line": {
+   "positional_analysis": {
+    "advantages": [
+     "White has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": false,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 1.1999999999999957,
+    "pawn_structure": {
+     "backward_pawns": [
+      "Black's pawn on f7"
+     ],
+     "doubled_pawns": [
+      "White's pawn on e4",
+      "White's pawn on e5"
+     ],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Qxf3 dxe5 Qxf7+",
+   "score_cp": -190,
+   "tactical_motifs": [
+    {
+     "details": "The White pawn on e5 is hanging and can be captured profitably (SEE: +1.00).",
+     "tactic": "Hanging Piece",
+     "value": 100
+    },
+    {
+     "details": "The move made created a profitable trade potential for the opponent. The move dxe5 starts a favorable tactical sequence, improving the evaluation by +1.00. The full sequence is: dxe5.",
+     "sequence_uci": [
+      "d6e5"
+     ],
+     "tactic": "Profitable Trade",
+     "value": 100
+    }
+   ],
+   "uci": [
+    "d1f3",
+    "d6e5",
+    "f3f7"
+   ]
+  },
+  "best_engine_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "White has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": false,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 1.1999999999999957,
+     "pawn_structure": {
+      "backward_pawns": [
+       "Black's pawn on f7"
+      ],
+      "doubled_pawns": [
+       "White's pawn on e4",
+       "White's pawn on e5"
+      ],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 2 pawn island(s).",
+       "Black has 2 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "Qxf3 dxe5 Qxf7+",
+    "score_cp": -190,
+    "tactical_motifs": [
+     {
+      "details": "The White pawn on e5 is hanging and can be captured profitably (SEE: +1.00).",
+      "tactic": "Hanging Piece",
+      "value": 100
+     },
+     {
+      "details": "The move made created a profitable trade potential for the opponent. The move dxe5 starts a favorable tactical sequence, improving the evaluation by +1.00. The full sequence is: dxe5.",
+      "sequence_uci": [
+       "d6e5"
+      ],
+      "tactic": "Profitable Trade",
+      "value": 100
+     }
+    ],
+    "uci": [
+     "d1f3",
+     "d6e5",
+     "f3f7"
+    ]
+   }
+  ],
+  "best_follow_up": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": false,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.19999999999999574,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "dxe5 Qxf7+ Kxf7",
+   "score_cp": 102,
+   "tactical_motifs": [
+    {
+     "details": "No tactical opportunities detected",
+     "tactic": "None"
+    }
+   ],
+   "uci": [
+    "d6e5",
+    "f3f7",
+    "e8f7"
+   ]
+  },
+  "best_follow_up_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "Black has a space advantage.",
+      "White has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": false,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 0.19999999999999574,
+     "pawn_structure": {
+      "backward_pawns": [],
+      "doubled_pawns": [],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 2 pawn island(s).",
+       "Black has 2 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "dxe5 Qxf7+ Kxf7",
+    "score_cp": 102,
+    "tactical_motifs": [
+     {
+      "details": "No tactical opportunities detected",
+      "tactic": "None"
+     }
+    ],
+    "uci": [
+     "d6e5",
+     "f3f7",
+     "e8f7"
+    ]
+   }
+  ],
+  "classification": "Great Move",
+  "cp_loss": -292,
+  "evaluation_symbol": "!",
+  "fen_before": "rn1qkbnr/ppp2ppp/3p4/4P3/4P3/5b2/PPP2PPP/RNBQKB1R w KQkq - 0 5",
+  "game_phase": "opening",
+  "move_number_str": "5",
+  "move_san": "Qxf3",
+  "opening_name": "Philidor Defense",
+  "player": "White",
+  "player_line": {
+   "positional_analysis": {
+    "advantages": [
+     "White has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": false,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 1.1999999999999957,
+    "pawn_structure": {
+     "backward_pawns": [
+      "Black's pawn on f7"
+     ],
+     "doubled_pawns": [
+      "White's pawn on e4",
+      "White's pawn on e5"
+     ],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Qxf3",
+   "score_cp": 102,
+   "tactical_motifs": [
+    {
+     "details": "The White pawn on e5 is hanging and can be captured profitably (SEE: +1.00).",
+     "tactic": "Hanging Piece",
+     "value": 100
+    },
+    {
+     "details": "The move made created a profitable trade potential for the opponent. The move dxe5 starts a favorable tactical sequence, improving the evaluation by +1.00. The full sequence is: dxe5.",
+     "sequence_uci": [
+      "d6e5"
+     ],
+     "tactic": "Profitable Trade",
+     "value": 100
+    }
+   ],
+   "uci": [
+    "d1f3"
+   ]
+  },
+  "ply": 9,
+  "points_loss": -0.28196195334029994,
+  "positional_analysis_after": {
+   "advantages": [
+    "White has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": false,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 1.1999999999999957,
+   "pawn_structure": {
+    "backward_pawns": [
+     "Black's pawn on f7"
+    ],
+    "doubled_pawns": [
+     "White's pawn on e4",
+     "White's pawn on e5"
+    ],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 2 pawn island(s).",
+     "Black has 2 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "positional_analysis_before": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair.",
+    "Black has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": true,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": -2.0,
+   "pawn_structure": {
+    "backward_pawns": [
+     "Black's pawn on f7"
+    ],
+    "doubled_pawns": [
+     "White's pawn on e4",
+     "White's pawn on e5"
+    ],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 2 pawn island(s).",
+     "Black has 2 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "raw_engine_lines_for_display": [
+   {
+    "line": [
+     "d1f3",
+     "d6e5",
+     "f3f7"
+    ],
+    "score": "-190"
+   }
+  ],
+  "score_cp_white_after": 102,
+  "score_cp_white_before": -190,
+  "syzygy_wdl": null
+ },
+ {
+  "best_engine_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": false,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.19999999999999574,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "dxe5 Qxf7+ Kxf7",
+   "score_cp": 102,
+   "tactical_motifs": [
+    {
+     "details": "No tactical opportunities detected",
+     "tactic": "None"
+    }
+   ],
+   "uci": [
+    "d6e5",
+    "f3f7",
+    "e8f7"
+   ]
+  },
+  "best_engine_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "Black has a space advantage.",
+      "White has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": false,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 0.19999999999999574,
+     "pawn_structure": {
+      "backward_pawns": [],
+      "doubled_pawns": [],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 2 pawn island(s).",
+       "Black has 2 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "dxe5 Qxf7+ Kxf7",
+    "score_cp": 102,
+    "tactical_motifs": [
+     {
+      "details": "No tactical opportunities detected",
+      "tactic": "None"
+     }
+    ],
+    "uci": [
+     "d6e5",
+     "f3f7",
+     "e8f7"
+    ]
+   }
+  ],
+  "best_follow_up": {
+   "positional_analysis": {
+    "advantages": [
+     "White has the bishop pair."
+    ],
+    "bad_bishops": [
+     "Black's dark-square bishop on f8 is a bad bishop."
+    ],
+    "has_bishop_pair": {
+     "black": false,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 1,
+      "pawn_shield_holes": 3,
+      "status": "dangerous"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 1.1999999999999957,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [
+      "Black's pawn on e5"
+     ],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 3 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Qxf7+ Kxf7 Bc4+",
+   "score_cp": 20,
+   "tactical_motifs": [
+    {
+     "details": "The move Qxf7+ is a brilliant clearance sacrifice by the White queen, leading to a forced checkmate.",
+     "tactic": "Clearance Sacrifice",
+     "value": 1000
+    }
+   ],
+   "uci": [
+    "f3f7",
+    "e8f7",
+    "f1c4"
+   ]
+  },
+  "best_follow_up_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "White has the bishop pair."
+     ],
+     "bad_bishops": [
+      "Black's dark-square bishop on f8 is a bad bishop."
+     ],
+     "has_bishop_pair": {
+      "black": false,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 1,
+       "pawn_shield_holes": 3,
+       "status": "dangerous"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 1.1999999999999957,
+     "pawn_structure": {
+      "backward_pawns": [],
+      "doubled_pawns": [],
+      "isolated_pawns": [
+       "Black's pawn on e5"
+      ],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 2 pawn island(s).",
+       "Black has 3 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "Qxf7+ Kxf7 Bc4+",
+    "score_cp": 20,
+    "tactical_motifs": [
+     {
+      "details": "The move Qxf7+ is a brilliant clearance sacrifice by the White queen, leading to a forced checkmate.",
+      "tactic": "Clearance Sacrifice",
+      "value": 1000
+     }
+    ],
+    "uci": [
+     "f3f7",
+     "e8f7",
+     "f1c4"
+    ]
+   }
+  ],
+  "classification": "Best",
+  "cp_loss": -82,
+  "evaluation_symbol": "!",
+  "fen_before": "rn1qkbnr/ppp2ppp/3p4/4P3/4P3/5Q2/PPP2PPP/RNB1KB1R b KQkq - 0 5",
+  "game_phase": "opening",
+  "move_number_str": "5",
+  "move_san": "dxe5",
+  "opening_name": "Philidor Defense",
+  "player": "Black",
+  "player_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": false,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.19999999999999574,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "dxe5",
+   "score_cp": 20,
+   "tactical_motifs": [
+    {
+     "details": "No tactical opportunities detected",
+     "tactic": "None"
+    }
+   ],
+   "uci": [
+    "d6e5"
+   ]
+  },
+  "ply": 10,
+  "points_loss": -0.08061887939569279,
+  "positional_analysis_after": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": false,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.19999999999999574,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 2 pawn island(s).",
+     "Black has 2 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "positional_analysis_before": {
+   "advantages": [
+    "White has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": false,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 1.1999999999999957,
+   "pawn_structure": {
+    "backward_pawns": [
+     "Black's pawn on f7"
+    ],
+    "doubled_pawns": [
+     "White's pawn on e4",
+     "White's pawn on e5"
+    ],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 2 pawn island(s).",
+     "Black has 2 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "raw_engine_lines_for_display": [
+   {
+    "line": [
+     "d6e5",
+     "f3f7",
+     "e8f7"
+    ],
+    "score": "-102"
+   }
+  ],
+  "score_cp_white_after": 20,
+  "score_cp_white_before": 102,
+  "syzygy_wdl": null
+ },
+ {
+  "best_engine_line": {
+   "positional_analysis": {
+    "advantages": [
+     "White has the bishop pair."
+    ],
+    "bad_bishops": [
+     "Black's dark-square bishop on f8 is a bad bishop."
+    ],
+    "has_bishop_pair": {
+     "black": false,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 1,
+      "pawn_shield_holes": 3,
+      "status": "dangerous"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 1.1999999999999957,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [
+      "Black's pawn on e5"
+     ],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 3 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Qxf7+ Kxf7 Bc4+",
+   "score_cp": 20,
+   "tactical_motifs": [
+    {
+     "details": "The move Qxf7+ is a brilliant clearance sacrifice by the White queen, leading to a forced checkmate.",
+     "tactic": "Clearance Sacrifice",
+     "value": 1000
+    }
+   ],
+   "uci": [
+    "f3f7",
+    "e8f7",
+    "f1c4"
+   ]
+  },
+  "best_engine_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "White has the bishop pair."
+     ],
+     "bad_bishops": [
+      "Black's dark-square bishop on f8 is a bad bishop."
+     ],
+     "has_bishop_pair": {
+      "black": false,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 1,
+       "pawn_shield_holes": 3,
+       "status": "dangerous"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 1.1999999999999957,
+     "pawn_structure": {
+      "backward_pawns": [],
+      "doubled_pawns": [],
+      "isolated_pawns": [
+       "Black's pawn on e5"
+      ],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 2 pawn island(s).",
+       "Black has 3 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "Qxf7+ Kxf7 Bc4+",
+    "score_cp": 20,
+    "tactical_motifs": [
+     {
+      "details": "The move Qxf7+ is a brilliant clearance sacrifice by the White queen, leading to a forced checkmate.",
+      "tactic": "Clearance Sacrifice",
+      "value": 1000
+     }
+    ],
+    "uci": [
+     "f3f7",
+     "e8f7",
+     "f1c4"
+    ]
+   }
+  ],
+  "best_follow_up": {
+   "positional_analysis": {
+    "advantages": [
+     "White has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": false,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 1,
+      "pawn_shield_holes": 2,
+      "status": "dangerous"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.19999999999999574,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Qd1+ Kxd1 a5",
+   "score_cp": -14,
+   "tactical_motifs": [
+    {
+     "details": "The Black queen on d1 is hanging and can be captured profitably (SEE: +9.00).",
+     "tactic": "Hanging Piece",
+     "value": 900
+    },
+    {
+     "details": "The White bishop on c1 is hanging and can be captured profitably (SEE: +3.00).",
+     "tactic": "Hanging Piece",
+     "value": 300
+    }
+   ],
+   "uci": [
+    "d8d1",
+    "e1d1",
+    "a7a5"
+   ]
+  },
+  "best_follow_up_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "White has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": false,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      },
+      "white": {
+       "attackers": 1,
+       "pawn_shield_holes": 2,
+       "status": "dangerous"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 0.19999999999999574,
+     "pawn_structure": {
+      "backward_pawns": [],
+      "doubled_pawns": [],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 2 pawn island(s).",
+       "Black has 2 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "Qd1+ Kxd1 a5",
+    "score_cp": -14,
+    "tactical_motifs": [
+     {
+      "details": "The Black queen on d1 is hanging and can be captured profitably (SEE: +9.00).",
+      "tactic": "Hanging Piece",
+      "value": 900
+     },
+     {
+      "details": "The White bishop on c1 is hanging and can be captured profitably (SEE: +3.00).",
+      "tactic": "Hanging Piece",
+      "value": 300
+     }
+    ],
+    "uci": [
+     "d8d1",
+     "e1d1",
+     "a7a5"
+    ]
+   }
+  ],
+  "classification": "Good",
+  "cp_loss": 34,
+  "evaluation_symbol": "",
+  "fen_before": "rn1qkbnr/ppp2ppp/8/4p3/4P3/5Q2/PPP2PPP/RNB1KB1R w KQkq - 0 6",
+  "game_phase": "opening",
+  "move_number_str": "6",
+  "move_san": "Bc4",
+  "opening_name": "Philidor Defense",
+  "player": "White",
+  "player_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": false,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.19999999999999574,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Bc4",
+   "score_cp": -14,
+   "tactical_motifs": [
+    {
+     "details": "No tactical opportunities detected",
+     "tactic": "None"
+    }
+   ],
+   "uci": [
+    "f1c4"
+   ]
+  },
+  "ply": 11,
+  "points_loss": 0.033985682635909065,
+  "positional_analysis_after": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": false,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.19999999999999574,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 2 pawn island(s).",
+     "Black has 2 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "positional_analysis_before": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": false,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.19999999999999574,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 2 pawn island(s).",
+     "Black has 2 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "raw_engine_lines_for_display": [
+   {
+    "line": [
+     "f3f7",
+     "e8f7",
+     "f1c4"
+    ],
+    "score": "+20"
+   }
+  ],
+  "score_cp_white_after": -14,
+  "score_cp_white_before": 20,
+  "syzygy_wdl": null
+ },
+ {
+  "best_engine_line": {
+   "positional_analysis": {
+    "advantages": [
+     "White has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": false,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 1,
+      "pawn_shield_holes": 2,
+      "status": "dangerous"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.19999999999999574,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Qd1+ Kxd1 a5",
+   "score_cp": -14,
+   "tactical_motifs": [
+    {
+     "details": "The Black queen on d1 is hanging and can be captured profitably (SEE: +9.00).",
+     "tactic": "Hanging Piece",
+     "value": 900
+    },
+    {
+     "details": "The White bishop on c1 is hanging and can be captured profitably (SEE: +3.00).",
+     "tactic": "Hanging Piece",
+     "value": 300
+    }
+   ],
+   "uci": [
+    "d8d1",
+    "e1d1",
+    "a7a5"
+   ]
+  },
+  "best_engine_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "White has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": false,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      },
+      "white": {
+       "attackers": 1,
+       "pawn_shield_holes": 2,
+       "status": "dangerous"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 0.19999999999999574,
+     "pawn_structure": {
+      "backward_pawns": [],
+      "doubled_pawns": [],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 2 pawn island(s).",
+       "Black has 2 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "Qd1+ Kxd1 a5",
+    "score_cp": -14,
+    "tactical_motifs": [
+     {
+      "details": "The Black queen on d1 is hanging and can be captured profitably (SEE: +9.00).",
+      "tactic": "Hanging Piece",
+      "value": 900
+     },
+     {
+      "details": "The White bishop on c1 is hanging and can be captured profitably (SEE: +3.00).",
+      "tactic": "Hanging Piece",
+      "value": 300
+     }
+    ],
+    "uci": [
+     "d8d1",
+     "e1d1",
+     "a7a5"
+    ]
+   }
+  ],
+  "best_follow_up": {
+   "positional_analysis": {
+    "advantages": [
+     "White has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": false,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 3.1999999999999957,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Qxf6 Qxf6 Bxf7+",
+   "score_cp": 30,
+   "tactical_motifs": [
+    {
+     "details": "The move Qxf6 is a brilliant clearance sacrifice by the White queen, leading to a forced checkmate.",
+     "tactic": "Clearance Sacrifice",
+     "value": 1000
+    },
+    {
+     "details": "The Black pawn on e5 is hanging and can be captured profitably (SEE: +1.00).",
+     "tactic": "Hanging Piece",
+     "value": 100
+    }
+   ],
+   "uci": [
+    "f3f6",
+    "d8f6",
+    "c4f7"
+   ]
+  },
+  "best_follow_up_lines": [
+   {
+    "positional_analysis": {
+     "advantages": [
+      "White has the bishop pair."
+     ],
+     "bad_bishops": [],
+     "has_bishop_pair": {
+      "black": false,
+      "white": true
+     },
+     "king_safety": {
+      "black": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      },
+      "white": {
+       "attackers": 0,
+       "pawn_shield_holes": 2,
+       "status": "exposed"
+      }
+     },
+     "knight_outposts": [],
+     "material_balance": 3.1999999999999957,
+     "pawn_structure": {
+      "backward_pawns": [],
+      "doubled_pawns": [],
+      "isolated_pawns": [],
+      "passed_pawns": [],
+      "pawn_islands": [
+       "White has 2 pawn island(s).",
+       "Black has 2 pawn island(s)."
+      ]
+     },
+     "rook_activity": {
+      "black": [],
+      "white": []
+     }
+    },
+    "san": "Qxf6 Qxf6 Bxf7+",
+    "score_cp": 30,
+    "tactical_motifs": [
+     {
+      "details": "The move Qxf6 is a brilliant clearance sacrifice by the White queen, leading to a forced checkmate.",
+      "tactic": "Clearance Sacrifice",
+      "value": 1000
+     },
+     {
+      "details": "The Black pawn on e5 is hanging and can be captured profitably (SEE: +1.00).",
+      "tactic": "Hanging Piece",
+      "value": 100
+     }
+    ],
+    "uci": [
+     "f3f6",
+     "d8f6",
+     "c4f7"
+    ]
+   }
+  ],
+  "classification": "Good",
+  "cp_loss": 44,
+  "evaluation_symbol": "",
+  "fen_before": "rn1qkbnr/ppp2ppp/8/4p3/2B1P3/5Q2/PPP2PPP/RNB1K2R b KQkq - 1 6",
+  "game_phase": "opening",
+  "move_number_str": "6",
+  "move_san": "Nf6",
+  "opening_name": "Philidor Defense",
+  "player": "Black",
+  "player_line": {
+   "positional_analysis": {
+    "advantages": [
+     "Black has a space advantage.",
+     "White has the bishop pair."
+    ],
+    "bad_bishops": [],
+    "has_bishop_pair": {
+     "black": false,
+     "white": true
+    },
+    "king_safety": {
+     "black": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     },
+     "white": {
+      "attackers": 0,
+      "pawn_shield_holes": 2,
+      "status": "exposed"
+     }
+    },
+    "knight_outposts": [],
+    "material_balance": 0.19999999999999574,
+    "pawn_structure": {
+     "backward_pawns": [],
+     "doubled_pawns": [],
+     "isolated_pawns": [],
+     "passed_pawns": [],
+     "pawn_islands": [
+      "White has 2 pawn island(s).",
+      "Black has 2 pawn island(s)."
+     ]
+    },
+    "rook_activity": {
+     "black": [],
+     "white": []
+    }
+   },
+   "san": "Nf6",
+   "score_cp": 30,
+   "tactical_motifs": [
+    {
+     "details": "The White queen on f3 pins the enemy Black knight on f6 to the Black pawn on f7. Moving the pinned piece would allow a profitable capture.",
+     "squares": [
+      21,
+      45,
+      53
+     ],
+     "tactic": "Pin",
+     "value": 300
+    },
+    {
+     "details": "The move Qf5 creates a potential pin. The new threat is: The White queen on f5 pins the enemy Black knight on f6 to the Black pawn on f7. Moving the pinned piece would allow a profitable capture.",
+     "tactic": "Potential Pin",
+     "value": 300
+    },
+    {
+     "details": "The move Bg5 creates a potential pin. The new threat is: The White bishop on g5 pins the enemy Black knight on f6 to the Black queen on d8. Moving the pinned piece would allow a profitable capture.",
+     "tactic": "Potential Pin",
+     "value": 300
+    }
+   ],
+   "uci": [
+    "g8f6"
+   ]
+  },
+  "ply": 12,
+  "points_loss": 0.043960394244899004,
+  "positional_analysis_after": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": false,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.19999999999999574,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 2 pawn island(s).",
+     "Black has 2 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "positional_analysis_before": {
+   "advantages": [
+    "Black has a space advantage.",
+    "White has the bishop pair."
+   ],
+   "bad_bishops": [],
+   "has_bishop_pair": {
+    "black": false,
+    "white": true
+   },
+   "king_safety": {
+    "black": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    },
+    "white": {
+     "attackers": 0,
+     "pawn_shield_holes": 2,
+     "status": "exposed"
+    }
+   },
+   "knight_outposts": [],
+   "material_balance": 0.19999999999999574,
+   "pawn_structure": {
+    "backward_pawns": [],
+    "doubled_pawns": [],
+    "isolated_pawns": [],
+    "passed_pawns": [],
+    "pawn_islands": [
+     "White has 2 pawn island(s).",
+     "Black has 2 pawn island(s)."
+    ]
+   },
+   "rook_activity": {
+    "black": [],
+    "white": []
+   }
+  },
+  "raw_engine_lines_for_display": [
+   {
+    "line": [
+     "d8d1",
+     "e1d1",
+     "a7a5"
+    ],
+    "score": "+14"
+   }
+  ],
+  "score_cp_white_after": 30,
+  "score_cp_white_before": -14,
+  "syzygy_wdl": null
+ }
+]
