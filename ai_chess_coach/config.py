@@ -24,7 +24,7 @@ class AnalysisConfig:
     BAD_BISHOP_PAWN_RATIO: float = 0.6
     SPACE_ADVANTAGE_RATIO: float = 1.2
     MATE_SCORE: int = 10000
-    FAST_PASS_DEPTH: int = 12
+    FAST_PASS_DEPTH: int = 16
     FULL_DEPTH: int = 10
     FAST_PASS_MULTIPV: int = 1  # Analyze only the single best line
     FULL_MULTIPV: int = 1       # Analyze only the single best line
