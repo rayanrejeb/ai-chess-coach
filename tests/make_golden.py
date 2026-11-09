@@ -1,7 +1,7 @@
 """Write tests/golden.json from the original single-file app (chess_analyzer.py).
 
 Run once, before the refactor:  python tests/make_golden.py
-The single file was removed afterwards; to regenerate, check out commit 3438f55.
+The single file was removed afterwards; to regenerate, check out commit 5bea235.
 """
 
 import json

@@ -2,7 +2,7 @@
 
 Run once, before engine/ replaced the old builder:  python tests/make_golden_plies.py
 The old builder (gui/app.py _build_ply_analysis + legacy.ChessAnalyzer) was removed afterwards;
-to regenerate, check out commit d706edb (the commit that added this file).
+to regenerate, check out commit 3ce8dc1 (the commit that added this file).
 """
 
 import json
