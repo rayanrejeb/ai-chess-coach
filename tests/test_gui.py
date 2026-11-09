@@ -179,8 +179,11 @@ def test_chat_shows_engine_checks_as_muted_lines_under_the_answer(tmp_path):
 
 
 def test_a_question_and_a_typical_answer_fit_in_the_chat_box(tmp_path):
-    """The recorded Qd2 answer (2026-11-09 live run) with its check line shows without scrolling, at the default size."""
+    """The recorded Qd2 answer (2026-11-09 live run) with its check line shows without scrolling, at the default size.
+    The empty box is smaller, leaving room to the move comment."""
     out = run_gui(tmp_path, """
+        app.update()
+        out["empty_height"] = app.chat_history.winfo_height()
         app._display_chat_message("You", "What happens if White plays Qd2 instead?")
         app._display_chat_message("Coach", (
             "If White plays 15.Qd2, it successfully defends the e3-pawn, avoiding the tactic 15...Rxe3 that made "
@@ -194,7 +197,9 @@ def test_a_question_and_a_typical_answer_fit_in_the_chat_box(tmp_path):
         out["first_visible"] = box.get("@0,0 linestart", "@0,0 lineend")
         out["check_line_visible"] = box.bbox(box.search("Checked with Stockfish", "1.0")) is not None
         out["entry_inside"] = app.chat_entry.winfo_rooty() + app.chat_entry.winfo_height() <= app.winfo_rooty() + app.winfo_height()
+        out["height"] = app.chat_history.winfo_height()
         app.on_closing()
     """)
     assert out["first_visible"] == "You: What happens if White plays Qd2 instead?"
     assert out["check_line_visible"] and out["entry_inside"]
+    assert out["empty_height"] < out["height"]

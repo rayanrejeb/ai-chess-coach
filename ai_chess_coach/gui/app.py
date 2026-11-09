@@ -171,8 +171,8 @@ class ChessGUI(ctk.CTk):
         chat_frame.grid(row=6, column=0, sticky="ew", padx=10, pady=(10, 10))
         chat_frame.grid_columnconfigure(0, weight=1)
         ctk.CTkLabel(chat_frame, text="Ask about the game:", font=("Arial", 14, "bold")).grid(row=0, column=0, sticky="w", padx=10, pady=(5,0))
-        # About 13 lines of this font: a question and a typical answer with its engine check line fit without scrolling.
-        self.chat_history = ctk.CTkTextbox(chat_frame, wrap="word", font=("Arial", 14), height=220, state="disabled")
+        # Small while empty, so the move comment above keeps its room; _display_chat_message grows it.
+        self.chat_history = ctk.CTkTextbox(chat_frame, wrap="word", font=("Arial", 14), height=120, state="disabled")
         self.chat_history.grid(row=1, column=0, sticky="ew", padx=10, pady=5)
         # Same family and (already DPI-scaled) size as the textbox, in bold. CTkTextbox.tag_config refuses fonts.
         self._chat_bold_font = tkfont.Font(self, font=self.chat_history._textbox.cget("font"))
@@ -242,7 +242,8 @@ class ChessGUI(ctk.CTk):
 
     def _display_chat_message(self, sender: str, message: str, checks=()):
         """checks: engine tool calls behind the answer, one muted line each."""
-        self.chat_history.configure(state="normal")
+        # About 13 lines of this font: a question and a typical answer with its engine check line fit without scrolling.
+        self.chat_history.configure(height=220, state="normal")
         self.chat_history.insert("end", f"{sender}: ")
         # Gemini marks emphasis as **bold**: the odd parts of the split are the bold ones.
         for i, part in enumerate(re.split(r"\*\*(.+?)\*\*", message.strip())):
