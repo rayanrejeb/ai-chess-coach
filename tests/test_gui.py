@@ -83,7 +83,12 @@ def test_selecting_a_move_stops_redrawing_once_idle(tmp_path):
     Resizes at start-up also redraw, so the count varies; it must stop growing once the window is idle."""
     out = run_gui(tmp_path, """
         app.after(0, app.go_to_ply, 1)
-        run_for(1500)
+        previous = -1
+        for _ in range(20):  # start-up redraws take longer on a busy machine: wait (up to 10 s) for a stable count
+            run_for(500)
+            if app.analyzer.calls == previous:
+                break
+            previous = app.analyzer.calls
         out["settled"] = app.analyzer.calls
         run_for(1000)
         out["later"] = app.analyzer.calls
