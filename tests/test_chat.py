@@ -149,3 +149,19 @@ def test_model_checks_a_past_sacrifice():
     assert "error" not in tool_results[0] and tool_results[0]["side_to_move"] == "Black"
     assert "Not verified" not in text and len(sdk.calls) == 1
     assert "move_number" in sdk.calls[0]["config"].system_instruction
+
+
+def test_rated_game_moves_gives_the_apps_rating_for_moves_in_the_question():
+    from ai_chess_coach.llm.chat import SYSTEM_PROMPT, rated_game_moves
+
+    plies = plies_from_game("e4 e5 Nf3 Nc6 Bc4 Bc5 c3".split())
+    plies[2].classification, plies[2].points_loss, plies[2].cp_loss = "Excellent", -0.008, -8   # 2.Nf3: noise, shown as 0
+    plies[5].classification, plies[5].points_loss, plies[5].cp_loss = "Mistake", 0.2652, 272   # 3...Bc5
+    rated = rated_game_moves("Was 2.Nf3 a good move? And 3...Bc5?", plies)
+    assert rated == [
+        {"move": "2. Nf3", "app_rating": "Excellent", "win_chance_lost_pct": 0.0, "centipawns_lost": 0},
+        {"move": "3... Bc5", "app_rating": "Mistake", "win_chance_lost_pct": 26.5, "centipawns_lost": 272},
+    ]
+    assert [r["move"] for r in rated_game_moves("Why c3?", plies)] == ["4. c3"]   # bare move, one match in the game
+    assert rated_game_moves("Was 3.Nf3 good?", plies) == []                     # wrong move number: not a game move
+    assert "Stay consistent with that rating" in SYSTEM_PROMPT

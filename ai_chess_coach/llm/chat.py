@@ -12,7 +12,7 @@ from google.genai import types
 
 from ai_chess_coach.llm.client import GeminiClient, LLMError
 from ai_chess_coach.llm.commentary import CommentaryContext, DescribeLine, generate_game_commentary
-from ai_chess_coach.llm.grounding import GroundingReport, References, check, normalize_san, references_for_ply
+from ai_chess_coach.llm.grounding import GroundingReport, References, _mentions, check, normalize_san, references_for_ply
 
 log = logging.getLogger(__name__)
 
@@ -33,8 +33,45 @@ Rules:
 - For any "what if" question about a move not in the context, call `evaluate_position` with the context's `fen_before` copied exactly and the move in SAN. Never compute a FEN yourself.
 - To check a move from earlier in the game, call `evaluate_position` with `move_number` instead of a FEN: "10." is the position before White's 10th move, "10..." the position before Black's 10th move. Put the move to test in `move_san`.
 - If the tool says a move is illegal, tell the student.
+- The context gives the app's rating of the move discussed (`move_info`) and of game moves named in the question
+  (`rated_game_moves`), with the win chance and centipawns it lost. Stay consistent with that rating: do not call a
+  move rated Best, Excellent or Good a mistake or a weakness, and do not praise a move rated Inaccuracy, Mistake or
+  Blunder. You may add nuance (a slightly better move, a plan to watch) without contradicting the rating.
 - Answer in plain, encouraging language. No raw JSON.
 """
+
+
+def move_rating(ply) -> dict:
+    """The app's verdict on a played move, for the chat context. Small negative losses are engine noise: shown as 0."""
+    return {
+        "app_rating": ply.classification,
+        "win_chance_lost_pct": round(max(0.0, ply.points_loss) * 100, 1),
+        "centipawns_lost": max(0, ply.cp_loss),
+    }
+
+
+def rated_game_moves(question: str, plies: Sequence) -> list[dict]:
+    """The app's rating of each game move named in the question: "13.f3" by number, or a bare "f3"
+    when only one game move matches."""
+    by_cite, by_san = {}, {}
+    for ply in plies:
+        board = chess.Board(ply.fen_before)
+        by_cite[(board.fullmove_number, board.turn == chess.BLACK)] = ply
+        by_san.setdefault(normalize_san(ply.move_san), []).append(ply)
+    found = []
+    for san, cite, _ in _mentions(question):
+        if cite:
+            ply = by_cite.get(cite)
+        else:
+            matches = by_san.get(san, [])
+            ply = matches[0] if len(matches) == 1 else None
+        if ply is not None and normalize_san(ply.move_san) == san and ply not in found:
+            found.append(ply)
+    rated = []
+    for p in found:
+        board = chess.Board(p.fen_before)
+        rated.append({"move": f"{board.fullmove_number}{'.' if board.turn == chess.WHITE else '...'} {p.move_san}", **move_rating(p)})
+    return rated
 
 
 class EngineTool:

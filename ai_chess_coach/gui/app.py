@@ -25,7 +25,7 @@ from ai_chess_coach.config import Constants, resource_path
 from ai_chess_coach.engine.classify import MATE_SCORE, win_probability
 from ai_chess_coach.engine.game import GameAnalyzer, find_key_moments, san_line
 from ai_chess_coach.engine.pool import EnginePool
-from ai_chess_coach.llm.chat import Coach
+from ai_chess_coach.llm.chat import Coach, move_rating, rated_game_moves
 from ai_chess_coach.llm.client import DEFAULT_MODEL
 from ai_chess_coach.models import GeminiCommentary, LineAnalysis, PlyAnalysis, PositionalFeatures
 from ai_chess_coach.sync import SyncError, store, sync
@@ -205,8 +205,9 @@ class ChessGUI(ctk.CTk):
             "move_info": {
                 "move": f"{analysis.move_number_str}{'.' if analysis.player == 'White' else '...'} {analysis.move_san}",
                 "classification": analysis.classification, "commentary": self._get_gemini_commentary_for_ply(self.current_ply),
-                "analysis": simplified_player_line
+                "analysis": simplified_player_line, **move_rating(analysis)
             },
+            "rated_game_moves": rated_game_moves(question, self.analysis_data),
             "best_alternative_line": simplified_best_alternative_line,
             "best_opponent_follow_up": simplified_best_opponent_follow_up
         }
