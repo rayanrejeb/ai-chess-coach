@@ -58,8 +58,8 @@ def ts(year, month, day=15):
     return int(datetime(year, month, day, tzinfo=timezone.utc).timestamp())
 
 
-def li_line(game_id, created, status="mate"):
-    game = {"id": game_id, "createdAt": created, "status": status, "pgn": "1. e4 *",
+def li_line(game_id, created, status="mate", speed="blitz"):
+    game = {"id": game_id, "createdAt": created, "status": status, "speed": speed, "pgn": "1. e4 *",
             "players": {"white": {"user": {"name": "a"}}, "black": {"user": {"name": "b"}}},
             "clock": {"initial": 600, "increment": 0}}
     return json.dumps(game).encode()
@@ -151,6 +151,13 @@ def test_lichess_skips_ongoing_games_and_keeps_the_cursor_on_them(tmp_path):
     assert [g["url"] for g in saved] == [f"https://lichess.org/g{i}" for i in (1, 2, 3, 5)]
     assert saved[0] == {"url": "https://lichess.org/g1", "pgn": "1. e4 *", "createdAt": 1000,
                         "white": {"username": "a"}, "black": {"username": "b"}, "time_control": "600+0"}
+
+
+def test_ongoing_correspondence_game_does_not_hold_the_lichess_cursor(tmp_path):
+    lines = [li_line("g1", 1000), li_line("corr", 2000, "started", "correspondence"), li_line("g3", 3000)]
+    result = run(FakeSession({LICHESS: [FakeResponse(lines=lines)]}), tmp_path, "lichess")
+    assert (result.new, result.total) == (2, 2)
+    assert store.load_state(str(tmp_path), USER, "lichess") == {"since": 3001}
 
 
 def test_lichess_saves_every_batch_before_a_stream_error(tmp_path, monkeypatch):

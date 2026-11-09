@@ -1,7 +1,9 @@
 """Lichess: one streamed request for every game created since the cursor, oldest first.
 
-State: {"since": ms}. Games still in progress are not saved; the cursor stays at the earliest one,
-so the next sync fetches it again once it is over (games already saved are deduplicated by URL).
+State: {"since": ms}. Games still in progress are not saved; the cursor stays at the earliest real-time
+one, so the next sync fetches it again once it is over (games already saved are deduplicated by URL).
+Ongoing correspondence games do not hold the cursor: they can last for months or never end.
+# LIMITATION: a correspondence game that finishes after the cursor has moved past it is never saved.
 """
 
 import json
@@ -49,7 +51,8 @@ def iter_new_games(http, username, state, token=None):
             game = json.loads(line)
             created = game.get("createdAt", 0)
             if game.get("status") in ONGOING:
-                earliest_ongoing = created if earliest_ongoing is None else earliest_ongoing
+                if earliest_ongoing is None and game.get("speed") != "correspondence":
+                    earliest_ongoing = created
             elif game.get("status") not in NOT_PLAYED:
                 batch.append(_entry(game))
             state["since"] = created + 1 if earliest_ongoing is None else earliest_ongoing
