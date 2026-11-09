@@ -113,6 +113,8 @@ def test_gui_opens_and_closes_without_stockfish(tmp_path, monkeypatch):
         labels = list(texts(app))
         assert "Stockfish Path:" in labels
         assert not any("Depth" in t for t in labels)
+        settings = next(w for w in app.winfo_children() if w.__class__.__name__ == "CTkToplevel")
+        assert settings.winfo_height() == settings.winfo_reqheight()  # fits its contents, no empty space
     finally:
         app.on_closing()
     assert not (tmp_path / "config.json").exists()  # no username entered, so nothing to save

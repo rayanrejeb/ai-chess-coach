@@ -658,7 +658,6 @@ class ChessGUI(ctk.CTk):
     def open_settings_window(self):
         settings_win = ctk.CTkToplevel(self)
         settings_win.title("Settings")
-        settings_win.geometry("550x700")
         settings_win.transient(self)
         settings_win.grab_set()
 
