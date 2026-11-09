@@ -106,3 +106,29 @@ def test_mentioned_move_must_match_the_legal_moves_own_san():
 ])
 def test_same_san(written, actual, same):
     assert _same_san(written, actual) is same
+
+
+RERUN_OPENING = "d4 Nf6 c4 e6 Nc3 d5 cxd5 exd5 Bg5 Bb4 e3 c6".split()
+
+
+@pytest.mark.parametrize("text, unverified", [
+    # Commentary from the 2026-11-09 live rerun (a real game). Only "an immediate e4" is a move claim.
+    ("Starting with 1.d4 controls the central e5-square and frees the dark-squared bishop.", []),
+    ("1...Nf6 prevents White from playing an immediate e4 and keeps Black's setup flexible.", ["e4"]),
+    ("3.Nc3 develops a knight to its natural square, exerting control over e4 and d5. An alternative solid line is 3.Nf3.", []),
+    ("4...exd5 recaptures toward the center, opening the c8-h3 diagonal for the light-squared bishop.", []),
+    ("A very solid move that fortifies the d4-pawn and opens the f1-a6 diagonal for the light-squared bishop.", []),
+    # Variants of the same rules
+    ("the **e4** square and the h-file", []),
+    ("control of e4, d5 and c6", []),
+    ("White should play e4 now", ["e4"]),
+    ("the e2-e4 push", ["e4"]),     # long notation: e4 is still a move, unlike "c8-h3 diagonal"
+])
+def test_square_names_from_the_live_rerun(text, unverified):
+    refs = References(verified={"d4", "Nf6", "c4", "e6", "Nc3", "d5", "cxd5", "exd5", "Bg5", "Bb4", "e3", "c6", "Nf3"})
+    board = chess.Board()
+    refs.add_position(board)
+    for san in RERUN_OPENING:
+        board.push_san(san)
+        refs.add_position(board)
+    assert check(text, refs).unverified == unverified

@@ -7,7 +7,9 @@ A mentioned move is:
   - illegal:    not legal in any reference position (an invented move)
 Moves the engine tool rejected as illegal are not flagged: the model was told, and is explaining that.
 A bare square ("f7") counts as a pawn move only if a reference position allows a pawn move there;
-otherwise it is a square name ("the weak f7-pawn", "**b3**", "la case b3") and is ignored.
+otherwise it is a square name ("the weak f7-pawn", "**b3**", "la case b3") and is ignored. Words around a
+bare square also mark it as a square name: "on f3", "control over e4 and d5", "the e5-square", "the c8-h3
+diagonal". A move claim like "an immediate e4" is still checked.
 """
 
 import logging
@@ -35,7 +37,15 @@ _MOVE_RE = re.compile(
 )
 
 _BARE_SQUARE_RE = re.compile(r"[a-h][1-8]")
-_SQUARE_CONTEXT_RE = re.compile(r"\b(on|to|the|at|from|of|square|squares|towards|into|onto|via)\s*$", re.IGNORECASE)
+# Words before a bare square that make it a square name ("on f3", "control over e4"), also through a
+# list of squares ("control over e4 and d5"). Markdown bold/italic marks are skipped.
+_SQUARE_BEFORE_RE = re.compile(
+    r"\b(?:on|to|the|at|from|of|square|squares|towards|into|onto|via|control\s+over)[\s*_]*"
+    r"(?:[a-h][1-8][\s*_]*(?:,|and|or)[\s*_]*)*$",
+    re.IGNORECASE,
+)
+# Words after a bare square that make it a square name: "e5-square", "h3 diagonal", "c8-h3 diagonal".
+_SQUARE_AFTER_RE = re.compile(r"[*_]*(?:\s*-\s*[a-h][1-8])?[*_]*\s*-?\s*(?:squares?|diagonals?|files?|ranks?)\b", re.IGNORECASE)
 
 
 def normalize_san(san: str) -> str:
@@ -55,9 +65,10 @@ def _mentions(text: str) -> Iterator[tuple[str, Optional[Cite], bool]]:
     for m in _MOVE_RE.finditer(text):
         token = m.group("san")
         is_bare_square = _BARE_SQUARE_RE.fullmatch(token) and not m.group("suffix") and m.group(0) == token
-        # LIMITATION: a bare square ("e4") after words like "on", "to", "the" is read as a square name,
-        # not a pawn move, so "the knight on f3" is not counted. A real pawn move written that way is missed.
-        if is_bare_square and _SQUARE_CONTEXT_RE.search(text[: m.start()]):
+        # LIMITATION: a bare square ("e4") after words like "on", "to", "the", or before "square",
+        # "diagonal", "file", "rank", is read as a square name, not a pawn move, so "the knight on f3"
+        # is not counted. A real pawn move written that way ("the e4 push") is missed.
+        if is_bare_square and (_SQUARE_BEFORE_RE.search(text[: m.start()]) or _SQUARE_AFTER_RE.match(text, m.end())):
             continue
         cite = (int(m.group("num")), m.group("dots") != ".") if m.group("num") else None
         yield normalize_san(token), cite, bool(is_bare_square)
