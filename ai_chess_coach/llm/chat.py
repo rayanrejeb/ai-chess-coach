@@ -3,7 +3,7 @@
 import json
 import logging
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Callable, Optional, Sequence
 
 import chess
@@ -19,6 +19,7 @@ log = logging.getLogger(__name__)
 MATE_SCORE = 10_000
 TOOL_LINE_PLIES = 6
 ILLEGAL_EXAMPLES = 12
+CHECK_PREFIX = "Checked with Stockfish: "
 
 # analyse(board) -> python-chess InfoDict with "score" and "pv", or None if the engine failed
 Analyse = Callable[[chess.Board], Optional[dict]]
@@ -96,6 +97,7 @@ class EngineTool:
         self._game_moves = list(game_moves)
         self._start_fen = start_fen
         self.evaluated = References()
+        self.checks: list[str] = []  # one line per successful call, shown under the answer
 
     def as_function(self) -> Callable[..., dict]:
         tool = self
@@ -137,6 +139,8 @@ class EngineTool:
             except ValueError:
                 return {"error": "Invalid FEN. Use fen_before from the game context exactly, or move_number for an earlier position."}
         start_fen = board.fen()
+        number = f"{board.fullmove_number}{'.' if board.turn == chess.WHITE else '...'}"
+        label = f"position before {number}"
         if move_san:
             try:
                 move = board.parse_san(move_san)
@@ -145,9 +149,11 @@ class EngineTool:
                 examples = ", ".join(board.san(m) for m in list(board.legal_moves)[:ILLEGAL_EXAMPLES])
                 return {"error": f"{move_san} is not a legal move here. Legal moves include: {examples}."}
             self.evaluated.add_line(start_fen, [move.uci()])
+            label = number + board.san(move)  # written by the tool, not copied from the model's argument
             board.push(move)
 
         if board.is_game_over():
+            self.checks.append(f"{CHECK_PREFIX}{label}, game over ({board.result(claim_draw=True)})")
             return {"resulting_fen": board.fen(), "game_over": board.result(claim_draw=True)}
         info = self._analyse(board)
         if not info or not info.get("pv"):
@@ -166,7 +172,16 @@ class EngineTool:
         }
         if self._describe_line:
             result["best_line_details"] = self._describe_line(board.fen(), [m.uci() for m in pv[:3]])
+        self.checks.append(f"{CHECK_PREFIX}{label}, {_format_eval(score.white())}")
         return result
+
+
+def _format_eval(white: chess.engine.Score) -> str:
+    """White's point of view, like the evaluation bar: +0.54, or mate in 3 for Black."""
+    mate = white.mate()
+    if mate is not None:
+        return f"mate in {abs(mate)} for {'White' if mate > 0 else 'Black'}"
+    return f"{white.score() / 100:+.2f}"
 
 
 @dataclass
@@ -175,6 +190,7 @@ class CoachAnswer:
     first_report: GroundingReport
     final_report: GroundingReport
     retried: bool
+    checks: list[str] = field(default_factory=list)  # EngineTool.checks: "Checked with Stockfish: 15.Qd2, +0.54"
 
 
 def _correction(report: GroundingReport) -> str:
@@ -220,7 +236,7 @@ class CoachChat:
         if not final.ok:
             flagged = final.illegal + final.unverified
             text += f"\n\n[Not verified by the engine: {', '.join(flagged)}]"
-        return CoachAnswer(text, first, final, retried)
+        return CoachAnswer(text, first, final, retried, tool.checks)
 
 
 class Coach:
@@ -235,15 +251,18 @@ class Coach:
         ctx = CommentaryContext(language, username, player_color)
         return generate_game_commentary(self.client, plies, ctx, self.describe_line, game_moves, on_status)
 
-    def answer(self, question: str, game_context: dict, history_text: str, ply, game_moves: Sequence[chess.Move] = (), language: str = "English") -> str:
+    def answer(self, question: str, game_context: dict, history_text: str, ply, game_moves: Sequence[chess.Move] = (),
+               language: str = "English") -> tuple[str, list[str]]:
+        """(answer text, one line per engine tool call). Errors become a message with no tool lines."""
         try:
-            return self.chat.answer(question, game_context, history_text, references_for_ply(ply, game_moves), language, game_moves).text
+            answer = self.chat.answer(question, game_context, history_text, references_for_ply(ply, game_moves), language, game_moves)
+            return answer.text, answer.checks
         except LLMError as err:
             log.error("Coach chat failed (%s): %s", err.kind, err)
             if err.kind == "quota_exhausted":
-                return "The Gemini daily quota is used up. Try again tomorrow or use another API key."
+                return "The Gemini daily quota is used up. Try again tomorrow or use another API key.", []
             if err.kind == "too_slow":
-                return f"The Gemini model '{self.client.model}' is too slow right now. Try again later or change GEMINI_MODEL in .env."
+                return f"The Gemini model '{self.client.model}' is too slow right now. Try again later or change GEMINI_MODEL in .env.", []
             if err.kind == "model_not_found":
-                return f"The Gemini model '{self.client.model}' is not available. Change GEMINI_MODEL in .env."
-            return f"The coach could not answer right now ({err.kind}). Please try again."
+                return f"The Gemini model '{self.client.model}' is not available. Change GEMINI_MODEL in .env.", []
+            return f"The coach could not answer right now ({err.kind}). Please try again.", []

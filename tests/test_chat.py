@@ -85,12 +85,13 @@ def test_coach_turns_errors_into_messages():
     ply, moves = opera_ply_and_moves()
     per_day = {"violations": [{"quotaId": "GenerateRequestsPerDayPerProjectPerModel"}]}
     coach = Coach("k", "m", fake_analyse, fake_describe, client=GeminiClient("k", "m", sdk_client=FakeSDK([api_error(429, "q", [per_day])])))
-    assert "daily quota" in coach.answer("?", {}, "", ply, moves)
+    assert coach.answer("?", {}, "", ply, moves)[0].startswith("The Gemini daily quota")
     coach = Coach("k", "m", fake_analyse, fake_describe, client=GeminiClient("k", "old-model", sdk_client=FakeSDK([api_error(404, "not found")])))
-    assert "GEMINI_MODEL" in coach.answer("?", {}, "", ply, moves)
+    assert "GEMINI_MODEL" in coach.answer("?", {}, "", ply, moves)[0]
     slow = FakeSDK([api_error(504, "Deadline expired")] * 2)
     coach = Coach("k", "m", fake_analyse, fake_describe, client=GeminiClient("k", "slow-model", sdk_client=slow, sleep=lambda s: None))
-    assert "too slow" in coach.answer("?", {}, "", ply, moves)
+    text, checks = coach.answer("?", {}, "", ply, moves)
+    assert "too slow" in text and checks == []
 
 
 def test_moves_the_tool_rejected_are_not_flagged():
@@ -108,7 +109,7 @@ def test_chat_follows_the_language_setting():
     ply, moves = opera_ply_and_moves()
     sdk = FakeSDK([response(text="13. Rxd7 était le meilleur coup.")])
     coach = Coach("k", "m", fake_analyse, fake_describe, client=GeminiClient("k", "m", sdk_client=sdk))
-    assert coach.answer("Quel était le meilleur coup ?", {}, "", ply, moves, "French").startswith("13. Rxd7")
+    assert coach.answer("Quel était le meilleur coup ?", {}, "", ply, moves, "French")[0].startswith("13. Rxd7")
     system = sdk.calls[0]["config"].system_instruction
     assert "Answer in French." in system and "English Standard Algebraic Notation" in system
 
@@ -145,7 +146,8 @@ def test_model_checks_a_past_sacrifice():
     ply, moves = opera_ply_and_moves()
     sdk = FakeSDK([model])
     coach = Coach("k", "m", fake_analyse, fake_describe, client=GeminiClient("k", "m", sdk_client=sdk))
-    text = coach.answer("Was 10.Nxb5 a sound sacrifice?", {"fen_before": OPERA_FEN}, "", ply, moves)
+    text, checks = coach.answer("Was 10.Nxb5 a sound sacrifice?", {"fen_before": OPERA_FEN}, "", ply, moves)
+    assert checks == ["Checked with Stockfish: 10.Nxb5, -0.30"]  # from the tool call, not from the answer text
     assert "error" not in tool_results[0] and tool_results[0]["side_to_move"] == "Black"
     assert "Not verified" not in text and len(sdk.calls) == 1
     assert "move_number" in sdk.calls[0]["config"].system_instruction
@@ -189,3 +191,22 @@ def test_chat_asks_for_a_downside_only_when_the_engine_shows_one(classification,
     system = sdk.calls[0]["config"].system_instruction
     assert "If `engine_top_choice` is true" in system and "Do not invent a weakness or a better move." in system
     assert "If `engine_top_choice` is false" in system and "one concrete downside of the move or the alternative" in system
+
+
+def test_tool_writes_one_check_line_per_successful_call():
+    _, moves = opera_ply_and_moves()
+    tool = EngineTool(fake_analyse, game_moves=moves)
+    tool.evaluate(OPERA_FEN, "Bf6")       # the model left out the "x": the line uses the board's SAN
+    tool.evaluate(move_number="10...")    # an earlier position, no move
+    tool.evaluate(OPERA_FEN, "Qh5")       # illegal: no line
+    tool.evaluate(move_number="99.")      # no such position: no line
+    assert tool.checks == ["Checked with Stockfish: 13.Bxf6, -0.30", "Checked with Stockfish: position before 10..., -0.30"]
+
+
+def test_check_line_shows_mates_and_finished_games():
+    mate_for_black = lambda board: {"score": chess.engine.PovScore(chess.engine.Mate(-2), chess.WHITE), "pv": list(board.legal_moves)[:1]}
+    tool = EngineTool(mate_for_black)
+    tool.evaluate(chess.STARTING_FEN, "f3")
+    fools_mate = "rnbqkbnr/pppp1ppp/8/4p3/6P1/5P2/PPPPP2P/RNBQKBNR b KQkq g3 0 2"
+    tool.evaluate(fools_mate, "Qh4#")
+    assert tool.checks == ["Checked with Stockfish: 1.f3, mate in 2 for Black", "Checked with Stockfish: 2...Qh4#, game over (0-1)"]

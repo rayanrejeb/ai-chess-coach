@@ -177,6 +177,11 @@ class ChessGUI(ctk.CTk):
         self._chat_bold_font = tkfont.Font(self, font=self.chat_history._textbox.cget("font"))
         self._chat_bold_font.configure(weight="bold")  # Font() ignores options when given font=
         self.chat_history._textbox.tag_configure("bold", font=self._chat_bold_font)
+        # Engine tool calls under an answer: same family, a bit smaller, grey.
+        self._chat_muted_font = tkfont.Font(self, font=self.chat_history._textbox.cget("font"))
+        self._chat_muted_font.configure(size=round(self._chat_muted_font.cget("size") * 0.85))
+        self.chat_history._textbox.tag_configure("muted", font=self._chat_muted_font,
+                                                 foreground="gray60" if ctk.get_appearance_mode() == "Dark" else "gray40")
         chat_input_frame = ctk.CTkFrame(chat_frame, fg_color="transparent")
         chat_input_frame.grid(row=2, column=0, sticky="ew", padx=10, pady=(0, 5))
         chat_input_frame.grid_columnconfigure(0, weight=1)
@@ -228,18 +233,22 @@ class ChessGUI(ctk.CTk):
 
     def _get_and_display_chat_response(self, question, game_context, chat_history, analysis):
         if not self.coach:
-            response = "The AI chat model is not configured. Please check your Gemini API key in the settings."
+            response, checks = "The AI chat model is not configured. Please check your Gemini API key in the settings.", []
         else:
-            response = self.coach.answer(question, game_context, chat_history, analysis, self.moves, self.gemini_language)
-        self.after(0, self._display_chat_message, "Coach", response)
+            response, checks = self.coach.answer(question, game_context, chat_history, analysis, self.moves, self.gemini_language)
+        self.after(0, self._display_chat_message, "Coach", response, checks)
         self.after(0, lambda: self.send_chat_btn.configure(state="normal", text="Send"))
 
-    def _display_chat_message(self, sender: str, message: str):
+    def _display_chat_message(self, sender: str, message: str, checks=()):
+        """checks: engine tool calls behind the answer, one muted line each."""
         self.chat_history.configure(state="normal")
         self.chat_history.insert("end", f"{sender}: ")
         # Gemini marks emphasis as **bold**: the odd parts of the split are the bold ones.
         for i, part in enumerate(re.split(r"\*\*(.+?)\*\*", message.strip())):
             self.chat_history.insert("end", part, "bold" if i % 2 else None)
+        for line in checks:
+            self.chat_history.insert("end", "\n")
+            self.chat_history.insert("end", line, "muted")
         self.chat_history.insert("end", "\n\n")
         self.chat_history.see("end")
         self.chat_history.configure(state="disabled")

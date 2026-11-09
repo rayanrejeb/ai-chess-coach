@@ -118,7 +118,7 @@ SEND_BODY = """
         def answer(self, *args):
             if isinstance(self.reply, Exception):
                 raise self.reply
-            return self.reply
+            return self.reply, ["Checked with Stockfish: 1.e4, +0.30"]
 
     app.after(0, app.go_to_ply, 1)
     run_for(300)
@@ -138,7 +138,8 @@ def test_send_button_comes_back_after_an_answer_and_after_an_error(tmp_path):
     out = run_gui(tmp_path, SEND_BODY)
     assert out["while_waiting"] == "..."
     assert out["after"] == [["Send", "normal"], ["Send", "normal"]]
-    assert "Coach: Fine move." in out["chat"] and "System Error: An error occurred in the chat task: boom" in out["chat"]
+    assert "Coach: Fine move.\nChecked with Stockfish: 1.e4, +0.30\n" in out["chat"]
+    assert "System Error: An error occurred in the chat task: boom" in out["chat"]
 
 
 def test_chat_shows_double_asterisks_as_bold(tmp_path):
@@ -156,3 +157,22 @@ def test_chat_shows_double_asterisks_as_bold(tmp_path):
     assert out["text"] == "Coach: Yes, 13.f3 was rated Excellent. Unpaired ** stays."
     assert out["bold"] == ["13.f3", "Excellent"]
     assert out["fonts"] == ["bold", True, True]
+
+
+def test_chat_shows_engine_checks_as_muted_lines_under_the_answer(tmp_path):
+    out = run_gui(tmp_path, """
+        import tkinter.font as tkfont
+        app._display_chat_message("Coach", "Qd2 keeps e3 defended.", ["Checked with Stockfish: 15.Qd2, +0.54"])
+        box = app.chat_history._textbox
+        out["text"] = box.get("1.0", "end").strip()
+        ranges = [str(r) for r in box.tag_ranges("muted")]
+        out["muted"] = [box.get(a, b) for a, b in zip(ranges[::2], ranges[1::2])]
+        muted, normal = tkfont.Font(font=box.tag_cget("muted", "font")), tkfont.Font(font=box.cget("font"))
+        out["smaller"] = abs(muted.actual("size")) < abs(normal.actual("size"))
+        out["same_family"] = muted.actual("family") == normal.actual("family")
+        out["color"] = box.tag_cget("muted", "foreground")
+        app.on_closing()
+    """)
+    assert out["text"].splitlines() == ["Coach: Qd2 keeps e3 defended.", "Checked with Stockfish: 15.Qd2, +0.54"]
+    assert out["muted"] == ["Checked with Stockfish: 15.Qd2, +0.54"]
+    assert out["smaller"] and out["same_family"] and out["color"] == "gray60"  # main.py runs in dark mode
