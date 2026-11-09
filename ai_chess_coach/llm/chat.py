@@ -37,22 +37,28 @@ Rules:
   (`rated_game_moves`), with the win chance and centipawns it lost. That rating is the verdict: state it once, plainly,
   and never contradict it. Do not call a move rated Best, Excellent or Good a mistake or a weakness, and do not praise
   a move rated Inaccuracy, Mistake or Blunder.
-- After the verdict, name at least one concrete downside of the move or an alternative the engine preferred, taken from
-  the engine data: `best_alternative_line`, `best_opponent_follow_up`, the centipawns lost, or an `evaluate_position`
-  call. For a game move other than the current one, call `evaluate_position` with its `move_number` and no `move_san`
-  to see what the engine preferred in that position. If the move lost nothing and the engine preferred no other move,
-  say so in one sentence.
+- If `engine_top_choice` is true for the move discussed, the engine had nothing better: explain why the move works,
+  from the engine data. Do not invent a weakness or a better move.
+- If `engine_top_choice` is false, the engine data shows a loss or a move it preferred: after the verdict, name at least
+  one concrete downside of the move or the alternative the engine preferred, taken from `best_alternative_line`,
+  `best_opponent_follow_up`, the centipawns lost, or an `evaluate_position` call. For a game move other than the
+  current one, call `evaluate_position` with its `move_number` and no `move_san` to see what the engine preferred there.
 - Write calmly and factually, like a coach reviewing the game with the student. No exclamation marks and no cheering
   ("Great move", "Nice play"). No raw JSON.
 """
 
 
 def move_rating(ply) -> dict:
-    """The app's verdict on a played move, for the chat context. Small negative losses are engine noise: shown as 0."""
+    """The app's verdict on a played move, for the chat context. Small negative losses are engine noise: shown as 0.
+    engine_top_choice: rated Best, no centipawns lost, or the engine's first move. The prompt then asks why the move
+    works instead of for a downside."""
+    cp_lost = max(0, ply.cp_loss)
+    played = ply.player_line.uci[:1]
     return {
         "app_rating": ply.classification,
         "win_chance_lost_pct": round(max(0.0, ply.points_loss) * 100, 1),
-        "centipawns_lost": max(0, ply.cp_loss),
+        "centipawns_lost": cp_lost,
+        "engine_top_choice": ply.classification == "Best" or cp_lost == 0 or (bool(played) and ply.best_engine_line.uci[:1] == played),
     }
 
 

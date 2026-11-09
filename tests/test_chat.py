@@ -154,16 +154,38 @@ def test_model_checks_a_past_sacrifice():
 def test_rated_game_moves_gives_the_apps_rating_for_moves_in_the_question():
     from ai_chess_coach.llm.chat import SYSTEM_PROMPT, rated_game_moves
 
-    plies = plies_from_game("e4 e5 Nf3 Nc6 Bc4 Bc5 c3".split())
+    plies = plies_from_game("e4 e5 Nf3 Nc6 Bc4 Bc5 c3".split(), alternatives={6: ["g8f6"]})  # engine: 3...Nf6
     plies[2].classification, plies[2].points_loss, plies[2].cp_loss = "Excellent", -0.008, -8   # 2.Nf3: noise, shown as 0
     plies[5].classification, plies[5].points_loss, plies[5].cp_loss = "Mistake", 0.2652, 272   # 3...Bc5
     rated = rated_game_moves("Was 2.Nf3 a good move? And 3...Bc5?", plies)
     assert rated == [
-        {"move": "2. Nf3", "app_rating": "Excellent", "win_chance_lost_pct": 0.0, "centipawns_lost": 0},
-        {"move": "3... Bc5", "app_rating": "Mistake", "win_chance_lost_pct": 26.5, "centipawns_lost": 272},
+        {"move": "2. Nf3", "app_rating": "Excellent", "win_chance_lost_pct": 0.0, "centipawns_lost": 0, "engine_top_choice": True},
+        {"move": "3... Bc5", "app_rating": "Mistake", "win_chance_lost_pct": 26.5, "centipawns_lost": 272, "engine_top_choice": False},
     ]
     assert [r["move"] for r in rated_game_moves("Why c3?", plies)] == ["4. c3"]   # bare move, one match in the game
     assert rated_game_moves("Was 3.Nf3 good?", plies) == []                     # wrong move number: not a game move
     assert "That rating is the verdict" in SYSTEM_PROMPT
-    assert "concrete downside of the move or an alternative the engine preferred" in SYSTEM_PROMPT
+    assert "one concrete downside of the move or the alternative the engine preferred" in SYSTEM_PROMPT
     assert "No exclamation marks" in SYSTEM_PROMPT and "encouraging" not in SYSTEM_PROMPT
+
+
+@pytest.mark.parametrize("classification, cp_loss, engine_move, top", [
+    ("Best", 0, None, True),            # the engine's own move
+    ("Excellent", 0, "g1f3", True),     # the engine listed another move first, but it lost nothing
+    ("Good", 40, None, True),           # a loss on paper, but it is the engine's first move
+    ("Mistake", 272, "g1f3", False),    # a loss and an engine-preferred alternative
+])
+def test_chat_asks_for_a_downside_only_when_the_engine_shows_one(classification, cp_loss, engine_move, top):
+    from ai_chess_coach.llm.chat import move_rating
+
+    ply = plies_from_game(["e4"], alternatives={1: [engine_move]} if engine_move else None)[0]
+    ply.classification, ply.cp_loss, ply.points_loss = classification, cp_loss, cp_loss / 1000
+    rating = move_rating(ply)
+    assert rating["engine_top_choice"] is top
+    sdk = FakeSDK([response(text="1.e4 takes the center.")])
+    context = {"fen_before": chess.STARTING_FEN, "move_info": {"move": "1. e4", **rating}}
+    CoachChat(GeminiClient("k", "m", sdk_client=sdk), fake_analyse).answer("Was 1.e4 good?", context, "", references_for_ply(ply, [chess.Move.from_uci("e2e4")]))
+    assert f'"engine_top_choice": {str(top).lower()}' in sdk.calls[0]["message"]
+    system = sdk.calls[0]["config"].system_instruction
+    assert "If `engine_top_choice` is true" in system and "Do not invent a weakness or a better move." in system
+    assert "If `engine_top_choice` is false" in system and "one concrete downside of the move or the alternative" in system
