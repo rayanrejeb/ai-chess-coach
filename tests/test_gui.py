@@ -134,3 +134,20 @@ def test_send_button_comes_back_after_an_answer_and_after_an_error(tmp_path):
     assert out["while_waiting"] == "..."
     assert out["after"] == [["Send", "normal"], ["Send", "normal"]]
     assert "Coach: Fine move." in out["chat"] and "System Error: An error occurred in the chat task: boom" in out["chat"]
+
+
+def test_chat_shows_double_asterisks_as_bold(tmp_path):
+    out = run_gui(tmp_path, """
+        import tkinter.font as tkfont
+        app._display_chat_message("Coach", "Yes, **13.f3** was rated **Excellent**. Unpaired ** stays.")
+        box = app.chat_history._textbox
+        out["text"] = box.get("1.0", "end").strip()
+        ranges = [str(r) for r in box.tag_ranges("bold")]
+        out["bold"] = [box.get(a, b) for a, b in zip(ranges[::2], ranges[1::2])]
+        bold, normal = tkfont.Font(font=box.tag_cget("bold", "font")), tkfont.Font(font=box.cget("font"))
+        out["fonts"] = [bold.actual("weight"), bold.actual("size") == normal.actual("size"), bold.actual("family") == normal.actual("family")]
+        app.on_closing()
+    """)
+    assert out["text"] == "Coach: Yes, 13.f3 was rated Excellent. Unpaired ** stays."
+    assert out["bold"] == ["13.f3", "Excellent"]
+    assert out["fonts"] == ["bold", True, True]

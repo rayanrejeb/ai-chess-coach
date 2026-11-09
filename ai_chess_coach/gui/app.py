@@ -17,7 +17,7 @@ import tkinter as tk
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, Future
 from dataclasses import asdict
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, font as tkfont, messagebox
 from typing import Dict, List, Optional
 from PIL import Image
 
@@ -173,6 +173,10 @@ class ChessGUI(ctk.CTk):
         ctk.CTkLabel(chat_frame, text="Ask about the game:", font=("Arial", 14, "bold")).grid(row=0, column=0, sticky="w", padx=10, pady=(5,0))
         self.chat_history = ctk.CTkTextbox(chat_frame, wrap="word", font=("Arial", 14), height=120, state="disabled")
         self.chat_history.grid(row=1, column=0, sticky="ew", padx=10, pady=5)
+        # Same family and (already DPI-scaled) size as the textbox, in bold. CTkTextbox.tag_config refuses fonts.
+        self._chat_bold_font = tkfont.Font(self, font=self.chat_history._textbox.cget("font"))
+        self._chat_bold_font.configure(weight="bold")  # Font() ignores options when given font=
+        self.chat_history._textbox.tag_configure("bold", font=self._chat_bold_font)
         chat_input_frame = ctk.CTkFrame(chat_frame, fg_color="transparent")
         chat_input_frame.grid(row=2, column=0, sticky="ew", padx=10, pady=(0, 5))
         chat_input_frame.grid_columnconfigure(0, weight=1)
@@ -232,7 +236,11 @@ class ChessGUI(ctk.CTk):
 
     def _display_chat_message(self, sender: str, message: str):
         self.chat_history.configure(state="normal")
-        self.chat_history.insert("end", f"{sender}: {message.strip()}\n\n")
+        self.chat_history.insert("end", f"{sender}: ")
+        # Gemini marks emphasis as **bold**: the odd parts of the split are the bold ones.
+        for i, part in enumerate(re.split(r"\*\*(.+?)\*\*", message.strip())):
+            self.chat_history.insert("end", part, "bold" if i % 2 else None)
+        self.chat_history.insert("end", "\n\n")
         self.chat_history.see("end")
         self.chat_history.configure(state="disabled")
 
