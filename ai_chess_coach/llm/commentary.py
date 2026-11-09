@@ -25,11 +25,10 @@ DescribeLine = Callable[[str, list[str]], dict]
 
 
 class MoveComment(BaseModel):
+    """What the model writes. Missed opportunities and best replies come from the engine (engine_moves)."""
     ply: int
     move_san: str
     move_commentary: str
-    missed_opportunities: list[str] = []
-    best_replies: list[str] = []
 
 
 class GameSummary(BaseModel):
@@ -108,6 +107,31 @@ def build_ply_payload(ply, describe_line: DescribeLine, already_reported: set[st
         "engine_alternatives": [describe_line(ply.fen_before, line.uci) for line in alternatives[:MAX_LINES_PER_PLY]],
         "engine_replies": [describe_line(after_fen, line.uci) for line in ply.best_follow_up_lines[:MAX_LINES_PER_PLY] if line.uci],
     }
+
+
+def _first_moves(fen: str, lines) -> list[str]:
+    board = chess.Board(fen)
+    moves = []
+    for line in lines:
+        move = chess.Move.from_uci(line.uci[0]) if line.uci else None
+        if move in board.legal_moves and board.san(move) not in moves:
+            moves.append(board.san(move))
+    return moves[:MAX_LINES_PER_PLY]
+
+
+def engine_moves(ply) -> tuple[list[str], list[str]]:
+    """(missed opportunities, best replies) in SAN, from the engine lines.
+    Missed opportunities: the engine's choices, only when the move played was not its first choice.
+    Best replies: the engine's best answers to the move played."""
+    played = ply.player_line.uci[:1]
+    lines = ply.best_engine_lines or [ply.best_engine_line]
+    missed = []
+    if lines[0].uci and lines[0].uci[:1] != played:
+        missed = _first_moves(ply.fen_before, [line for line in lines if line.uci[:1] != played])
+    after = chess.Board(ply.fen_before)
+    if played:
+        after.push(chess.Move.from_uci(played[0]))
+    return missed, _first_moves(after.fen(), ply.best_follow_up_lines or [ply.best_follow_up])
 
 
 def line_requests(plies) -> list[tuple[str, list[str]]]:
@@ -204,15 +228,16 @@ def generate_game_commentary(
             ply = by_ply.get(c.ply)
             if ply is None:
                 continue
-            report = check(" ".join([c.move_commentary, *c.missed_opportunities, *c.best_replies]), references_for_ply(ply, game_moves))
+            report = check(c.move_commentary, references_for_ply(ply, game_moves))
+            missed, replies = engine_moves(ply)
             if not report.ok:
                 log.info("grounding commentary ply=%d illegal=%s unverified=%s", c.ply, report.illegal, report.unverified)
             comments[str(c.ply)] = GeminiCommentary(
                 ply=c.ply,
                 move_san=c.move_san,
                 move_commentary=c.move_commentary,
-                missed_opportunities=c.missed_opportunities,
-                best_replies=c.best_replies,
+                missed_opportunities=missed,
+                best_replies=replies,
                 illegal_moves=report.illegal,
                 unverified_moves=report.unverified,
             )

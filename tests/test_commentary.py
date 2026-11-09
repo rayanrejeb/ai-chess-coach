@@ -8,6 +8,7 @@ from ai_chess_coach.llm.commentary import (
     SYSTEM_PROMPT, CommentaryBatch, CommentaryContext, GameSummary, MoveComment,
     build_ply_payload, chunk_payloads, generate_game_commentary, line_requests,
 )
+from ai_chess_coach.models import LineAnalysis
 from fakes import FakeSDK, api_error, fake_describe, plies_from_game, response
 
 GAME = "e4 e5 Nf3 Nc6 Bc4 Bc5".split()
@@ -105,3 +106,17 @@ def test_lines_are_prefetched_before_the_payloads_are_built():
     kind, requests = calls[0]
     assert kind == "prefetch" and requests == line_requests(plies) == [c[1] for c in calls[1:]]
     assert len(requests) == 3
+
+
+def test_missed_opportunities_and_replies_come_from_the_engine():
+    """The model only writes the comment; the two lists are the first moves of the engine lines."""
+    # Ply 3 (2.Nf3): the engine preferred 2.Nc3, then 2.d4; its best reply to Nf3 is 2...Nc6.
+    # Ply 5 (3.Bc4): the move played is the engine's first choice, so nothing was missed.
+    plies = plies_from_game(GAME, alternatives={3: ["b1c3"]}, replies={3: ["b8c6"], 5: ["f8c5"]})
+    plies[2].best_engine_lines.append(LineAnalysis(uci=["d2d4", "e5d4"]))
+    assert "missed_opportunities" not in MoveComment.model_json_schema()["properties"]
+    sdk = FakeSDK([lambda c, cfg: _batch_for(c)])
+    comments, _ = generate_game_commentary(GeminiClient("k", "m", sdk_client=sdk), plies, CTX, fake_describe)
+    assert (comments["3"].missed_opportunities, comments["3"].best_replies) == (["Nc3", "d4"], ["Nc6"])
+    assert (comments["5"].missed_opportunities, comments["5"].best_replies) == ([], ["Bc5"])
+    assert (comments["1"].missed_opportunities, comments["1"].best_replies) == ([], [])
