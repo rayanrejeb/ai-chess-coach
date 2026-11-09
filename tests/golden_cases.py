@@ -44,7 +44,8 @@ CLASSIFY_CASES = [
 
 
 def stockfish_path():
-    return os.environ.get("STOCKFISH_PATH") or shutil.which("stockfish")
+    path = os.environ.get("STOCKFISH_PATH")  # .env.example's placeholder path does not exist: skip, don't fail
+    return path if path and os.path.isfile(path) else shutil.which("stockfish")
 
 
 def load_position(pgn_name, plies, expected_san):
