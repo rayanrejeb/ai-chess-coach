@@ -308,6 +308,9 @@ class ChessGUI(ctk.CTk):
             self.after(0, self._reset_ui_after_error)
 
     def _on_resize(self, event=None):
+        # The binding on the window also fires for every child widget, and update_display rebuilds some of them,
+        # so reacting to those would redraw forever.
+        if event is not None and event.widget is not self: return
         if self._resize_job: self.after_cancel(self._resize_job)
         self._resize_job = self.after(100, self.update_display)
 
@@ -379,7 +382,10 @@ class ChessGUI(ctk.CTk):
             try:
                 before, after = fut.result()
                 if not before or not after: return
-                analysis.raw_engine_lines_for_display = [{"line": [m.uci() for m in l.get('pv', [])], "score": str(l['score'].pov(board_before_move.turn))} for l in before]
+                lines = [{"line": [m.uci() for m in l.get('pv', [])], "score": str(l['score'].pov(board_before_move.turn))} for l in before]
+                # Redrawing refines again; with cached results that would loop forever, so redraw only on a change.
+                if lines == analysis.raw_engine_lines_for_display: return
+                analysis.raw_engine_lines_for_display = lines
                 self.after(0, self.update_display)
             except Exception: pass
         fut = self._ui_executor.submit(work)
@@ -901,6 +907,7 @@ class ChessGUI(ctk.CTk):
     def on_closing(self):
         try:
             self._engine_generation += 1  # an engine still starting closes itself
+            self._nav_generation += 1  # a refine still running drops its result instead of calling Tk
             if self.analyzer: self.analyzer.close()
             elif self._engine_future:  # started but not picked up yet: close it when it is there
                 self._engine_future.add_done_callback(lambda f: f.exception() is None and f.result() and f.result().close())
