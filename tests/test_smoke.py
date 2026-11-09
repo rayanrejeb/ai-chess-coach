@@ -17,6 +17,8 @@ MODULES = [
     "ai_chess_coach.llm.grounding",
     "ai_chess_coach.llm.commentary",
     "ai_chess_coach.llm.chat",
+    "ai_chess_coach.sync",
+    "ai_chess_coach.sync.__main__",
     "ai_chess_coach.gui.app",
     "main",
 ]
@@ -63,3 +65,54 @@ def test_engine_matches_golden(golden):
     for got, want in zip(current["positions"], golden["positions"]):
         assert got["engine_before"] == want["engine_before"]
         assert got["engine_after"] == want["engine_after"]
+
+
+def test_sync_count_cli(tmp_path, monkeypatch, capsys):
+    """Counts the saved games per platform offline, without printing the usernames."""
+    from ai_chess_coach.config import Constants
+    from ai_chess_coach.sync.__main__ import main
+
+    (tmp_path / "ccname_chess.com_games.json").write_text(json.dumps([{"url": "a"}, {"url": "b"}]), encoding="utf-8")
+    (tmp_path / "liname_lichess_games.json").write_text(json.dumps([{"url": "c"}]), encoding="utf-8")
+    monkeypatch.setattr(Constants, "GAMES_DIR", str(tmp_path))
+    monkeypatch.setenv("CHESSCOM_USERNAME", "CCName")
+    monkeypatch.setenv("LICHESS_USERNAME", "LIName")
+    main(["count"])
+    out = capsys.readouterr().out
+    assert out.splitlines() == ["chess.com: 2 games", "lichess: 1 games", "total: 3 games"]
+    assert "ccname" not in out.lower() and "liname" not in out.lower()
+
+
+def test_gui_opens_and_closes_without_stockfish(tmp_path, monkeypatch):
+    """The window builds with nothing configured, the settings window opens, and closing saves nothing unwanted."""
+    import tkinter as tk
+
+    monkeypatch.chdir(tmp_path)  # config.json, fetched_games/ and analyzed_games/ stay out of the repo
+    for var in ("STOCKFISH_PATH", "GEMINI_API_KEY", "DEFAULT_USERNAME", "LICHESS_TOKEN"):
+        monkeypatch.setenv(var, "")
+    from ai_chess_coach.gui.app import ChessGUI
+
+    try:
+        app = ChessGUI()
+    except tk.TclError as e:
+        pytest.skip(f"no display: {e}")
+    try:
+        app.update()
+        assert app.analyzer is None
+        app.open_settings_window()
+        app.update()
+
+        def texts(widget):
+            for child in widget.winfo_children():
+                try:
+                    yield str(child.cget("text"))
+                except (tk.TclError, ValueError):
+                    pass
+                yield from texts(child)
+
+        labels = list(texts(app))
+        assert "Stockfish Path:" in labels
+        assert not any("Depth" in t for t in labels)
+    finally:
+        app.on_closing()
+    assert not (tmp_path / "config.json").exists()  # no username entered, so nothing to save
