@@ -164,4 +164,6 @@ def test_rated_game_moves_gives_the_apps_rating_for_moves_in_the_question():
     ]
     assert [r["move"] for r in rated_game_moves("Why c3?", plies)] == ["4. c3"]   # bare move, one match in the game
     assert rated_game_moves("Was 3.Nf3 good?", plies) == []                     # wrong move number: not a game move
-    assert "Stay consistent with that rating" in SYSTEM_PROMPT
+    assert "That rating is the verdict" in SYSTEM_PROMPT
+    assert "concrete downside of the move or an alternative the engine preferred" in SYSTEM_PROMPT
+    assert "No exclamation marks" in SYSTEM_PROMPT and "encouraging" not in SYSTEM_PROMPT
