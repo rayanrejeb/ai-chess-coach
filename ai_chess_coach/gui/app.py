@@ -171,7 +171,8 @@ class ChessGUI(ctk.CTk):
         chat_frame.grid(row=6, column=0, sticky="ew", padx=10, pady=(10, 10))
         chat_frame.grid_columnconfigure(0, weight=1)
         ctk.CTkLabel(chat_frame, text="Ask about the game:", font=("Arial", 14, "bold")).grid(row=0, column=0, sticky="w", padx=10, pady=(5,0))
-        self.chat_history = ctk.CTkTextbox(chat_frame, wrap="word", font=("Arial", 14), height=120, state="disabled")
+        # About 13 lines of this font: a question and a typical answer with its engine check line fit without scrolling.
+        self.chat_history = ctk.CTkTextbox(chat_frame, wrap="word", font=("Arial", 14), height=220, state="disabled")
         self.chat_history.grid(row=1, column=0, sticky="ew", padx=10, pady=5)
         # Same family and (already DPI-scaled) size as the textbox, in bold. CTkTextbox.tag_config refuses fonts.
         self._chat_bold_font = tkfont.Font(self, font=self.chat_history._textbox.cget("font"))

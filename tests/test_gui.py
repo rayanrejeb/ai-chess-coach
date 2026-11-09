@@ -176,3 +176,25 @@ def test_chat_shows_engine_checks_as_muted_lines_under_the_answer(tmp_path):
     assert out["text"].splitlines() == ["Coach: Qd2 keeps e3 defended.", "Checked with Stockfish: 15.Qd2, +0.54"]
     assert out["muted"] == ["Checked with Stockfish: 15.Qd2, +0.54"]
     assert out["smaller"] and out["same_family"] and out["color"] == "gray60"  # main.py runs in dark mode
+
+
+def test_a_question_and_a_typical_answer_fit_in_the_chat_box(tmp_path):
+    """The recorded Qd2 answer (2026-11-09 live run) with its check line shows without scrolling, at the default size."""
+    out = run_gui(tmp_path, """
+        app._display_chat_message("You", "What happens if White plays Qd2 instead?")
+        app._display_chat_message("Coach", (
+            "If White plays 15.Qd2, it successfully defends the e3-pawn, avoiding the tactic 15...Rxe3 that made "
+            "15.Qc2 a mistake. \\n\\nAfter 15.Qd2, Black's best response is 15...a5, putting pressure on White's "
+            "b4-pawn. Play would likely continue 16.bxa5 Rxa5 17.e4 dxe4 18.fxe4, leaving White with a solid, "
+            "slightly favorable position where White can advance in the center."),
+            ["Checked with Stockfish: 15.Qd2, +0.54"])
+        app.chat_history.yview_moveto(0.0)
+        app.update()
+        box = app.chat_history._textbox
+        out["first_visible"] = box.get("@0,0 linestart", "@0,0 lineend")
+        out["check_line_visible"] = box.bbox(box.search("Checked with Stockfish", "1.0")) is not None
+        out["entry_inside"] = app.chat_entry.winfo_rooty() + app.chat_entry.winfo_height() <= app.winfo_rooty() + app.winfo_height()
+        app.on_closing()
+    """)
+    assert out["first_visible"] == "You: What happens if White plays Qd2 instead?"
+    assert out["check_line_visible"] and out["entry_inside"]
