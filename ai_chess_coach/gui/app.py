@@ -34,8 +34,6 @@ log = logging.getLogger(__name__)
 
 
 class ChessGUI(ctk.CTk):
-    UI_TRANSLATIONS = {"engine_idea_header": {"English": "--- The Engine's Idea ---"}}
-
     def __init__(self):
         super().__init__()
         self.analyzer: Optional[GameAnalyzer] = None
@@ -47,7 +45,6 @@ class ChessGUI(ctk.CTk):
         self.syzygy_path: Optional[str] = None
         self.lichess_token: Optional[str] = None
         self.gemini_model, self.gemini_language = DEFAULT_MODEL, "English"
-        self.analysis_depth = 18
         self.moves: List[chess.Move] = []
         self.analysis_data: List[PlyAnalysis] = []
         self.games: List[dict] = []
@@ -691,13 +688,6 @@ class ChessGUI(ctk.CTk):
         book_entry = create_browse_frame(settings_win, "Opening Book Path (.bin):", lambda e, t: browse_file(e, "Select Polyglot Book"))
         syzygy_entry = create_browse_frame(settings_win, "Syzygy Tablebases Path (Folder):", lambda e, t: browse_dir(e, "Select Syzygy Folder"))
 
-        ctk.CTkLabel(settings_win, text="Analysis Depth:").pack(pady=(10, 0), padx=20, anchor="w")
-        depth_frame = ctk.CTkFrame(settings_win, fg_color="transparent"); depth_frame.pack(pady=5, padx=20, fill="x")
-        depth_var = tk.IntVar(value=self.analysis_depth)
-        depth_label = ctk.CTkLabel(depth_frame, text=f"Depth: {self.analysis_depth}")
-        ctk.CTkSlider(depth_frame, from_=10, to=24, variable=depth_var, command=lambda v: depth_label.configure(text=f"Depth: {int(float(v))}")).pack(side="left", fill="x", expand=True)
-        depth_label.pack(side="left", padx=(10, 0))
-
         try:
             with open(Constants.CONFIG_FILE, 'r', encoding='utf-8') as f: config = json.load(f)
             key_entry.insert(0, config.get("gemini_api_key", ""))
@@ -707,12 +697,10 @@ class ChessGUI(ctk.CTk):
             sf_entry.insert(0, config.get("stockfish_path", ""))
             book_entry.insert(0, config.get("opening_book_path", ""))
             syzygy_entry.insert(0, config.get("syzygy_path", ""))
-            depth_var.set(config.get("analysis_depth", self.analysis_depth))
-            depth_label.configure(text=f"Depth: {depth_var.get()}")
         except (FileNotFoundError, json.JSONDecodeError): pass
 
         def save_and_reinit(close=False):
-            self.save_config(gemini_api_key=key_entry.get().strip(), gemini_model=model_menu.get(), gemini_language=lang_menu.get(), lichess_token=lichess_entry.get().strip(), analysis_depth=depth_var.get(), stockfish_path=sf_entry.get().strip(), opening_book_path=book_entry.get().strip(), syzygy_path=syzygy_entry.get().strip())
+            self.save_config(gemini_api_key=key_entry.get().strip(), gemini_model=model_menu.get(), gemini_language=lang_menu.get(), lichess_token=lichess_entry.get().strip(), stockfish_path=sf_entry.get().strip(), opening_book_path=book_entry.get().strip(), syzygy_path=syzygy_entry.get().strip())
             self.load_config_and_initialize()
             if close: settings_win.destroy()
             self.on_game_select(); self.update_display()
@@ -741,7 +729,6 @@ class ChessGUI(ctk.CTk):
             self.gemini_model = config.get("gemini_model", DEFAULT_MODEL)
             self.gemini_language = config.get("gemini_language", "English")
             self.lichess_token = config.get("lichess_token")
-            self.analysis_depth = config.get("analysis_depth", 18)
             self.stockfish_path = config.get("stockfish_path")
             self.opening_book_path = config.get("opening_book_path")
             self.syzygy_path = config.get("syzygy_path")

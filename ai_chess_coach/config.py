@@ -20,7 +20,6 @@ def resource_path(relative_path):
 @dataclass
 class AnalysisConfig:
     """Configuration for chess analysis parameters."""
-    KING_SAFETY_THRESHOLD: int = 2
     BAD_BISHOP_PAWN_RATIO: float = 0.6
     SPACE_ADVANTAGE_RATIO: float = 1.2
     MATE_SCORE: int = 10000
@@ -72,6 +71,5 @@ class Constants:
     # --- UI Colors ---
     ARROW_PLAYER_MOVE = "#FBFB2B"
     ARROW_BEST_MOVE = "#27C539"
-    ARROW_FOLLOW_UP = "#FF6347"
     RTL_LANGUAGES = ["Arabic", "Hebrew", "Persian", "Urdu"]
 

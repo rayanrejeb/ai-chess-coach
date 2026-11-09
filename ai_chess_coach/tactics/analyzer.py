@@ -175,7 +175,6 @@ class TacticalAnalyzer:
         test_board.push(move)
         if test_board.fen() != board_after.fen():
             return [{"tactic": "Error", "details": "Board states don't match move"}]
-        prev_move_to_sq = previous_move.to_square if previous_move else None
         original_move_san = board_before.san(move)
         motifs.extend(self._detect_potential_profitable_trades(board_after, not moving_side, last_move_to_square)) #checked
         motifs.extend(self._find_removal_of_guard(board_before, move)) #checked
@@ -1469,31 +1468,6 @@ class TacticalAnalyzer:
     # HELPER METHODS (ORIGINAL AND NEW)
     # ========================================================================================
 
-    def _find_actual_pinning_piece(self, board: chess.Board, pinned_square: int, 
-                                   king_square: int, our_side: chess.Color) -> Optional[Tuple[chess.Piece, int]]:
-        rank_diff = chess.square_rank(pinned_square) - chess.square_rank(king_square)
-        file_diff = chess.square_file(pinned_square) - chess.square_file(king_square)
-        rank_step = 0 if rank_diff == 0 else (1 if rank_diff > 0 else -1)
-        file_step = 0 if file_diff == 0 else (1 if file_diff > 0 else -1)
-        current_rank, current_file = chess.square_rank(pinned_square) + rank_step, chess.square_file(pinned_square) + file_step
-        while 0 <= current_rank <= 7 and 0 <= current_file <= 7:
-            square = chess.square(current_file, current_rank)
-            piece = board.piece_at(square)
-            if piece is not None:
-                if piece.color == our_side and self._can_piece_pin(piece, square, king_square):
-                    return piece, square
-                break
-            current_rank += rank_step; current_file += file_step
-        return None
-
-    def _can_piece_pin(self, piece: chess.Piece, piece_square: int, king_square: int) -> bool:
-        rank_diff = chess.square_rank(king_square) - chess.square_rank(piece_square)
-        file_diff = chess.square_file(king_square) - chess.square_file(piece_square)
-        if piece.piece_type == chess.ROOK: return rank_diff == 0 or file_diff == 0
-        elif piece.piece_type == chess.BISHOP: return abs(rank_diff) == abs(file_diff)
-        elif piece.piece_type == chess.QUEEN: return (rank_diff == 0 or file_diff == 0 or abs(rank_diff) == abs(file_diff))
-        return False
-
     def _get_pieces_behind(self, board: chess.Board, attacker_square: int, target_square: int) -> List[Tuple[int, chess.Piece]]:
         pieces_behind = []
         attacker_rank, attacker_file = chess.square_rank(attacker_square), chess.square_file(attacker_square)
@@ -1525,22 +1499,6 @@ class TacticalAnalyzer:
                 chess.square_file(sq1) == chess.square_file(sq2) or
                 abs(chess.square_rank(sq1) - chess.square_rank(sq2)) == abs(chess.square_file(sq1) - chess.square_file(sq2))
         )
-
-    def _is_between(self, sq_mid: int, sq1: int, sq2: int) -> bool:
-        return sq_mid in chess.SquareSet(chess.between(sq1, sq2))
-
-    def _get_squares_on_line(self, sq1: int, sq2: int) -> List[int]:
-        squares = []
-        rank1, file1 = chess.square_rank(sq1), chess.square_file(sq1)
-        rank2, file2 = chess.square_rank(sq2), chess.square_file(sq2)
-        rank_step = rank2 - rank1; file_step = file2 - file1
-        if rank_step != 0: rank_step //= abs(rank_step)
-        if file_step != 0: file_step //= abs(file_step)
-        curr_rank, curr_file = rank2 + rank_step, file2 + file_step
-        while 0 <= curr_rank <= 7 and 0 <= curr_file <= 7:
-            squares.append(chess.square(curr_file, curr_rank))
-            curr_rank += rank_step; curr_file += file_step
-        return squares
 
     def _clean_motifs(self, motifs: List[Dict[str, str]]) -> List[Dict[str, str]]:
         if not motifs: return motifs
