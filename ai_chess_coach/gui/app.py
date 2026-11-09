@@ -219,7 +219,7 @@ class ChessGUI(ctk.CTk):
             except Exception as e:
                 log.exception(f"Chat thread failed: {e}")
                 self.after(0, self._display_chat_message, "System Error", f"An error occurred in the chat task: {e}")
-                self.after(0, self.send_chat_btn.configure, {"state": "normal", "text": "Send"})
+                self.after(0, lambda: self.send_chat_btn.configure(state="normal", text="Send"))
         future.add_done_callback(chat_done_callback)
 
     def _get_and_display_chat_response(self, question, game_context, chat_history, analysis):
@@ -228,7 +228,7 @@ class ChessGUI(ctk.CTk):
         else:
             response = self.coach.answer(question, game_context, chat_history, analysis, self.moves, self.gemini_language)
         self.after(0, self._display_chat_message, "Coach", response)
-        self.after(0, self.send_chat_btn.configure, {"state": "normal", "text": "Send"})
+        self.after(0, lambda: self.send_chat_btn.configure(state="normal", text="Send"))
 
     def _display_chat_message(self, sender: str, message: str):
         self.chat_history.configure(state="normal")

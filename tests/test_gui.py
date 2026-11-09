@@ -103,3 +103,34 @@ def test_process_exits_after_closing_with_a_move_selected(tmp_path):
         out["closed"] = True
     """)
     assert out == {"closed": True}  # and run_gui saw the process end
+
+
+SEND_BODY = """
+    class FakeCoach:
+        def __init__(self, reply):
+            self.reply = reply
+
+        def answer(self, *args):
+            if isinstance(self.reply, Exception):
+                raise self.reply
+            return self.reply
+
+    app.after(0, app.go_to_ply, 1)
+    run_for(300)
+    for reply in ("Fine move.", RuntimeError("boom")):
+        app.coach = FakeCoach(reply)
+        app.chat_entry.insert(0, "Was 1.e4 good?")
+        app.send_chat_message()
+        out.setdefault("while_waiting", app.send_chat_btn.cget("text"))
+        run_for(500)
+        out.setdefault("after", []).append([app.send_chat_btn.cget("text"), app.send_chat_btn.cget("state")])
+    out["chat"] = app.chat_history.get("1.0", "end")
+    app.on_closing()
+"""
+
+
+def test_send_button_comes_back_after_an_answer_and_after_an_error(tmp_path):
+    out = run_gui(tmp_path, SEND_BODY)
+    assert out["while_waiting"] == "..."
+    assert out["after"] == [["Send", "normal"], ["Send", "normal"]]
+    assert "Coach: Fine move." in out["chat"] and "System Error: An error occurred in the chat task: boom" in out["chat"]
